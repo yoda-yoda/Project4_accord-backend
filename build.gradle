@@ -24,6 +24,9 @@ repositories {
 }
 
 dependencies {
+
+    testImplementation 'org.mockito:mockito-core:4.8.0'  // Mockito 버전 추가
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
