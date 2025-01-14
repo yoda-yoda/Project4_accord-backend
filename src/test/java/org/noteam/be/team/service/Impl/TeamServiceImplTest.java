@@ -56,11 +56,14 @@ class TeamServiceImplTest {
 
     }
 
+
     @AfterEach
     @DisplayName("BeforeEach로 인한 결과를 다시 없애주기위한 AfterEach 메서드")
     void afterEach1() {
         teamRepository.deleteAll();
+        teamRepository.idResetForBeforeEach();
     }
+
 
 
     @Test
