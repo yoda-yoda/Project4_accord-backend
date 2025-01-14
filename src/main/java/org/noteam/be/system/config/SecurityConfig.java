@@ -46,9 +46,9 @@ public class SecurityConfig {
 
                 // 인증, 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/members/**")
+                        .requestMatchers("/api/members/**")
                         .hasAnyAuthority("ADMIN", "MEMBER")
-                        .requestMatchers("/admins/**")
+                        .requestMatchers("/api/admins/**")
                         .hasAuthority("ADMIN")
                         .anyRequest()
                         .permitAll()

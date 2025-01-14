@@ -73,14 +73,4 @@ public class Member {
         this.updatedAt = updatedAt;
     }
 
-    // Role
-    public enum Role {
-        MEMBER, ADMIN
-    }
-
-    // Status (활성계정, 휴면계정, 삭제계정, 차단계정)
-    public enum Status {
-        ACTIVE, INACTIVE, DELETED, BANNED
-    }
-
 }

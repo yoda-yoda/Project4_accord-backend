@@ -3,7 +3,7 @@ package org.noteam.be.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.noteam.be.member.domain.Member.Role;
+import org.noteam.be.member.domain.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -41,7 +41,9 @@ public class CustomUserDetails implements OAuth2User {
 
     @Override
     public String getName() {
-        return email != null ? email : String.valueOf(memberId);
+        return email;
+        // 이메일이 null인 경우는 없음.
+        //!= null ? email : String.valueOf(memberId);
     }
 
 }

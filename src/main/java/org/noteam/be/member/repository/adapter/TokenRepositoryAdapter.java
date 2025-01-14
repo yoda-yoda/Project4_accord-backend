@@ -53,17 +53,8 @@ public class TokenRepositoryAdapter implements TokenRepository {
 
     @Override
     public Optional<RefreshToken> findValidRefTokenByMemberId(Long memberId) {
-        // 블랙리스트에 없는 RefreshToken 조회하는 JPQL
-        return entityManager.createQuery(
-                        "SELECT rf FROM RefreshToken rf " +
-                                "LEFT JOIN RefreshTokenBlackList rtb ON rtb.refreshToken = rf " +
-                                "WHERE rf.member.id = :memberId " +
-                                "AND rtb.id IS NULL",
-                        RefreshToken.class
-                )
-                .setParameter("memberId", memberId)
-                .getResultStream()
-                .findFirst();
+        // 블랙리스트에 없는 RefreshToken 조회하는 JPQL 은
+        return refreshTokenRepository.findValidTokenByMemberId(memberId);
     }
 
     @Override

@@ -7,4 +7,6 @@ public interface MemberService {
 
     Member registerOAuthMember(OAuthSignUpRequest request, String provider);
 
+
+
 }

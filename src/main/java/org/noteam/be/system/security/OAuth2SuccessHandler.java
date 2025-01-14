@@ -1,6 +1,5 @@
 package org.noteam.be.system.security;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,4 +70,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // cookie.setSecure(true); // HTTPS 에서만 전송
         response.addCookie(cookie);
     }
+
 }

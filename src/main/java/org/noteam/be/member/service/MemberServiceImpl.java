@@ -4,12 +4,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.noteam.be.member.domain.Member;
-import org.noteam.be.member.domain.Member.Status;
-import org.noteam.be.member.domain.Member.Role;
+import org.noteam.be.member.domain.Role;
+import org.noteam.be.member.domain.Status;
 import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.member.dto.CustomUserDetails;
 import org.noteam.be.member.dto.OAuthSignUpRequest;
-import org.noteam.be.system.exception.member.EmailNotProvided;
+import org.noteam.be.system.exception.ExceptionMessage;
+import org.noteam.be.system.exception.member.KakaoProfileNotProvided;
+import org.noteam.be.system.exception.member.UnsupportedProviderException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -49,7 +51,7 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
                     .build();
 
             member = registerOAuthMember(request, registrationId);
-            log.info(">[OAuth2] New Member created: {}, provider={}", email, registrationId);
+            log.info(">[OAuth2] 신규 회원 가입 완료 : {}, ({}계정)", email, registrationId);
         } else {
             member = optionalMember.get();
         }
@@ -90,7 +92,7 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
             case "kakao": {
                 Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttribute("properties");
                 if (properties == null || !properties.containsKey("nickname")) {
-                    throw new EmailNotProvided("카카오 계정의 프로필 정보를 가져올 수 없습니다.");
+                    throw new KakaoProfileNotProvided(ExceptionMessage.MemberAuth.KAKAO_PROFILE_NOT_PROVIDED);
                 }
                 String nickname = properties.get("nickname").toString()
                         .replaceAll("[^a-zA-Z0-9]", "") //띄어쓰기같은부분제거
@@ -98,7 +100,7 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
                 return nickname + "@kakao.com";
             }
             default:
-                throw new IllegalArgumentException("Unsupported provider: " + registrationId);
+                throw new UnsupportedProviderException(ExceptionMessage.MemberAuth.UNSUPPORTED_PROVIDER_EXCEPTION);
         }
     }
 }

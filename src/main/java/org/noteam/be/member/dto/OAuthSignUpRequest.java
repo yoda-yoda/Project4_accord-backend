@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.noteam.be.member.domain.Member;
-import org.noteam.be.member.domain.Member.Status;
+import org.noteam.be.member.domain.Status;
 
 @Data
 @NoArgsConstructor
