@@ -9,8 +9,4 @@ import java.util.List;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    @Modifying
-    @Query(value = "ALTER TABLE team AUTO_INCREMENT = 1", nativeQuery = true)
-    public void idResetForBeforeEach();
-
 }

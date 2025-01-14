@@ -9,7 +9,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "team")
 public class Team {
@@ -20,6 +19,7 @@ public class Team {
     @Column(name = "team_id")
     private Long id;
 
+    @Setter
     @Column(unique = true, nullable = false, length = 15)
     private String teamName;
 
@@ -32,6 +32,12 @@ public class Team {
 //     // 아직 팀멤버 도메인이 없어서 주석처리했다.
 //     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
 //     private List<TeamMember> teamMembers;
+
+
+    public void delete(boolean deleted) {
+        this.deleted = deleted;
+    }
+
 
     @PrePersist
     protected void onCreate() {

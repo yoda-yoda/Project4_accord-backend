@@ -5,10 +5,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.noteam.be.system.exception.ExceptionMessage;
+import org.noteam.be.system.exception.team.TeamNotFoundException;
 import org.noteam.be.team.domain.Team;
 import org.noteam.be.team.dto.TeamRegisterRequest;
 import org.noteam.be.team.dto.TeamResponse;
 import org.noteam.be.team.repository.TeamRepository;
+import org.noteam.be.team.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -23,36 +26,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 class TeamServiceImplTest {
 
-
+    
     @Autowired
     TeamServiceImpl teamServiceImpl;
 
-    @Autowired
-    TeamRepository teamRepository;
+    TeamResponse teamResponseForGetId;
+    // BeforeEach에서 만들어진 엔티티를 저장해놓고, id를 얻기위한 용도의 필드변수다.
 
 
     @BeforeEach
     @DisplayName("매 테스트마다 엔티티를 create해놓기 번거로워서 만든 BeforeEach")
     void setUp1() {
 
-        // given
         TeamRegisterRequest teamRegisterRequest = TeamRegisterRequest.builder()
                 .teamName("테스트팀네임1")
                 .build();
 
-        // when
-        TeamResponse teamByDto = teamServiceImpl.createTeamByDto(teamRegisterRequest);
+        teamResponseForGetId = teamServiceImpl.createTeamByDto(teamRegisterRequest);
 
-        // then
-        assertThat(teamByDto.getTeamName()).isEqualTo("테스트팀네임1");
-        assertThat(teamByDto.getId()).isEqualTo(1L);
-
-        log.info("teamByDto.getCreatedAt() = {}", teamByDto.getCreatedAt());
-        log.info("teamByDto.getUpdatedAt() = {}", teamByDto.getUpdatedAt());
-        log.info("================BeforeEach end====================");
-
-        // 결과1 ok: 위에것들 잘 통과하여 ok
-        // 결과2 ok: db 직접 확인 결과 테이블에 엔티티도 생성 ok
 
     }
 
@@ -60,8 +51,7 @@ class TeamServiceImplTest {
     @AfterEach
     @DisplayName("BeforeEach로 인한 결과를 다시 없애주기위한 AfterEach 메서드")
     void afterEach1() {
-        teamRepository.deleteAll();
-        teamRepository.idResetForBeforeEach();
+        teamServiceImpl.hardDeleteAll();
     }
 
 
@@ -75,17 +65,16 @@ class TeamServiceImplTest {
                 .teamName("테스트팀네임2")
                 .build();
 
+
     	  // when
         TeamResponse teamByDto = teamServiceImpl.createTeamByDto(teamRegisterRequest);
 
 
         // then
         assertThat(teamByDto.getTeamName()).isEqualTo("테스트팀네임2");
-        assertThat(teamByDto.getId()).isEqualTo(2L);
 
         log.info("teamByDto.getCreatedAt() = {}", teamByDto.getCreatedAt());
         log.info("teamByDto.getUpdatedAt() = {}", teamByDto.getUpdatedAt());
-
 
         // 결과1 ok: 위에 assertThat도 통과, log도 확인결과 잘 통과함
         // 결과2 ok: db 직접 확인 결과 테이블에 엔티티도 잘 생성됨
@@ -100,11 +89,10 @@ class TeamServiceImplTest {
         // BeforeEach로 Team 엔티티 1개 생성됨.
 
     	  // when
-        TeamResponse teamByIdWithResponse = teamServiceImpl.getTeamByIdWithResponse(1L);
+        TeamResponse teamByIdWithResponse = teamServiceImpl.getTeamByIdWithResponse(teamResponseForGetId.getId());
 
         // then
         assertThat(teamByIdWithResponse.getTeamName()).isEqualTo("테스트팀네임1");
-        assertThat(teamByIdWithResponse.getId()).isEqualTo(1L);
 
         log.info("teamByIdWithResponse.getCreatedAt() = {}", teamByIdWithResponse.getCreatedAt());
         log.info("teamByIdWithResponse.getUpdatedAt() = {}", teamByIdWithResponse.getUpdatedAt());
@@ -121,11 +109,10 @@ class TeamServiceImplTest {
         // BeforeEach로 Team 엔티티 1개 생성됨.
 
     	  // when
-        Team team = teamServiceImpl.getTeamById(1L);
+        Team team = teamServiceImpl.getTeamById(teamResponseForGetId.getId());
 
         // then
         assertThat(team.getTeamName()).isEqualTo("테스트팀네임1");
-        assertThat(team.getId()).isEqualTo(1L);
         assertThat(team.isDeleted()).isEqualTo(false);
         log.info("team.getCreatedAt() = {}", team.getCreatedAt());
         log.info("team.getUpdatedAt() = {}", team.getUpdatedAt());
@@ -151,7 +138,6 @@ class TeamServiceImplTest {
 
         Team team = allTeam.get(0);
         assertThat(team.getTeamName()).isEqualTo("테스트팀네임1");
-        assertThat(team.getId()).isEqualTo(1L);
         assertThat(team.isDeleted()).isEqualTo(false);
         log.info("team.getCreatedAt() = {}", team.getCreatedAt());
         log.info("team.getUpdatedAt() = {}", team.getUpdatedAt());
@@ -166,7 +152,7 @@ class TeamServiceImplTest {
         // given
         // (1) BeforeEach로 Team 엔티티 1개 생성됨.
 
-        teamRepository.deleteAll();
+        teamServiceImpl.hardDeleteAll();
         // (2) 그리고 테스트 조건을위해 그 엔티티를 삭제하였다.
 
         // when
@@ -196,11 +182,11 @@ class TeamServiceImplTest {
 
 
         // when
-        TeamResponse teamResponse = teamServiceImpl.updateTeamByDto(1L, teamRegisterRequest);
+        TeamResponse teamResponse = teamServiceImpl.updateTeamByDto(teamResponseForGetId.getId(), teamRegisterRequest);
+
 
         // then
         assertThat(teamResponse.getTeamName()).isEqualTo("업데이트한 팀이름");
-        assertThat(teamResponse.getId()).isEqualTo(1L);
 
         log.info("teamResponse.getCreatedAt() = {}", teamResponse.getCreatedAt());
         log.info("teamResponse.getUpdatedAt() = {}", teamResponse.getUpdatedAt()); // 바뀌어야함
@@ -221,13 +207,13 @@ class TeamServiceImplTest {
 
 
         // when
-        teamServiceImpl.deleteTeamById(1L);
-        Team findTeam = teamRepository.findById(1L).orElseThrow(); // 어썰트로 확인을 위해 DB에서 직접 찾아옴
+        teamServiceImpl.deleteTeamById(teamResponseForGetId.getId());
+        Team findTeam = teamServiceImpl.findById(teamResponseForGetId.getId())
+                .orElseThrow( () -> new TeamNotFoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
 
 
         // then
         assertThat(findTeam.isDeleted()).isEqualTo(true);
-       
 
         // 결과: ok  디비에서도 확인함
 

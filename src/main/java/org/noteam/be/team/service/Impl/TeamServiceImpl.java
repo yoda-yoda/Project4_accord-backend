@@ -3,7 +3,7 @@ package org.noteam.be.team.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.noteam.be.system.exception.ExceptionMessage;
-import org.noteam.be.system.exception.team.TeamNotPoundException;
+import org.noteam.be.system.exception.team.TeamNotFoundException;
 import org.noteam.be.team.domain.Team;
 import org.noteam.be.team.dto.TeamRegisterRequest;
 import org.noteam.be.team.dto.TeamResponse;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,9 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
 
-
     private final TeamRepository teamRepository;
-
 
     // 메서드 기능: 등록Dto를 매개변수로 받아서, 엔티티로 변환후 Team DB에 저장한다
     // 반환: 엔티티를 fromEntity 메서드를통해 응답Dto로 바꾼후 반환한다
@@ -37,7 +36,6 @@ public class TeamServiceImpl implements TeamService {
 
     }
 
-
     // 메서드 기능: id로 해당 team 엔티티를 찾는다
     // 조건: delete false 인것만 찾는다
     // 예외: 존재하지않으면 예외를 던진다
@@ -47,10 +45,11 @@ public class TeamServiceImpl implements TeamService {
         // delete를 filter()를 활용해 false인것만 찾도록 필터링한다
         Team findTeam = teamRepository.findById(id)
                 .filter(team -> !team.isDeleted())
-                .orElseThrow( () -> new TeamNotPoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
+                .orElseThrow( () -> new TeamNotFoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
 
         return TeamResponse.fromEntity(findTeam);
     }
+
 
 
     // 메서드 기능: id로 해당 team 엔티티를 찾는다
@@ -61,7 +60,7 @@ public class TeamServiceImpl implements TeamService {
 
         // delete를 filter()를 활용해 false인것만 찾도록 필터링한다
         return teamRepository.findById(id)
-                .filter(team -> !team.isDeleted()).orElseThrow( () -> new TeamNotPoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
+                .filter(team -> !team.isDeleted()).orElseThrow( () -> new TeamNotFoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
 
     }
 
@@ -105,12 +104,33 @@ public class TeamServiceImpl implements TeamService {
     public void deleteTeamById(Long id) {
 
         Team findTeam = teamRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow( () -> new TeamNotFoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
 
-        findTeam.setDeleted(true);
+        findTeam.delete(true);
 
         teamRepository.save(findTeam);
 
+    }
+
+
+    // 메서드 기능: id로 team 엔티티를 찾아서, 반환한다.
+    // 예외: X
+    // 반환: Team
+    @Transactional
+    public Optional<Team> findById(Long id) {
+
+        return teamRepository.findById(id);
+
+    }
+
+
+
+
+
+    // 메서드 기능: db에서 데이터를 전부 다 지우는 메서드
+    @Transactional
+    public void hardDeleteAll() {
+        teamRepository.deleteAll();
     }
 
 
