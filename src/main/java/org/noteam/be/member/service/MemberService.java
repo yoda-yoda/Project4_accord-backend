@@ -5,6 +5,6 @@ import org.noteam.be.member.dto.OAuthSignUpRequest;
 
 public interface MemberService {
 
-    Member saveMember(OAuthSignUpRequest oAuthSignUpRequest);
+    Member registerOAuthMember(OAuthSignUpRequest request, String provider);
 
 }

@@ -3,7 +3,7 @@ package org.noteam.be.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.noteam.be.member.domain.Member;
+import org.noteam.be.member.domain.Member.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -17,11 +17,11 @@ public class CustomUserDetails implements OAuth2User {
     private final Long memberId;
     private final String email;
     private final String nickname;
-    private final Member.Role role;
+    private final Role role;
     private final Map<String, Object> attributes;
 
     @Builder
-    public CustomUserDetails(Long memberId, String email, String nickname, Member.Role role, Map<String, Object> attributes) {
+    public CustomUserDetails(Long memberId, String email, String nickname, Role role, Map<String, Object> attributes) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
@@ -41,7 +41,7 @@ public class CustomUserDetails implements OAuth2User {
 
     @Override
     public String getName() {
-        return "";
+        return email != null ? email : String.valueOf(memberId);
     }
 
 }
