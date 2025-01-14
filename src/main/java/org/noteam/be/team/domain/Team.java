@@ -14,6 +14,7 @@ import java.util.List;
 @Table(name = "team")
 public class Team {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "team_id")
@@ -22,22 +23,34 @@ public class Team {
     @Column(unique = true, nullable = false, length = 15)
     private String teamName;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    private boolean deleted = false;
+    private boolean deleted;
 
-    // 아직 팀멤버 도메인이 없어서 주석처리했다.
-    // @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-    // private List<TeamMember> teamMembers;
+//     // 아직 팀멤버 도메인이 없어서 주석처리했다.
+//     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+//     private List<TeamMember> teamMembers;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.deleted = false;
+    }
+
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
 
     @Builder
     public Team(String teamName) {
         this.teamName = teamName;
     }
-
 
 
 }
