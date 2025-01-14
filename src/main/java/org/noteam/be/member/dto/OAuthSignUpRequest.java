@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.domain.Member.Status;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

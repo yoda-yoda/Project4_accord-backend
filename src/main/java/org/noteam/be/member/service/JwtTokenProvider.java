@@ -29,8 +29,8 @@ public class JwtTokenProvider {
     private final JwtConfiguration configuration;
     private final TokenRepository refreshTokenRepositoryAdapter;
 
+    // Access Tokem, Refresh Token 발급
     public KeyPair generateKeyPair(Member member) {
-        // Access Token, Refresh Token 발급
         String accessToken = issueAccessToken(member.getMemberId(), member.getRole().name());
         String refreshToken = issueRefreshToken(member.getMemberId(), member.getRole().name());
 
@@ -43,10 +43,11 @@ public class JwtTokenProvider {
                 .build();
     }
 
+    // 토큰발급 프로세스 (generateKeyPair 에서 생성됨)
     public String issueAccessToken(Long id, String role) {
         return issue(id, role, configuration.getValidation().getAccess());
     }
-
+    // 토큰발급 프로세스 (generateKeyPair 에서 생성됨)
     public String issueRefreshToken(Long id, String role) {
         return issue(id, role, configuration.getValidation().getRefresh());
     }
@@ -75,7 +76,7 @@ public class JwtTokenProvider {
             return true;
         } catch ( JwtException e ) {
             log.info("JWT 토큰이 잘못되었습니다. msg = {}", e.getMessage());
-            log.info("TOKEN : {}", token);
+            log.info("토큰 : {}", token);
         } catch ( IllegalArgumentException e ) {
             log.info("JWT 토큰이 비어있습니다. = {}", e.getMessage());
         } catch ( Exception e ) {
@@ -84,6 +85,7 @@ public class JwtTokenProvider {
         return false;
     }
 
+    // 토큰 파싱해서 TokenBody 오브젝트 생성
     public TokenBody parseJwt(String token) {
         Jws<Claims> parsed = Jwts.parser()
                 .verifyWith(getSecretKey())
