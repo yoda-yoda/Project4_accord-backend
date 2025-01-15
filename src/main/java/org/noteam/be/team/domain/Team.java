@@ -2,6 +2,8 @@ package org.noteam.be.team.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.noteam.be.teamMember.domain.TeamMember;
+
 import javax.swing.text.StyleContext;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,8 +32,8 @@ public class Team {
     private boolean deleted;
 
 //     // 아직 팀멤버 도메인이 없어서 주석처리했다.
-//     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-//     private List<TeamMember> teamMembers;
+     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+     private List<TeamMember> teamMembers;
 
 
     public void delete(boolean deleted) {

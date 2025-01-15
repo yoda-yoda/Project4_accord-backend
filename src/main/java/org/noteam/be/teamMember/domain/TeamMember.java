@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.noteam.be.member.domain.Member;
+import org.noteam.be.team.domain.Team;
 
 import java.time.LocalDateTime;
 

@@ -4,9 +4,9 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.noteam.be.member.domain.Member;
+import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.teamMember.service.SendEmailService;
-import org.noteam.be.teamMember.repository.MemberRepository;
-import org.noteam.be.teamMember.domain.Member;
 import org.noteam.be.teamMember.dto.InviteMemberResponse;
 import org.noteam.be.system.exception.EmailSendException;
 import org.noteam.be.system.exception.ExceptionMessage;
@@ -25,7 +25,6 @@ public class SendEmailServiceImpl implements SendEmailService {
 
 
     private final JavaMailSender mailSender;
-    private final InviteMemberResponse inviteMemberResponse = new InviteMemberResponse();
     private final MemberRepository memberRepository;
 
     @Value("${custom.mail}")
@@ -56,7 +55,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                     true);
             mailSender.send(message);
 
-            return inviteMemberResponse.builder()
+            return InviteMemberResponse.builder()
                     .message("Success Send Email")
                     .result(true)
                     .build();
