@@ -1,6 +1,6 @@
-package org.noteam.be.Email.Service;
+package org.noteam.be.teamMember.service;
 
-import org.noteam.be.dto.InviteMemberResponce;
+import org.noteam.be.teamMember.dto.InviteMemberResponce;
 
 public interface TeamInviteResponseService {
 

@@ -1,14 +1,13 @@
-package org.noteam.be.Email.Service.Impl;
-
+package org.noteam.be.teamMember.service.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.noteam.be.Email.Service.SendEmailService;
-import org.noteam.be.dao.MemberRepository;
-import org.noteam.be.domain.Member;
-import org.noteam.be.dto.InviteMemberResponce;
+import org.noteam.be.teamMember.service.SendEmailService;
+import org.noteam.be.teamMember.repository.MemberRepository;
+import org.noteam.be.teamMember.domain.Member;
+import org.noteam.be.teamMember.dto.InviteMemberResponce;
 import org.noteam.be.system.exception.EmailSendException;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Value;

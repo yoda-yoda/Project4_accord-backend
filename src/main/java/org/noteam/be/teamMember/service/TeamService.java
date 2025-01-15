@@ -1,6 +1,6 @@
-package org.noteam.be.Email.Service;
+package org.noteam.be.teamMember.service;
 
-import org.noteam.be.domain.Team;
+import org.noteam.be.teamMember.domain.Team;
 import java.util.Optional;
 
 public interface TeamService {

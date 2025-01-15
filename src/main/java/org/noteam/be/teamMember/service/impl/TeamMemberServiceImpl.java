@@ -1,11 +1,11 @@
-package org.noteam.be.Email.Service.Impl;
+package org.noteam.be.teamMember.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.noteam.be.Email.Service.TeamMemberService;
-import org.noteam.be.dao.TeamMemberRepository;
-import org.noteam.be.domain.Member;
-import org.noteam.be.domain.Team;
-import org.noteam.be.domain.TeamMember;
+import org.noteam.be.teamMember.service.TeamMemberService;
+import org.noteam.be.teamMember.repository.TeamMemberRepository;
+import org.noteam.be.teamMember.domain.Member;
+import org.noteam.be.teamMember.domain.Team;
+import org.noteam.be.teamMember.domain.TeamMember;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

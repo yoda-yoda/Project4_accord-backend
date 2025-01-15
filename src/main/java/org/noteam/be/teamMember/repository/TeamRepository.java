@@ -1,6 +1,6 @@
-package org.noteam.be.dao;
+package org.noteam.be.teamMember.repository;
 
-import org.noteam.be.domain.Team;
+import org.noteam.be.teamMember.domain.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

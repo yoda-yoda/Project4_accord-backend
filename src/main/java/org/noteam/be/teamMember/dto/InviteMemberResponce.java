@@ -1,4 +1,4 @@
-package org.noteam.be.dto;
+package org.noteam.be.teamMember.dto;
 
 
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package org.noteam.be.domain;
+package org.noteam.be.teamMember.domain;
 
 
 import jakarta.persistence.*;

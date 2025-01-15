@@ -1,15 +1,17 @@
-package org.noteam.be.Email.Service.Impl;
+package org.noteam.be.teamMember.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.noteam.be.Email.Service.TeamInviteResponseService;
-import org.noteam.be.dao.MemberRepository;
-import org.noteam.be.dao.TeamMemberRepository;
+import org.noteam.be.system.exception.EmailSendException;
+import org.noteam.be.system.exception.FindNotTeamException;
+import org.noteam.be.teamMember.service.TeamInviteResponseService;
+import org.noteam.be.teamMember.repository.MemberRepository;
+import org.noteam.be.teamMember.repository.TeamMemberRepository;
 
-import org.noteam.be.domain.Member;
-import org.noteam.be.domain.Team;
-import org.noteam.be.domain.TeamMember;
+import org.noteam.be.teamMember.domain.Member;
+import org.noteam.be.teamMember.domain.Team;
+import org.noteam.be.teamMember.domain.TeamMember;
 
-import org.noteam.be.dto.InviteMemberResponce;
+import org.noteam.be.teamMember.dto.InviteMemberResponce;
 
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.springframework.stereotype.Service;
@@ -32,10 +34,8 @@ public class TeamInviteResponseServiceImpl implements TeamInviteResponseService 
     @Override
     public InviteMemberResponce AcceptTeamInvite(Long teamId, Long memberId) {
 
-        Team byteamId = teamServiceImpl.findByteamId(teamId)
-                .orElseThrow(() -> new RuntimeException(ExceptionMessage.EMPTY_TEAM));
-
-        Team team = byteamId;
+        Team team = teamServiceImpl.findByteamId(teamId)
+                .orElseThrow(() -> new FindNotTeamException(ExceptionMessage.EMPTY_TEAM));
 
         List<TeamMember> teamMembers = team.getTeamMembers();
 
@@ -68,3 +68,4 @@ public class TeamInviteResponseServiceImpl implements TeamInviteResponseService 
     }
 
 }
+
