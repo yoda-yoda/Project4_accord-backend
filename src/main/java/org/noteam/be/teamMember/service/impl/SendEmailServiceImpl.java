@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.noteam.be.teamMember.service.SendEmailService;
 import org.noteam.be.teamMember.repository.MemberRepository;
 import org.noteam.be.teamMember.domain.Member;
-import org.noteam.be.teamMember.dto.InviteMemberResponce;
+import org.noteam.be.teamMember.dto.InviteMemberResponse;
 import org.noteam.be.system.exception.EmailSendException;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,7 @@ public class SendEmailServiceImpl implements SendEmailService {
 
 
     private final JavaMailSender mailSender;
-    private final InviteMemberResponce inviteMemberResponce = new InviteMemberResponce();
+    private final InviteMemberResponse inviteMemberResponse = new InviteMemberResponse();
     private final MemberRepository memberRepository;
 
     @Value("${custom.mail}")
@@ -35,7 +35,7 @@ public class SendEmailServiceImpl implements SendEmailService {
 
 
     @Override
-    public InviteMemberResponce sendInviteEmail(String inviter, long teamId, long memberId) {
+    public InviteMemberResponse sendInviteEmail(String inviter, long teamId, long memberId) {
 
         MimeMessage message = mailSender.createMimeMessage();
 
@@ -56,7 +56,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                     true);
             mailSender.send(message);
 
-            return inviteMemberResponce.builder()
+            return inviteMemberResponse.builder()
                     .message("Success Send Email")
                     .result(true)
                     .build();

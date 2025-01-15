@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class InviteMemberResponce {
+public class InviteMemberResponse {
 
     private String message;
     private boolean result;
 
     @Builder
-    public InviteMemberResponce(String message, boolean result) {
+    public InviteMemberResponse(String message, boolean result) {
         this.message = message;
         this.result = result;
     }

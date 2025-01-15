@@ -1,9 +1,9 @@
 package org.noteam.be.teamMember.service;
 
-import org.noteam.be.teamMember.dto.InviteMemberResponce;
+import org.noteam.be.teamMember.dto.InviteMemberResponse;
 
 public interface SendEmailService {
 
-    InviteMemberResponce sendInviteEmail(String inviter, long teamId, long memberId);
+    InviteMemberResponse sendInviteEmail(String inviter, long teamId, long memberId);
 
 }
