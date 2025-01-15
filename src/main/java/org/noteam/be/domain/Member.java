@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.noteam.be.domain.roleEnum.Role;
 import org.noteam.be.domain.statusEnum.Status;
-
 import java.time.LocalDateTime;
 
 @Entity
