@@ -11,7 +11,18 @@ import javax.net.ssl.SSLEngineResult;
 @AllArgsConstructor
 public enum ResponseCode {
 
-    GET_USER_PROFILE_SUCCESS(Status.OK, Message.READ_USER);
+    GET_USER_PROFILE_SUCCESS(Status.OK, Message.READ_USER),
+
+    // team
+    POST_TEAM_SUCCESS(Status.OK, Message.SAVE_TEAM),
+    GET_TEAM_SUCCESS(Status.OK, Message.READ_TEAM),
+    UPDATE_TEAM_SUCCESS(Status.OK, Message.UPDATE_TEAM),
+    DELETE_TEAM_SUCCESS(Status.OK, Message.DELETE_TEAM),
+
+    ;
+
+
+
 
     private int httpStatus;
     private String message;
