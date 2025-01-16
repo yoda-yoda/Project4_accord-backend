@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/members/profileImages")
+@RequestMapping("/api/members/profile-images")
 @RequiredArgsConstructor
 public class S3UploaderController {
 

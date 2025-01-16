@@ -22,7 +22,7 @@ import java.io.IOException;
 public class ProfileImgServiceImpl implements ProfileImgService {
 
 
-    private final S3Crud s3Crud;
+    private final StorageService storageService;
     private final ProfileImgConvert profileImgConvert;
     private final MemberRepository memberRepository;
 
@@ -41,7 +41,7 @@ public class ProfileImgServiceImpl implements ProfileImgService {
         byte[] file = profileImgConvert.convert(sourceImage);
 
         //S3에 업로드 후 URL 경로(String) 반환.
-        String s3ImgUrl = s3Crud.upload(file, fileName);
+        String s3ImgUrl = storageService.upload(file, fileName);
 
         //프로파일 이미지 URL Entity 생성
         ProfileImg profileImg = ProfileImg.builder()
@@ -63,11 +63,11 @@ public class ProfileImgServiceImpl implements ProfileImgService {
         );
 
         //s3에서 기존 이미지 파일 삭제(옵션)
-        s3Crud.delete(member.getProfileImg().getImageUrl());
+        storageService.delete(member.getProfileImg().getImageUrl());
 
         //프로파일 기본 이미지 URL 생성.
         ProfileImg profileImg = ProfileImg.builder()
-                .imageUrl(S3Crud.DEFAULT_URL)
+                .imageUrl(storageService.getDefaultPath())
                 .build();
         //저장
         member.setProfileImg(profileImg);

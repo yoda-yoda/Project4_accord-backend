@@ -1,5 +1,6 @@
 package org.noteam.be.profileimg.service;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,13 +17,16 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class S3CrudImpl implements S3Crud {
+public class S3StorageImpl implements StorageService {
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
     @Value("${aws.s3.region}")
     private String region;
+
+    @Value("${aws.s3.default-url}")
+    private String defaultUrl;
 
     private final S3Client s3Client;
 
@@ -47,6 +51,11 @@ public class S3CrudImpl implements S3Crud {
                         .bucket(bucketName)
                         .key(fileName)
                 .build());
+    }
+
+    @Override
+    public String getDefaultPath() {
+        return this.defaultUrl;
     }
 
 }
