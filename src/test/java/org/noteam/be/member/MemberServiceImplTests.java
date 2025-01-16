@@ -102,7 +102,7 @@ class MemberServiceImplTests {
         Member member = Member.of(
                 "test@google.com","nickname",Role.MEMBER, Status.ACTIVE, "google");
         Member savedMember = memberRepository.save(member);
-        
+
         // when
         memberService.deleteMember(savedMember.getMemberId());
 
