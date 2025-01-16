@@ -73,4 +73,16 @@ public class Member {
         this.updatedAt = updatedAt;
     }
 
+    // 닉네임 변경용 도메인 메서드
+    public void changeNickname(String newNickname) {
+        this.nickname = newNickname;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // 상태 변경용 도메인 메서드
+    public void changeStatus(Status newStatus) {
+        this.status = newStatus;
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }
