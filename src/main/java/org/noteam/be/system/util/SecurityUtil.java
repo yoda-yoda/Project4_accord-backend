@@ -1,5 +1,6 @@
 package org.noteam.be.system.util;
 
+import org.noteam.be.member.dto.CustomUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -10,7 +11,7 @@ public class SecurityUtil {
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
             return null;
         }
-        return ((MemberDetails) authentication.getPrincipal()).getId();
+        return ((CustomUserDetails) authentication.getPrincipal()).getMemberId();
     }
 
 }

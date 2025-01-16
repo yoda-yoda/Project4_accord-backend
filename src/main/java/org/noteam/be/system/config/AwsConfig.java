@@ -18,7 +18,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 @RequiredArgsConstructor
 public class AwsConfig {
 
-
     @Value("${aws.s3.region}")
     private String region;
 
@@ -31,33 +30,11 @@ public class AwsConfig {
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
-                .region(Region.of(region)) //리전설정
+                .region(Region.of(region)) //지역 설정
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey) // 접속키, 암호키 입력.
                 ))
                 .build();
-    }
-
-
-    //Test 병합시 삭제할 것.
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                auth ->
-                        auth
-
-                                .requestMatchers("/css/**", "/js/**", "/images/**","api/**").permitAll()
-                                .requestMatchers("/login", "/sign-up", "/oauth2/additional-info", "/update").permitAll()
-                                .requestMatchers("/member/forgot-password","/aboutUs").permitAll()
-                                .requestMatchers("/member/profile").authenticated()
-                                .requestMatchers("/users/**").hasAnyAuthority("MEMBER", "ADMIN")
-                                .requestMatchers("/board/**").hasAuthority("ADMIN")
-                                .requestMatchers("/member/**","/swipe/**","/post/**","/chat/**").permitAll()
-                                .anyRequest().permitAll()
-        ).build();
     }
 
 }

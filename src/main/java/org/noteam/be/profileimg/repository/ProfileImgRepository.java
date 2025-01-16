@@ -1,12 +1,13 @@
-package org.noteam.be.s3Uploader.repository;
+package org.noteam.be.profileimg.repository;
 
-import org.noteam.be.s3Uploader.entity.ProfileImg;
+import org.noteam.be.profileimg.entity.ProfileImg;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 public interface ProfileImgRepository extends JpaRepository<ProfileImg, Long> {
 
-    //findById로 찾는 쿼리
+    //멤버아이디로 ProfileImgRepository 엔티티 추출 가능.
     Optional<ProfileImg> findByMemberId(Long memberId);
+
 }
