@@ -34,7 +34,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // Authentication에서 principal 꺼내옴.
         if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            log.error("[OAuth2SuccessHandler] Principal is not CustomUserDetails. Auth failed?");
+            log.error("[OAuth2SuccessHandler] 인증 실패.");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
@@ -47,7 +47,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtTokenProvider.issueAccessToken(memberId, role);
         String refreshToken = jwtTokenProvider.issueRefreshToken(memberId, role);
 
-        // 쿠키 만료시간설정 -> application.yml에 설정된것을 가져와서 변환
+        //쿠키 만료시간설정 -> application.yml에 설정된것을 가져와서 변환
         int accessCookieMaxAge = (int) (jwtConfiguration.getValidation().getAccess() / 1000);
         int refreshCookieMaxAge = (int) (jwtConfiguration.getValidation().getRefresh() / 1000);
 

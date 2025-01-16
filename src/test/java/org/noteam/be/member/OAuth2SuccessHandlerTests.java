@@ -14,18 +14,14 @@ import org.noteam.be.member.dto.CustomUserDetails;
 import org.noteam.be.member.service.JwtTokenProvider;
 import org.noteam.be.system.config.JwtConfiguration;
 import org.noteam.be.system.security.OAuth2SuccessHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-//@TestPropertySource(locations = "classpath:applicationTest.yml")
 class OAuth2SuccessHandlerTests {
 
     @Mock
@@ -59,20 +54,31 @@ class OAuth2SuccessHandlerTests {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
+        // validation 객체 생성 및 설정
         JwtConfiguration.Validation validation = new JwtConfiguration.Validation();
         validation.setAccess(60000L); // 1 minute
         validation.setRefresh(120000L); // 2 minutes
-        when(jwtConfiguration.getValidation()).thenReturn(validation);
 
-        // Mock JWT configuration 셋업
+        // secret 객체 생성 및 설정
         JwtConfiguration.Secret secret = new JwtConfiguration.Secret();
         secret.setAppKey("your-256-bit-secret-key-for-testing-purposes-only");
+
+        // mock 객체 동작 정의
+        when(jwtConfiguration.getValidation()).thenReturn(validation);
         when(jwtConfiguration.getSecret()).thenReturn(secret);
+
+        // OAuth2SuccessHandler 인스턴스 생성 tokenprovider, configuration
+        successHandler = new OAuth2SuccessHandler(jwtTokenProvider, jwtConfiguration);
 
         ReflectionTestUtils.setField(
                 successHandler,
                 "baseRedirectUri",
                 "http://localhost:3000/auth");
+
+//        ReflectionTestUtils.setField(
+//                successHandler,
+//                "jwtConfiguration",
+//                validation);
     }
 
     @Test
@@ -84,6 +90,7 @@ class OAuth2SuccessHandlerTests {
         String nickname = "TestUser";
         Role role = Role.MEMBER;
         Map<String, Object> attributes = Map.of("customKey", "customValue"); // 테스트용
+        String encodedUrl = "http://localhost:3000/auth"; // url검증을 하기 위해서 추가.
 
         CustomUserDetails principal = CustomUserDetails.builder()
                 .memberId(memberId)
@@ -112,6 +119,7 @@ class OAuth2SuccessHandlerTests {
         when(authentication.getPrincipal()).thenReturn(principal);
         when(jwtTokenProvider.issueAccessToken(memberId, role.name())).thenReturn(accessToken);
         when(jwtTokenProvider.issueRefreshToken(memberId, role.name())).thenReturn(refreshToken);
+        when(response.encodeRedirectURL("http://localhost:3000/auth")).thenReturn(encodedUrl);
 
         // 응답 쿠키
         ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
@@ -135,7 +143,10 @@ class OAuth2SuccessHandlerTests {
         assertThat(refreshCookie.getValue()).isEqualTo(refreshToken);
         assertThat(refreshCookie.getMaxAge()).isEqualTo(120);
 
-        verify(response, times(1)).sendRedirect(anyString());
+        // 마지막에서 리다이렉트 검증
+        verify(response).encodeRedirectURL("http://localhost:3000/auth");
+        verify(response).sendRedirect(encodedUrl);
+
     }
 
     @Test
