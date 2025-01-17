@@ -34,9 +34,11 @@ public class TeamInviteResponseServiceImpl implements TeamInviteResponseService 
     @Override
     public InviteMemberResponse AcceptTeamInvite(Long teamId, Long memberId) {
 
+
         Team team = teamService.getTeamById(teamId);
 
         List<TeamMember> teamMembers = team.getTeamMembers();
+        // 1명있으면 조회 됨.... size 1 이 나올거고.....
 
         Member member = memberRepository.findById(memberId).get();
 
@@ -46,7 +48,9 @@ public class TeamInviteResponseServiceImpl implements TeamInviteResponseService 
         if (findMember.isEmpty()) {
 
             if (teamMembers.size() <= 3 ) {
+
                 teamMemberService.save(member,team);
+
                 return InviteMemberResponse.builder()
                         .message("Success Add Team Member")
                         .result(true)

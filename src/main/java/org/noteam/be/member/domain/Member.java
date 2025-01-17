@@ -5,7 +5,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,6 +43,9 @@ public class Member {
 
     @Column(nullable = false, length = 10)
     private String provider;
+
+    @OneToMany
+    private List<KanbanBoardCard> kanbanBoardCards = new ArrayList<>();
 
     public static Member of(String email,
                             String nickname,
