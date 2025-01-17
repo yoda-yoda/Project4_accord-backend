@@ -103,7 +103,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .orElse(null);
     }
 
-    //보안을 위해 토큰 로깅을 위해 마스킹함.
+    //토큰 로깅 보안을 위해 마스킹함.
     private String maskToken(String token) {
         if (token == null || token.length() < 8) {
             return "***";
