@@ -1,10 +1,9 @@
 package org.noteam.be.member.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.noteam.be.profileimg.entity.ProfileImg;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -40,6 +39,11 @@ public class Member {
     @Column(nullable = false, length = 10)
     private String provider;
 
+    // ProfileImg와의 @OneToOne 관계 추가
+    @Setter
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProfileImg profileImg;
+
     public static Member of(String email,
                             String nickname,
                             Role role,
@@ -63,7 +67,8 @@ public class Member {
                    Status status,
                    String provider,
                    LocalDateTime createdAt,
-                   LocalDateTime updatedAt) {
+                   LocalDateTime updatedAt,
+                   ProfileImg profileImg) {
         this.email = email;
         this.nickname = nickname;
         this.role = role;
@@ -71,6 +76,7 @@ public class Member {
         this.provider = provider;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.profileImg = profileImg;
     }
 
     // 닉네임 변경용 도메인 메서드
