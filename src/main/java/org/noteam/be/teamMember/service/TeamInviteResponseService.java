@@ -5,4 +5,5 @@ import org.noteam.be.teamMember.dto.InviteMemberResponse;
 public interface TeamInviteResponseService {
 
     InviteMemberResponse AcceptTeamInvite(Long teamId, Long memberId);
+
 }

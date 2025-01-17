@@ -194,4 +194,10 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
         log.info("Member ID={} 탈퇴 처리 완료.", memberId);
     }
 
+    @Override
+    public Member getByMemberId(Long memberId) {
+      return memberRepository.findByMemberId(memberId)
+              .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+    }
+
 }

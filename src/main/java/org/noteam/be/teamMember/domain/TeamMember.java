@@ -2,18 +2,15 @@ package org.noteam.be.teamMember.domain;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.noteam.be.member.domain.Member;
 import org.noteam.be.team.domain.Team;
-
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class TeamMember {
 
     @Id
