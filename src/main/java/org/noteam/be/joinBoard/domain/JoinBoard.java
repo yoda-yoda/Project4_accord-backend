@@ -51,8 +51,9 @@ public class JoinBoard {
     @Column(nullable = false)
     private int peopleNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean deleted;
+    private Status status; // DELETE 또는 ACTIVE
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -61,20 +62,31 @@ public class JoinBoard {
     private LocalDateTime updatedAt;
 
 
+
+    // 최초로 엔티티가 DB에 저장되면, 자동으로 이 메서드가 실행됨
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.deleted = false;
+        this.status = Status.ACTIVE;
     }
 
 
+
+    // 기존 엔티티의 변경감지가 인식되면, 자동으로 이 메서드가 실행됨
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
 
+    // 소프트 딜리트 처리 변경을 위한 메서드
+    public void changeStatus(Status newStatus) {
+        this.status = newStatus;
+    }
+
+
+    // 기존 엔티티 내용을, 보안상 setter가 아니라 dto를 통해 수정하기위한 메서드
     public void updateFromDto(JoinBoardUpdateRequest dto) {
         this.title = dto.getTitle();
         this.topic = dto.getTopic();

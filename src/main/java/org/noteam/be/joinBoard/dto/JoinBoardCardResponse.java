@@ -1,13 +1,14 @@
 package org.noteam.be.joinBoard.dto;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.noteam.be.joinBoard.domain.JoinBoard;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
+@Getter
 @NoArgsConstructor
 public class JoinBoardCardResponse {
 
