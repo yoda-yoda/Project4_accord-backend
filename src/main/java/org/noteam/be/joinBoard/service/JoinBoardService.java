@@ -5,6 +5,7 @@ import org.noteam.be.joinBoard.dto.JoinBoardCardResponse;
 import org.noteam.be.joinBoard.dto.JoinBoardRegisterRequest;
 import org.noteam.be.joinBoard.dto.JoinBoardResponse;
 import org.noteam.be.joinBoard.dto.JoinBoardUpdateRequest;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -26,5 +27,7 @@ public interface JoinBoardService {
     JoinBoardResponse updateJoinBoardById(Long id, JoinBoardUpdateRequest dto);
 
     void deleteJoinBoardById(Long id);
+
+    Page<JoinBoardCardResponse> getAllJoinBoardCardByPage(int page);
 
 }

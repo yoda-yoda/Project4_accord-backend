@@ -3,10 +3,14 @@ package org.noteam.be.joinBoard.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.noteam.be.joinBoard.domain.JoinBoard;
 import java.time.LocalDate;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class JoinBoardRegisterRequest {
 
     @NotNull

@@ -11,12 +11,17 @@ import org.noteam.be.joinBoard.repository.JoinBoardRepository;
 import org.noteam.be.joinBoard.service.JoinBoardService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.joinBoard.JoinBoardNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -167,6 +172,40 @@ public class JoinBoardServiceImpl implements JoinBoardService {
         JoinBoard entity = getJoinBoardEntityByIdWithNoDeleted(id);
         entity.changeStatus(Status.DELETE);
 
+    }
+
+
+    // 메서드 기능: 페이지 설정값을 매개변수로 받아 page 객체를 반환한다.
+    // 예외: 없다. 즉 DB에 해당 값이 없다면, 빈 페이지 객체를 반환한다.
+    // 반환: DB의 엔티티를 전부 JoinBoardCardResponse 라는 dto로 변환하고, 그것을 page 객체로 만들어 반환한다.
+    public Page<JoinBoardCardResponse> getAllJoinBoardCardByPage(int page) {
+
+        // 페이지 설정값(설정 객체) 생성
+        Pageable pageable = PageRequest.of(page, 10);
+
+        // 해당 설정값을 매개변수로 전달하며 동시에 ACTIVE 상태의 글을 찾아 Page 객체를 생성
+        Page<JoinBoard> pagingEntity = joinBoardRepository.findByStatus(Status.ACTIVE, pageable);
+
+        // 나중에 페이지 객체로 바꿀때 사용할 List 변수
+        List<JoinBoardCardResponse> cardList = new ArrayList<>();
+
+        // 만약 DB에 해당 값이 없다면, 비어있는 페이지 객체를 만들어서 반환
+        if (  pagingEntity.getContent().isEmpty() ) {
+            Page<JoinBoardCardResponse> emptyPage = new PageImpl<>(cardList, pageable, pagingEntity.getTotalElements());
+            return emptyPage;
+        }
+
+        // 값이 존재한다면, 페이지 객체 내부에 있는 각각의 엔티티를 모두 Card dto로 변환하여 List 변수에 담는다
+        for (JoinBoard joinBoard : pagingEntity.getContent()) {
+            JoinBoardCardResponse res = JoinBoardCardResponse.getResponseFromEntity(joinBoard);
+            cardList.add(res);
+        }
+
+        // PageImpl 객체의 생성자를 통해, 최종 Page 객체를 만들었다
+        Page<JoinBoardCardResponse> pagingCard = new PageImpl<>(cardList, pageable, pagingEntity.getTotalElements());
+
+        // 최종 Page 객체 반환
+        return pagingCard;
     }
 
 

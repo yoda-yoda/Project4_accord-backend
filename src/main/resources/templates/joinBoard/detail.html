@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Board - Details</title>
+</head>
+<body>
+<h1 th:text="${joinBoard.title}"></h1>
+<p><strong>Topic:</strong> <span th:text="${joinBoard.topic}"></span></p>
+<p><strong>Team Name:</strong> <span th:text="${joinBoard.teamName}"></span></p>
+<p><strong>Project Bio:</strong> <span th:text="${joinBoard.projectBio}"></span></p>
+<p><strong>Team Bio:</strong> <span th:text="${joinBoard.teamBio}"></span></p>
+<p><strong>Content:</strong> <span th:text="${joinBoard.content}"></span></p>
+<p><strong>Start Date:</strong> <span th:text="${joinBoard.startDate}"></span></p>
+<p><strong>End Date:</strong> <span th:text="${joinBoard.endDate}"></span></p>
+<p><strong>People Number:</strong> <span th:text="${joinBoard.peopleNumber}"></span></p>
+<p><strong>Created At:</strong> <span th:text="${joinBoard.createdAt}"></span></p>
+<p><strong>Updated At:</strong> <span th:text="${joinBoard.updatedAt}"></span></p>
+
+<form th:action="@{/joinBoard/{id}/delete(id=${joinBoard.id})}" method="post">
+    <button type="submit">Delete Post</button>
+</form>
+
+<a th:href="@{/joinBoard/{id}/edit(id=${joinBoard.id})}">Edit Post</a>
+<a href="/joinBoard/list">Back to List</a>
+</body>
+</html>

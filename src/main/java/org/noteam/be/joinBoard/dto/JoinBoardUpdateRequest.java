@@ -4,9 +4,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Setter
 @Getter
 @NoArgsConstructor
 public class JoinBoardUpdateRequest {
