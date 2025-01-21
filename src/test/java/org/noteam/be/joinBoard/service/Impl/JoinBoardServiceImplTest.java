@@ -63,7 +63,7 @@ class JoinBoardServiceImplTest {
         joinBoardRepository.deleteAll();
     }
 
-    
+
     @Test
     @DisplayName("createJoinBoardByDto 메서드 테스트1 - 유저의 입력값을 Request Dto로 받고, 해당 글을 저장하는 메서드")
     void createJoinBoardByDto_method_test1() throws Exception {
@@ -94,6 +94,7 @@ class JoinBoardServiceImplTest {
         assertThat(find1.getStatus()).isEqualTo(Status.ACTIVE);
 
     }
+
 
     @Test
     @DisplayName("getJoinBoardEntityById 메서드 테스트1 - id로 JoinBoard 엔티티를 찾아오는 메서드이고, 찾지못할시 예외도 테스트 한다. ")

@@ -19,7 +19,16 @@ public enum ResponseCode {
     UPDATE_TEAM_SUCCESS(Status.OK, Message.UPDATE_TEAM),
     DELETE_TEAM_SUCCESS(Status.OK, Message.DELETE_TEAM),
 
+
+    // joinBoard
+    POST_JOIN_BOARD_SUCCESS(Status.OK, Message.SAVE_JOIN_BOARD),
+    GET_JOIN_BOARD_SUCCESS(Status.OK, Message.READ_JOIN_BOARD),
+    UPDATE_JOIN_BOARD_SUCCESS(Status.OK, Message.UPDATE_JOIN_BOARD),
+    DELETE_JOIN_BOARD_SUCCESS(Status.OK, Message.DELETE_JOIN_BOARD),
+
     ;
+
+
 
 
 
