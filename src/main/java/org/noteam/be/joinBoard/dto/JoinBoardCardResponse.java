@@ -1,9 +1,11 @@
 package org.noteam.be.joinBoard.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.noteam.be.joinBoard.domain.JoinBoard;
+import org.noteam.be.system.util.TimeAgoUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,25 +14,35 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class JoinBoardCardResponse {
 
+    @NotNull
     private Long id;
 
+    @NotNull
     private String title;
 
+    @NotNull
     private String topic;
 
+    @NotNull
     private String teamName;
 
+    @NotNull
     private String projectBio;
 
+    @NotNull
     private LocalDate startDate;
 
+    @NotNull
     private LocalDate endDate;
 
+    @NotNull
     private int peopleNumber;
 
-    private LocalDateTime createdAt;
+    @NotNull
+    private String createdAt;
 
-    private LocalDateTime updatedAt;
+    @NotNull
+    private String updatedAt;
 
     public static JoinBoardCardResponse getResponseFromEntity(JoinBoard joinBoard){
        return JoinBoardCardResponse.builder()
@@ -42,13 +54,13 @@ public class JoinBoardCardResponse {
                 .startDate(joinBoard.getStartDate())
                 .endDate(joinBoard.getEndDate())
                 .peopleNumber(joinBoard.getPeopleNumber())
-                .createdAt(joinBoard.getCreatedAt())
-                .updatedAt(joinBoard.getUpdatedAt())
+                .createdAt(TimeAgoUtil.formatElapsedTime(joinBoard.getCreatedAt()))
+                .updatedAt(TimeAgoUtil.formatElapsedTime(joinBoard.getUpdatedAt()))
                 .build();
     }
 
     @Builder
-    public JoinBoardCardResponse(Long id, String title, String topic, String teamName, String projectBio, LocalDate startDate, LocalDate endDate, int peopleNumber, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public JoinBoardCardResponse(Long id, String title, String topic, String teamName, String projectBio, LocalDate startDate, LocalDate endDate, int peopleNumber, String createdAt, String updatedAt) {
         this.id = id;
         this.title = title;
         this.topic = topic;

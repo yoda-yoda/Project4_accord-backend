@@ -11,10 +11,7 @@ import org.noteam.be.joinBoard.repository.JoinBoardRepository;
 import org.noteam.be.joinBoard.service.JoinBoardService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.joinBoard.JoinBoardNotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +25,7 @@ import java.util.stream.Stream;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class JoinBoardServiceImpl implements JoinBoardService {
+
 
     private final JoinBoardRepository joinBoardRepository;
 
@@ -156,6 +154,11 @@ public class JoinBoardServiceImpl implements JoinBoardService {
         JoinBoard entity = getJoinBoardEntityByIdWithNoDeleted(id);
         entity.updateFromDto(dto);
 
+
+        // 이렇게 해야, 이 메서드가 종료되기전에 @PreUpdate 메서드가(엔티티 내부에 있는 변경될때 시간 최신화하는 메서드가) 실행되어서 시간이 최신화된다.
+        joinBoardRepository.saveAndFlush(entity);
+
+
         return JoinBoardResponse.fromEntity(entity);
     }
 
@@ -175,13 +178,16 @@ public class JoinBoardServiceImpl implements JoinBoardService {
     }
 
 
-    // 메서드 기능: 페이지 설정값을 매개변수로 받아 page 객체를 반환한다.
+    // 메서드 기능: 페이지 설정값을 매개변수로 받아 page 객체를 반환한다. 글 정렬은 최신순으로 이뤄진다.
     // 예외: 없다. 즉 DB에 해당 값이 없다면, 빈 페이지 객체를 반환한다.
     // 반환: DB의 엔티티를 전부 JoinBoardCardResponse 라는 dto로 변환하고, 그것을 page 객체로 만들어 반환한다.
     public Page<JoinBoardCardResponse> getAllJoinBoardCardByPage(int page) {
 
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createdAt"));
+
         // 페이지 설정값(설정 객체) 생성
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 
         // 해당 설정값을 매개변수로 전달하며 동시에 ACTIVE 상태의 글을 찾아 Page 객체를 생성
         Page<JoinBoard> pagingEntity = joinBoardRepository.findByStatus(Status.ACTIVE, pageable);

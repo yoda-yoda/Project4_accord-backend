@@ -20,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
-// 250120 기준: 페이징 기능 작동 상태를 눈으로 보기위해, html 파일을 만들고 타임리프용 컨트롤러로 바꿔서 테스트중
 @Controller
 @RequestMapping("/joinBoard")
 @RequiredArgsConstructor
@@ -107,6 +106,8 @@ public class JoinBoardController {
         return "joinBoard/edit";
     }
 
+
+
     // 게시판 글 수정 처리
     @PostMapping("/{id}/edit")
     public String updateJoinBoard(@PathVariable Long id,
@@ -117,6 +118,8 @@ public class JoinBoardController {
         }
 
         joinBoardService.updateJoinBoardById(id, joinBoardUpdateRequest);
+
+
         return "redirect:/joinBoard/" + id;
     }
 

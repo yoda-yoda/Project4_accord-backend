@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import org.noteam.be.joinBoard.domain.JoinBoard;
+import org.noteam.be.system.util.TimeAgoUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,13 +43,13 @@ public class JoinBoardResponse {
     private int peopleNumber;
 
     @NotNull
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     @NotNull
-    private LocalDateTime updatedAt;
+    private String updatedAt;
 
     @Builder
-    public JoinBoardResponse(Long id, String title, String topic, String teamName, String projectBio, String teamBio, String content, LocalDate startDate, LocalDate endDate, int peopleNumber, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public JoinBoardResponse(Long id, String title, String topic, String teamName, String projectBio, String teamBio, String content, LocalDate startDate, LocalDate endDate, int peopleNumber, String createdAt, String updatedAt) {
         this.id = id;
         this.title = title;
         this.topic = topic;
@@ -76,9 +77,10 @@ public class JoinBoardResponse {
                 .startDate(joinBoard.getStartDate())
                 .endDate(joinBoard.getEndDate())
                 .peopleNumber(joinBoard.getPeopleNumber())
-                .createdAt(joinBoard.getCreatedAt())
-                .updatedAt(joinBoard.getUpdatedAt())
+                .createdAt( TimeAgoUtil.formatElapsedTime(joinBoard.getCreatedAt()) )
+                .updatedAt( TimeAgoUtil.formatElapsedTime(joinBoard.getUpdatedAt()) )
                 .build();
+
     }
 
 
