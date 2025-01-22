@@ -20,9 +20,11 @@ public class ExceptionMessage {
         public static final String MEMBER_NOT_FOUND_EXCEPTION = "회원을 찾을 수 없습니다.";
         public static final String MEMBER_NOT_FOUND = "대상 멤버가 없습니다.";
         public static final String NICKNAME_ALREADY_EXIST = "변경하려는 닉네임이 중복됩니다.";
-        public static final String INVALID_REFRESH_TOKEN_PROVIDED = "변경하려는 닉네임이 중복됩니다.";
-        public static final String EMPTY_REFRESH_TOKEN = "변경하려는 닉네임이 중복됩니다.";
+        public static final String INVALID_REFRESH_TOKEN_PROVIDED = "올바르지 않은 리프레쉬 토큰입니다.";
+        public static final String EMPTY_REFRESH_TOKEN = "리프레쉬 토큰이 비어있습니다.";
         public static final String EXISTING_AUTHENTICATION_IS_NULL = "인가정보가 존재하지 않습니다.";
+        public static final String DELETED_ACCOUNT_EXCEPTION = "탈퇴한 회원 입니다.";
+        public static final String BANNED_ACCOUNT_EXCEPTION = "차단된 회원 입니다.";
 
     }
 

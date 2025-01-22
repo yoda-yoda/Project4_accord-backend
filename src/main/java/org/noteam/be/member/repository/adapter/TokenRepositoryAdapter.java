@@ -19,8 +19,6 @@ public class TokenRepositoryAdapter implements TokenRepository {
     private final RefreshTokenRepository refreshTokenRepository;
     private final RefreshTokenBlackListRepository refreshTokenBlackListRepository;
 
-    private final EntityManager entityManager;
-
     @Override
     public RefreshToken save(Member member, String token) {
         // RefreshToken 엔티티 생성

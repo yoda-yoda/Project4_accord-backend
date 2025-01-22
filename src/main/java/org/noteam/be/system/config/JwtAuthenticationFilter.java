@@ -7,10 +7,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.domain.RefreshToken;
+import org.noteam.be.member.dto.CustomUserDetails;
 import org.noteam.be.member.dto.TokenBody;
+import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.member.repository.TokenRepository;
 import org.noteam.be.member.service.JwtTokenProvider;
+import org.noteam.be.system.exception.ExceptionMessage;
+import org.noteam.be.system.exception.member.MemberNotFound;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -35,6 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRepository tokenRepository;
 
+    private final MemberRepository memberRepository;
+
     /*
     1. 클라이언트가 API 요청 with Authorization 헤더
     2. JwtAuthenticationFilter가 토큰 추출
@@ -43,7 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     5. 스프링 시큐리티가 이 정보로 권한 확인
      */
 
-    //
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -51,32 +57,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
             String token = resolveToken(request);
+            if(token != null) {
+
             processToken(token);
 
-            filterChain.doFilter(request, response);
+            } else {
+                log.debug("요청에 토큰이 없습니다.");
+            }
 
+            filterChain.doFilter(request, response);
     }
 
     private void processToken(String token) {
-        if (token == null) {
-            log.debug("요청에 토큰이 없습니다.");
-            return;
-        }
-
         try {
-            if (jwtTokenProvider.validate(token)) {
-                log.debug("토큰 검증 시작 : {}", maskToken(token));
 
-                Optional<RefreshToken> refreshTokenOpt = tokenRepository.findValidRefTokenByToken(token);
-                if (refreshTokenOpt.isEmpty()) {
-                    log.info("토큰이 만료되었거나 올바르지않습니다. token={}", maskToken(token));
+            if (!jwtTokenProvider.validate(token)) {
+                log.info("[JwtAuthenticationFilter] Access Token 서명/만료 검증 실패: {}", maskToken(token));
+                return;
+            }
+
+            TokenBody tokenBody = jwtTokenProvider.parseJwt(token);
+
+            // 리프레쉬 토큰이면 조회
+            if (tokenBody.isRefresh()) {
+                // 리프레쉬 토큰 -> DB에 존재해야만 유효
+                Optional<RefreshToken> refOpt = tokenRepository.findValidRefTokenByToken(token);
+                if (refOpt.isEmpty()) {
+                    log.info("[JwtAuthenticationFilter] Refresh 토큰 DB 검증 실패. token={}", maskToken(token));
                     return;
                 }
-
-                TokenBody tokenBody = jwtTokenProvider.parseJwt(token);
-                setSecurityContext(tokenBody);
-                log.debug("사용자 인증 컨텍스트 설정 완료: {}", tokenBody.getMemberId());
             }
+
+            setSecurityContext(tokenBody);
+            log.debug("사용자 인증 컨텍스트 설정 완료: {}", tokenBody.getMemberId());
+
         } catch (ExpiredJwtException e) {
             log.warn("토큰 만료됨: {}", maskToken(token));
         } catch (JwtException e) {
@@ -85,11 +99,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void setSecurityContext(TokenBody tokenBody) {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(ROLE_PREFIX + tokenBody.getRole());
+        // DB 조회
+        Member member = memberRepository.findById(tokenBody.getMemberId())
+                .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+
+        // CustomUserDetails 생성
+        CustomUserDetails customUserDetails = CustomUserDetails.builder()
+                .memberId(member.getMemberId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .role(member.getRole())
+                .attributes(null)
+                .build();
+
+        // Authentication principal 로 customUserDetails 설정
+        SimpleGrantedAuthority authority =
+                new SimpleGrantedAuthority(ROLE_PREFIX + tokenBody.getRole());
+
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(
-                tokenBody,
+                customUserDetails,
                 null,
-                //권한이 하나만 들어있기때문에 singletonList 사용
                 Collections.singletonList(authority)
         );
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
