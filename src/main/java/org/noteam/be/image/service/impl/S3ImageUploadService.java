@@ -41,7 +41,8 @@ public class S3ImageUploadService implements ImageUploadService {
                 .bucket(bucketName)
                 .key(uniqueFileName)
                 .build();
-        s3Client.putObject(putObjectRequest, software.amazon.awssdk.core.sync.RequestBody.fromBytes(uploadImageRequest.getFile().getBytes()));
+        s3Client.putObject(putObjectRequest,
+                software.amazon.awssdk.core.sync.RequestBody.fromBytes(uploadImageRequest.getFile().getBytes()));
         URL fileUrl = s3Client.utilities().getUrl(builder -> builder.bucket(bucketName).key(uniqueFileName));
         return UploadImageResponse.builder()
                 .url(fileUrl.toString())
