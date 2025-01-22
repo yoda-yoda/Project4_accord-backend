@@ -22,6 +22,7 @@ public class CanvasImageUploadController {
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseData<UploadImageResponse>> uploadImage(@RequestParam("file") MultipartFile file, String canvasId) throws IOException {
         UploadImageResponse uploadImageResponse = canvasImageService.saveImage(UploadCanvasImageRequest.builder()
+                .file(file)
                 .canvasId(canvasId)
                 .build());
         return ResponseData.toResponseEntity(ResponseCode.POST_CANVAS_IMAGE_SUCCESS, uploadImageResponse);
