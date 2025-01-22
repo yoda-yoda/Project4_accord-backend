@@ -10,7 +10,8 @@ import org.noteam.be.team.service.TeamService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/api/teams")
+@RestController
+@RequestMapping("/api/teams")
 @RequiredArgsConstructor
 public class TeamController {
 

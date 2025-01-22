@@ -10,7 +10,17 @@ public class ExceptionMessage {
     public static final String EMAIL_SENDING_ERROR = "이메일 전송 도중 오류가 생겼습니다";
     public static final String EMPTY_TEAM = "팀이 존재하지 않습니다.";
 
-    public static final String TEAM_NOT_FOUND_ERROR = "해당하는 팀을 찾을 수 없습니다";
+
+
+    public static class Team {
+        public static final String TEAM_NOT_FOUND_ERROR = "해당하는 팀을 찾을 수 없습니다";
+    }
+
+    public static class JoinBoard {
+
+        public static final String JOIN_BOARD_NOT_FOUND_ERROR = "해당하는 글을 찾을 수 없습니다";
+
+    }
 
 
     public static class MemberAuth {

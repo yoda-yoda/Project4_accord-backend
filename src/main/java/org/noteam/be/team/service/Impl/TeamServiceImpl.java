@@ -45,7 +45,7 @@ public class TeamServiceImpl implements TeamService {
         // delete를 filter()를 활용해 false인것만 찾도록 필터링한다
         Team findTeam = teamRepository.findById(id)
                 .filter(team -> !team.isDeleted())
-                .orElseThrow( () -> new TeamNotFoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
+                .orElseThrow( () -> new TeamNotFoundException( ExceptionMessage.Team.TEAM_NOT_FOUND_ERROR) );
 
         return TeamResponse.fromEntity(findTeam);
     }
@@ -60,7 +60,7 @@ public class TeamServiceImpl implements TeamService {
 
         // delete를 filter()를 활용해 false인것만 찾도록 필터링한다
         return teamRepository.findById(id)
-                .filter(team -> !team.isDeleted()).orElseThrow( () -> new TeamNotFoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
+                .filter(team -> !team.isDeleted()).orElseThrow( () -> new TeamNotFoundException( ExceptionMessage.Team.TEAM_NOT_FOUND_ERROR) );
 
     }
 
@@ -104,7 +104,7 @@ public class TeamServiceImpl implements TeamService {
     public void deleteTeamById(Long id) {
 
         Team findTeam = teamRepository.findById(id)
-                .orElseThrow( () -> new TeamNotFoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
+                .orElseThrow( () -> new TeamNotFoundException( ExceptionMessage.Team.TEAM_NOT_FOUND_ERROR) );
 
         findTeam.delete(true);
 

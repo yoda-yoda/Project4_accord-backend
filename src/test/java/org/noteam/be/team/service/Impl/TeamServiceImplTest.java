@@ -10,8 +10,6 @@ import org.noteam.be.system.exception.team.TeamNotFoundException;
 import org.noteam.be.team.domain.Team;
 import org.noteam.be.team.dto.TeamRegisterRequest;
 import org.noteam.be.team.dto.TeamResponse;
-import org.noteam.be.team.repository.TeamRepository;
-import org.noteam.be.team.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -209,8 +207,7 @@ class TeamServiceImplTest {
         // when
         teamServiceImpl.deleteTeamById(teamResponseForGetId.getId());
         Team findTeam = teamServiceImpl.findById(teamResponseForGetId.getId())
-                .orElseThrow( () -> new TeamNotFoundException(ExceptionMessage.TEAM_NOT_FOUND_ERROR) );
-
+                .orElseThrow( () -> new TeamNotFoundException( ExceptionMessage.Team.TEAM_NOT_FOUND_ERROR ) );
 
         // then
         assertThat(findTeam.isDeleted()).isEqualTo(true);

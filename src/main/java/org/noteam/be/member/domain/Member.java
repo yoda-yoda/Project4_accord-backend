@@ -2,6 +2,7 @@ package org.noteam.be.member.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.noteam.be.joinBoard.domain.JoinBoard;
 import org.noteam.be.profileimg.entity.ProfileImg;
 
 import java.time.LocalDateTime;
@@ -43,6 +44,10 @@ public class Member {
     @Setter
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImg profileImg;
+
+    // JoinBoard(팀 구인게시판)과의 @OneToOne 관계 추가
+    @OneToOne(mappedBy = "member")
+    private JoinBoard joinBoard;
 
     public static Member of(String email,
                             String nickname,
