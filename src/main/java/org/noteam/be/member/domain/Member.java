@@ -46,7 +46,7 @@ public class Member {
     private ProfileImg profileImg;
 
     // JoinBoard(팀 구인게시판)과의 @OneToOne 관계 추가
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", orphanRemoval = true)
     private JoinBoard joinBoard;
 
     public static Member of(String email,
