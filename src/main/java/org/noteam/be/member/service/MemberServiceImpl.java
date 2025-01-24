@@ -200,4 +200,6 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
               .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
     }
 
+
+
 }

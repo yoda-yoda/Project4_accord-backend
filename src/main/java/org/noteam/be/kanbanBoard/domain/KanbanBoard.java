@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class KanbanBoard {
 
     @Id
@@ -20,18 +21,23 @@ public class KanbanBoard {
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
+    @Setter
     @Column(nullable = false)
     private String title;
 
-    //
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    @Setter
+    private Long priority;
+
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<KanbanBoardCard> cards;
 
     @Builder
-    public KanbanBoard(Team team, String title) {
+    public KanbanBoard(Team team, String title,Long priority) {
         this.team = team;
         this.title = title;
+        this.priority = priority;
     }
 
 

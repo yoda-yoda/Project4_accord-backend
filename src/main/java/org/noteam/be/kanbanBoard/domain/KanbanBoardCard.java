@@ -2,10 +2,7 @@ package org.noteam.be.kanbanBoard.domain;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.noteam.be.member.domain.Member;
 
 
@@ -21,25 +18,32 @@ public class KanbanBoardCard {
     private Long id;
 
     //내용
+    @Setter
     @Column(nullable = false)
     private String content;
 
     // team id 가져오기
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @Setter
     private Member member;
 
     // board id
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @Setter
     private KanbanBoard board;
+
+    @Setter
+    private Long priority;
 
 
     @Builder
-    public KanbanBoardCard(String content, Member member, KanbanBoard board) {
+    public KanbanBoardCard(String content, Member member, KanbanBoard board,Long priority) {
         this.content = content;
         this.member = member;
         this.board = board;
+        this.priority = priority;
     }
 
 
