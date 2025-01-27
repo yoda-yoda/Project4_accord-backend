@@ -116,9 +116,9 @@ public class KanbanBoardController {
     // 카드 순서 변경 문제!
     @ResponseBody
     @PostMapping("/kanbanboardcard/switch")
-    public ResponseEntity<KanbanBoardMessageResponse> changeBoardCardPriority (@RequestParam Long cardId,@RequestParam Long boardId ,@RequestParam int dropSpotNum) {
+    public ResponseEntity<KanbanBoardMessageResponse> changeBoardCardPriority (@RequestParam Long cardId,@RequestParam Long boardId ,@RequestParam int dropSpotNum, @RequestParam Long newBoardId) {
 
-        KanbanBoardMessageResponse result = kanbanBoardCardService.changeCardPriority(cardId, boardId, dropSpotNum);
+        KanbanBoardMessageResponse result = kanbanBoardCardService.changeCardPriority(cardId, boardId, dropSpotNum, newBoardId);
         List<KanbanBoardCard> card = kanbanBoardCardService.getKanbanBoardCardbyBoardId(boardId);
         kanbanBoardCardService.forEachCard(card);
 

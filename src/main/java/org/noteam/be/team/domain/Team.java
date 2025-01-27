@@ -34,11 +34,11 @@ public class Team {
 
 //     // 아직 팀멤버 도메인이 없어서 주석처리했다.
      @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-     private List<TeamMember> teamMembers = new ArrayList<>();
+     private List<TeamMember> teamMembers;
 
      // 칸반 보드 id
      @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-     private List<KanbanBoard> kanbanBoard = new ArrayList<>();
+     private List<KanbanBoard> kanbanBoard;
 
 
     public void delete(boolean deleted) {
