@@ -11,6 +11,7 @@ import org.noteam.be.member.dto.NicknameUpdateRequest;
 import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.member.dto.CustomUserDetails;
 import org.noteam.be.member.dto.OAuthSignUpRequest;
+import org.noteam.be.profileimg.service.ProfileImgService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.member.*;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -26,6 +27,7 @@ import java.util.Optional;
 public class MemberServiceImpl extends DefaultOAuth2UserService implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final ProfileImgService profileImgService;
 
     @Override
     @Transactional
@@ -183,7 +185,9 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
         return new MemberProfileResponse(
                 member.getMemberId(),
                 member.getEmail(),
-                member.getNickname()
+                member.getNickname(),
+                profileImgService.getMembersProfileImg(member)
+
         );
     }
 
@@ -197,6 +201,18 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
         // 삭제상태로 status 변경.(Soft Delete)
         member.changeStatus(Status.DELETED);
         log.info("Member ID={} 탈퇴 처리 완료.", memberId);
+    }
+
+    @Override
+    public MemberProfileResponse getMemberProfile(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+        return new MemberProfileResponse(
+                member.getMemberId(),
+                member.getEmail(),
+                member.getNickname(),
+                profileImgService.getMembersProfileImg(member)
+        );
     }
 
 }
