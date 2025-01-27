@@ -9,8 +9,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.domain.Role;
 import org.noteam.be.member.dto.CustomUserDetails;
+import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.member.service.JwtTokenProvider;
 import org.noteam.be.system.config.JwtConfiguration;
 import org.noteam.be.system.security.OAuth2SuccessHandler;
@@ -25,6 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -47,6 +50,9 @@ class OAuth2SuccessHandlerTests {
     @Mock
     private Authentication authentication;
 
+    @Mock
+    private MemberRepository memberRepository;
+
     @InjectMocks
     private OAuth2SuccessHandler successHandler;
 
@@ -56,8 +62,8 @@ class OAuth2SuccessHandlerTests {
 
         // validation 객체 생성 및 설정
         JwtConfiguration.Validation validation = new JwtConfiguration.Validation();
-        validation.setAccess(60000L); // 1 minute
-        validation.setRefresh(120000L); // 2 minutes
+        validation.setAccess(60000L); // 1분
+        validation.setRefresh(120000L); // 2분
 
         // secret 객체 생성 및 설정
         JwtConfiguration.Secret secret = new JwtConfiguration.Secret();
@@ -68,17 +74,13 @@ class OAuth2SuccessHandlerTests {
         when(jwtConfiguration.getSecret()).thenReturn(secret);
 
         // OAuth2SuccessHandler 인스턴스 생성 tokenprovider, configuration
-        successHandler = new OAuth2SuccessHandler(jwtTokenProvider, jwtConfiguration);
+        successHandler = new OAuth2SuccessHandler(jwtTokenProvider, jwtConfiguration, memberRepository);
 
         ReflectionTestUtils.setField(
                 successHandler,
                 "baseRedirectUri",
                 "http://localhost:3000/auth");
 
-//        ReflectionTestUtils.setField(
-//                successHandler,
-//                "jwtConfiguration",
-//                validation);
     }
 
     @Test
@@ -116,6 +118,16 @@ class OAuth2SuccessHandlerTests {
                 .signWith(Keys.hmacShaKeyFor("your-256-bit-secret-key-for-testing-purposes-only".getBytes()), Jwts.SIG.HS256)
                 .compact();
 
+        // Member 엔티티 Mock 리턴
+        Member fakeMember = Member.builder()
+                .email(email)
+                .nickname(nickname)
+                .role(Role.MEMBER)
+                .provider("google")
+                .build();
+        ReflectionTestUtils.setField(fakeMember, "memberId", memberId);
+
+        when(memberRepository.findByMemberId(memberId)).thenReturn(Optional.of(fakeMember));
         when(authentication.getPrincipal()).thenReturn(principal);
         when(jwtTokenProvider.issueAccessToken(memberId, role.name())).thenReturn(accessToken);
         when(jwtTokenProvider.issueRefreshToken(memberId, role.name())).thenReturn(refreshToken);

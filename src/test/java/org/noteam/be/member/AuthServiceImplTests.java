@@ -43,7 +43,7 @@ class AuthServiceImplTests {
     void reissueAccessTokenSuccessfully() {
         // given
         String validRefreshToken = "validRefreshToken";
-        TokenBody tokenBody = new TokenBody(1L, "ROLE_USER");
+        TokenBody tokenBody = new TokenBody(1L, "ROLE_USER",false);
 
         // Mock Member 객체 생성
         Member mockMember = Member.builder()
@@ -97,15 +97,20 @@ class AuthServiceImplTests {
         String refreshToken = "refreshToken";
         Authentication authentication = mock(Authentication.class);
 
+        RefreshToken existingRefToken = RefreshToken.builder()
+                .refreshToken(refreshToken)
+                .build();
+
+        when(tokenRepository.findValidRefTokenByToken(refreshToken))
+                .thenReturn(Optional.of(existingRefToken));
+
         // when
         authService.logout(accessToken, refreshToken, authentication);
 
         // then
         verify(tokenRepository, times(1))
-                .appendBlackList(argThat(rt -> rt.getRefreshToken().equals(accessToken)));
-        verify(tokenRepository, times(1))
                 .appendBlackList(argThat(rt -> rt.getRefreshToken().equals(refreshToken)));
-        // Access와 Refresh 둘 다 블랙리스트 등록
+        // Refresh 토큰만  블랙리스트 등록
     }
 
     @Test
@@ -119,7 +124,7 @@ class AuthServiceImplTests {
         assertThatThrownBy(() -> authService
                 .logout(accessToken, refreshToken, null))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("권한 없음!");
+                .hasMessage("인가정보가 존재하지 않습니다.");
 
         verify(tokenRepository, never()).appendBlackList(any(RefreshToken.class));
     }

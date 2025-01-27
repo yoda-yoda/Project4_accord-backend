@@ -45,18 +45,19 @@ public class JwtTokenProvider {
 
     // 토큰발급 프로세스 (generateKeyPair 에서 생성됨)
     public String issueAccessToken(Long id, String role) {
-        return issue(id, role, configuration.getValidation().getAccess());
+        return issue(id, role, configuration.getValidation().getAccess(), false);
     }
     // 토큰발급 프로세스 (generateKeyPair 에서 생성됨)
     public String issueRefreshToken(Long id, String role) {
-        return issue(id, role, configuration.getValidation().getRefresh());
+        return issue(id, role, configuration.getValidation().getRefresh(), true);
     }
 
     // memberId, role, 만료시간 -> JWT 생성
-    private String issue(Long memberId, String role, Long validTime) {
+    private String issue(Long memberId, String role, Long validTime, boolean isRefresh) {
         return Jwts.builder()
                 .subject(memberId.toString())
                 .claim("role", role)
+                .claim("isRefresh", isRefresh)
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + validTime))
                 .signWith(getSecretKey(), Jwts.SIG.HS256)
@@ -92,10 +93,12 @@ public class JwtTokenProvider {
                 .build()
                 .parseSignedClaims(token);
 
+        Claims claims = parsed.getPayload();
         String memberId = parsed.getPayload().getSubject();
         Object role = parsed.getPayload().get("role");
+        boolean isRefresh = claims.get("isRefresh", Boolean.class);
 
-        return new TokenBody(Long.parseLong(memberId), role.toString());
+        return new TokenBody(Long.parseLong(memberId), role.toString(), isRefresh);
     }
 
     //DB에서 해당 멤버의 유효한 RefreshToken이 있는지 확인

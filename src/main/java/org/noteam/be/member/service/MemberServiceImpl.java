@@ -11,11 +11,9 @@ import org.noteam.be.member.dto.NicknameUpdateRequest;
 import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.member.dto.CustomUserDetails;
 import org.noteam.be.member.dto.OAuthSignUpRequest;
+import org.noteam.be.profileimg.service.ProfileImgService;
 import org.noteam.be.system.exception.ExceptionMessage;
-import org.noteam.be.system.exception.member.KakaoProfileNotProvided;
-import org.noteam.be.system.exception.member.MemberNotFound;
-import org.noteam.be.system.exception.member.NicknameAlreadyExist;
-import org.noteam.be.system.exception.member.UnsupportedProviderException;
+import org.noteam.be.system.exception.member.*;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -29,6 +27,7 @@ import java.util.Optional;
 public class MemberServiceImpl extends DefaultOAuth2UserService implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final ProfileImgService profileImgService;
 
     @Override
     @Transactional
@@ -61,6 +60,14 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
             log.info(">[OAuth2] 신규 회원 가입 완료 : {}, ({}계정)", email, registrationId);
         } else {
             member = optionalMember.get();
+
+            // 로그인 시도 시 상태가 DELETED / BANNED 예외 발생
+            if (member.getStatus() == Status.DELETED) {
+                throw new DeletedAccountException(ExceptionMessage.MemberAuth.DELETED_ACCOUNT_EXCEPTION);
+            }
+            if (member.getStatus() == Status.BANNED) {
+                throw new BannedAccountException(ExceptionMessage.MemberAuth.BANNED_ACCOUNT_EXCEPTION);
+            }
         }
 
         // CustomUserDetails 생성
@@ -178,7 +185,9 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
         return new MemberProfileResponse(
                 member.getMemberId(),
                 member.getEmail(),
-                member.getNickname()
+                member.getNickname(),
+                profileImgService.getMembersProfileImg(member)
+
         );
     }
 
@@ -195,11 +204,23 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
     }
 
     @Override
+
     public Member getByMemberId(Long memberId) {
       return memberRepository.findByMemberId(memberId)
               .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
     }
 
 
+    public MemberProfileResponse getMemberProfile(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+        return new MemberProfileResponse(
+                member.getMemberId(),
+                member.getEmail(),
+                member.getNickname(),
+                profileImgService.getMembersProfileImg(member)
+        );
+    }
 
 }
+

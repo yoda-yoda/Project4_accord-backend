@@ -13,6 +13,17 @@ public class Message {
     public static final String SAVE_TEAM = "SUCCESS - 팀 정보 저장 성공";
     public static final String UPDATE_TEAM = "SUCCESS - 팀 정보 수정 성공";
     public static final String DELETE_TEAM = "SUCCESS - 팀 정보 삭제 성공";
+
+
+    // JoinBoard
+    public static final String READ_JOIN_BOARD = "SUCCESS - 조인보드 정보 조회 성공";
+    public static final String SAVE_JOIN_BOARD = "SUCCESS - 조인보드 정보 저장 성공";
+    public static final String UPDATE_JOIN_BOARD = "SUCCESS - 조인보드 정보 수정 성공";
+    public static final String DELETE_JOIN_BOARD = "SUCCESS - 조인보드 정보 삭제 성공";
     
+    public static final String SAVE_CANVAS_IMAGE = "SUCCESS - 캔버스 이미지 저장 성공";
+    public static final String DELETE_CANVAS_IMAGE = "SUCCESS - 캔버스 이미지 삭제 성공";
+    public static final String SAVE_NOTE_IMAGE = "SUCCESS - 노트 이미지 저장 성공";
+    public static final String DELETE_NOTE_IMAGE = "SUCCESS - 노트 이미지 삭제 성공";
 
 }

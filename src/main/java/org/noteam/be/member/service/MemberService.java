@@ -20,5 +20,10 @@ public interface MemberService {
 
     void deleteMember(Long memberId);;
 
+
     Member getByMemberId(Long memberId);
+
+    public MemberProfileResponse getMemberProfile(Long memberId);
+
+
 }
