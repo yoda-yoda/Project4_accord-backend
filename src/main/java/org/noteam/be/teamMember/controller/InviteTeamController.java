@@ -40,7 +40,5 @@ public class InviteTeamController {
         return ResponseEntity.ok(result);
 
     }
-
-
 }
 

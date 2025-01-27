@@ -6,4 +6,6 @@ import org.noteam.be.teamMember.domain.TeamMember;
 
 public interface TeamMemberService {
     TeamMember save (Member member, Team team);
+
+    TeamMember getTeamMember(Member member);
 }

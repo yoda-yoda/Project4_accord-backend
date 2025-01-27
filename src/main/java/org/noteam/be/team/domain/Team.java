@@ -2,9 +2,11 @@ package org.noteam.be.team.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.noteam.be.kanbanBoard.domain.KanbanBoard;
 import org.noteam.be.teamMember.domain.TeamMember;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,7 +34,11 @@ public class Team {
 
 //     // 아직 팀멤버 도메인이 없어서 주석처리했다.
      @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-     private List<TeamMember> teamMembers;
+     private List<TeamMember> teamMembers = new ArrayList<>();
+
+     // 칸반 보드 id
+     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+     private List<KanbanBoard> kanbanBoard = new ArrayList<>();
 
 
     public void delete(boolean deleted) {

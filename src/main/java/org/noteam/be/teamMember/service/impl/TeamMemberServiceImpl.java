@@ -26,4 +26,9 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
         return teamMemberRepository.save(build);
     }
+
+    @Override
+    public TeamMember getTeamMember(Member member) {
+        return teamMemberRepository.findByMember(member);
+    }
 }

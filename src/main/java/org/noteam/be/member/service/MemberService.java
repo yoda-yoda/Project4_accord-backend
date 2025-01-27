@@ -18,8 +18,12 @@ public interface MemberService {
 
     MemberProfileResponse updateNickname(Long memberId, NicknameUpdateRequest request);
 
-    void deleteMember(Long memberId);
+    void deleteMember(Long memberId);;
+
+
+    Member getByMemberId(Long memberId);
 
     public MemberProfileResponse getMemberProfile(Long memberId);
+
 
 }

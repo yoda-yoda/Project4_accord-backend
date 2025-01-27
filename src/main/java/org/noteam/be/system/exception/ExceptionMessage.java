@@ -43,9 +43,15 @@ public class ExceptionMessage {
         public static final String IMAGE_DIMENSION_EXCEEDED_EXCEPTION = "파일의 폭 또는 높이가 초과되었습니다.";
     }
 
+
+    public static class Kanbanboard {
+        public static final String KANBANBOARD_NOT_FOUND_ERROR = "해당하는 보드를 찾을 수 없습니다";
+        public static final String KANBANBOARD_CARD_NOT_FOUND_ERROR = "해당하는 카드를 찾을 수 없습니다";
+    }
     public static class Image {
         public static final String INVALID_FILENAME_ERROR = "유효하지 않은 이미지 파일 이름 입니다.";
         public static final String FILE_SIZE_EXCEEDED_ERROR = "파일 크기가 5 MB를 초과하여 업로드할 수 없습니다. ";
+
     }
 
 
