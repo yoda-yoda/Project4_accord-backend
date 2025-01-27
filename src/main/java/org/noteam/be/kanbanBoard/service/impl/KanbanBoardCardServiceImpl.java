@@ -162,6 +162,7 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
         return moveCardToAnotherBoard(targetCard, currentBoard, newBoard, newPriority);
     }
 
+    @Transactional
     private KanbanBoardMessageResponse changePriorityWithinSameBoard(KanbanBoardCard targetCard, KanbanBoard board, int newPriority) {
         List<KanbanBoardCard> cardList = getKanbanBoardCardbyBoardId(board.getId());
 
@@ -197,6 +198,7 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
                 .build();
     }
 
+    @Transactional
     private KanbanBoardMessageResponse moveCardToAnotherBoard(KanbanBoardCard targetCard, KanbanBoard currentBoard, KanbanBoard newBoard, int newPriority) {
         List<KanbanBoardCard> currentBoardCardList = getKanbanBoardCardbyBoardId(currentBoard.getId());
 
