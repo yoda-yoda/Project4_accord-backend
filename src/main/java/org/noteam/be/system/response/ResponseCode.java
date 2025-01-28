@@ -26,6 +26,9 @@ public enum ResponseCode {
     UPDATE_JOIN_BOARD_SUCCESS(Status.OK, Message.UPDATE_JOIN_BOARD),
     DELETE_JOIN_BOARD_SUCCESS(Status.OK, Message.DELETE_JOIN_BOARD),
 
+    // serach
+    SEARCH_JOIN_BOARD_SUCCESS(Status.OK, Message.READ_SEARCH_JOIN_BOARD),
+
     ;
 
 
