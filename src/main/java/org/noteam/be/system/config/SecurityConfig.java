@@ -27,7 +27,7 @@ public class SecurityConfig {
         return http
                 // CSRF / CORS / httpBasic / formLogin / session 정책등
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
+                .cors(cors -> cors.configure(http))
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(form -> form.disable())
                 // 세션은 전혀 사용하지않고 OAuth 인증 시에도 JWT로 인증
@@ -46,6 +46,8 @@ public class SecurityConfig {
 
                 // 인증, 권한 설정
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws", "/ws/**", "/ws/info")
+                        .permitAll()
                         .requestMatchers("/api/members/**")
                         .hasAnyAuthority("ADMIN", "MEMBER")
                         .requestMatchers("/api/admins/**")
