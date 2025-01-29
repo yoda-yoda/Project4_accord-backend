@@ -23,7 +23,7 @@ public interface KanbanBoardCardService {
 
     KanbanBoardMessageResponse updateCard(Long id, String content);
 
-    KanbanBoardMessageResponse changeCardPriority(Long cardId, Long boardId, int dropSpotNum);
+    public KanbanBoardMessageResponse changeCardPriority(Long cardId, Long boardId, int newPriority, Long newBoardId);
 
     String forEachCard(List<KanbanBoardCard> cardList);
 }

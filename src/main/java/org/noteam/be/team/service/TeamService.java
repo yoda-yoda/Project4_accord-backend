@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface TeamService {
 
+    public List<TeamResponse> getTeamsByMemberId(Long memberId);
     TeamResponse createTeamByDto(TeamRegisterRequest dto);
     TeamResponse getTeamByIdWithResponse(Long id);
     Team getTeamById(Long id);

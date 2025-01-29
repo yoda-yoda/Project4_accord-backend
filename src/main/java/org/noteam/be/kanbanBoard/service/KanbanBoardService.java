@@ -25,4 +25,6 @@ public interface KanbanBoardService{
     KanbanBoardMessageResponse updateBoard(Long id, String title);
 
     KanbanBoardMessageResponse changeBoardPriority(Long boardId, int toId, Long teamId);
+
+    KanbanBoard getKanbanBoardById(Long currentBoardId);
 }

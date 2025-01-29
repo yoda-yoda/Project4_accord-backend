@@ -18,8 +18,11 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,6 +31,17 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
 
     private final MemberRepository memberRepository;
     private final ProfileImgService profileImgService;
+
+    public List<MemberProfileResponse> findMembersByEmail(String query) {
+        return memberRepository.findByEmailContaining(query).stream()
+                .map(member -> new MemberProfileResponse(
+                        member.getMemberId(),
+                        member.getEmail(),
+                        member.getNickname(),
+                        profileImgService.getMembersProfileImg(member)
+                ))
+                .collect(Collectors.toList());
+    }
 
     @Override
     @Transactional

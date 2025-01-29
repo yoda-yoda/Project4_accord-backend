@@ -8,6 +8,8 @@ import org.noteam.be.kanbanBoard.repository.KanbanBoardRepository;
 import org.noteam.be.kanbanBoard.service.KanbanBoardService;
 import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.service.MemberService;
+import org.noteam.be.system.exception.ExceptionMessage;
+import org.noteam.be.system.exception.kanbanboard.KanbanboardNotFoundException;
 import org.noteam.be.team.domain.Team;
 import org.noteam.be.team.service.TeamService;
 import org.noteam.be.teamMember.domain.TeamMember;
@@ -30,7 +32,10 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
     private final TeamMemberService teamMemberService;
     private final TeamService teamService;
 
-
+    @Override
+    public KanbanBoard getKanbanBoardById(Long currentBoardId) {
+        return kanbanBoardRepository.findById(currentBoardId).orElseThrow(() -> new KanbanboardNotFoundException(ExceptionMessage.Kanbanboard.KANBANBOARD_NOT_FOUND_ERROR));
+    }
 
     @Override
     public List<KanbanBoard> getAllTeamBoards(Long teamId) {
