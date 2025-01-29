@@ -16,8 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 @SpringBootTest
 @Slf4j
@@ -32,14 +35,14 @@ class SearchServiceImplTest {
 
 
     // BeforeEach 엔티티를 저장해놓기위한 변수
-    JoinBoardResponse joinBoardResponse;
+    List<JoinBoardResponse> joinBoardResponseList = new ArrayList<>();
 
 
     @BeforeEach
     void setUp1() {
 
-        JoinBoardRegisterRequest title = JoinBoardRegisterRequest.builder()
-                .title("프론트엔드 같이 배우면서 하실분 구합니다.")
+        JoinBoardRegisterRequest req1 = JoinBoardRegisterRequest.builder()
+                .title("테스트 테스트1")
                 .topic("topic")
                 .teamName("teamName")
                 .projectBio("projectBio")
@@ -50,7 +53,39 @@ class SearchServiceImplTest {
                 .peopleNumber(3)
                 .build();
 
-        joinBoardResponse = joinBoardService.createJoinBoardByDto(title);
+
+        JoinBoardRegisterRequest req2 = JoinBoardRegisterRequest.builder()
+                .title("title")
+                .topic("테스트 테스트2")
+                .teamName("teamName")
+                .projectBio("projectBio")
+                .teamBio("teamBio")
+                .content("content")
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(1))
+                .peopleNumber(3)
+                .build();
+
+
+        JoinBoardRegisterRequest req3 = JoinBoardRegisterRequest.builder()
+                .title("테스트 테스트3")
+                .topic("topic")
+                .teamName("teamName")
+                .projectBio("projectBio")
+                .teamBio("teamBio")
+                .content("content")
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(1))
+                .peopleNumber(3)
+                .build();
+
+
+        JoinBoardResponse joinBoardRes1 = joinBoardService.createJoinBoardByDto(req1);
+        JoinBoardResponse joinBoardRes2 = joinBoardService.createJoinBoardByDto(req2);
+        JoinBoardResponse joinBoardRes3 = joinBoardService.createJoinBoardByDto(req3);
+
+        joinBoardService.deleteJoinBoardById(joinBoardRes3.getId());
+
         log.info("==========BeforeEach 끝==========");
 
     }
@@ -60,25 +95,27 @@ class SearchServiceImplTest {
         joinBoardRepository.deleteAll();
     }
 
-    // 다음에 다시 테스트해보기
+
     @Test
-    @DisplayName("getSearchJoinBoardCardByPage 메서드 테스트1 - '프론' 이라는 단어 검색시 해당 데이터를 잘 찾아오는지 테스트")
+    @DisplayName("getSearchJoinBoardCardByPage 메서드 테스트1 - BeforeEach 작동시킨뒤 상황에서 '테스트' 라고 검색시 해당 데이터 잘 가져오는지 확인하는 메서드")
     void getSearchJoinBoardCardByPage_method_test1() throws Exception {
+
     		// given
-            // BeforeEach로 엔티티 1개 추가
-
+        // BoforeEach 작동 => 즉 "테스트" 검색이 가능한 엔티티를 3개 저장후 하나는 delete 처리함
+        
         SearchRequest req = new SearchRequest();
-        req.setInput("프론");
-
+        req.setInput("테스트");
+        
         // when
-        Page<JoinBoardCardResponse> res1 = searchService.getSearchJoinBoardCardByPage(0, req);
+        Page<JoinBoardCardResponse> res = searchService.getSearchJoinBoardCardByPage(0, req);
 
         // then
-        for (JoinBoardCardResponse res2 : res1.getContent()) {
-            assertThat(res2.getTitle()).isEqualTo(joinBoardResponse.getTitle());
-            log.info("res2.getTitle() = {}", res2.getTitle());
-        }
+        assertThat(res.getContent().size()).isEqualTo(2);
+        log.info("res.getContent().size() = {}", res.getContent().size());
 
     }
+
+
+
 
 }

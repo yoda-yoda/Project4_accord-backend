@@ -24,7 +24,6 @@ public class SearchServiceImpl implements SearchService {
 
 
 
-
     // 메서드 기능: 유저의 검색값이, 제목이나 주제에 포함되는 데이터를 찾는다.
     // 그리고 페이지 설정값을 매개변수로 받아 page 객체를 반환한다. 글 정렬은 최신순으로 이뤄진다.
     // 예외: 없다. 즉 DB에 해당 값이 없다면, 빈 페이지 객체를 반환한다.
@@ -38,7 +37,7 @@ public class SearchServiceImpl implements SearchService {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 
         // 검색값, 페이지 설정값, ACTIVE 상태를 매개변수로 전달하며 해당되는 글을 찾아 Page 객체를 생성
-        Page<JoinBoard> pagingEntity = searchRepository.findByTitleContainingOrTopicContainingAndStatus(req.getInput(), req.getInput(), Status.ACTIVE, pageable);
+        Page<JoinBoard> pagingEntity = searchRepository.findByTitleContainingAndStatusOrTopicContainingAndStatus(req.getInput(), Status.ACTIVE, req.getInput(), Status.ACTIVE, pageable);
 
         // 나중에 페이지 객체로 바꿀때 사용할 List 변수
         List<JoinBoardCardResponse> cardList = new ArrayList<>();
