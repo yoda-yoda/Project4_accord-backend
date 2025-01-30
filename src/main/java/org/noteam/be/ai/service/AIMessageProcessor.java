@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.noteam.be.ai.dto.ChatMessageRequest;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -29,16 +30,22 @@ public class AIMessageProcessor {
     @RabbitListener(queues = "chat.queue")
     public void processChatMessage(String message) {
         try {
-            fetchAllanAIResponseStreaming(message);
+            ChatMessageRequest chatMessage = objectMapper.readValue(message, ChatMessageRequest.class);
+            fetchAllanAIResponseStreaming(chatMessage);
         } catch (Exception e) {
             e.printStackTrace();
-            messagingTemplate.convertAndSend("/topic/messages", "Error processing message.");
+            String userId = getUserIdFromMessage(message);
+            if (userId != null) {
+                messagingTemplate.convertAndSend("/topic/messages/" + userId, "Error processing message.");
+            } else {
+                log.error("Failed to extract userId from message: {}", message);
+            }
         }
     }
 
-    private void fetchAllanAIResponseStreaming(String message) {
+    private void fetchAllanAIResponseStreaming(ChatMessageRequest chatMessage) {
         String url = "https://kdt-api-function.azurewebsites.net/api/v1/question/sse-streaming?content="
-                + message + "&client_id=" + CLIENT_ID;
+                + chatMessage.getMessage() + "&client_id=" + CLIENT_ID;
 
         WebClient.create()
                 .get()
@@ -46,7 +53,7 @@ public class AIMessageProcessor {
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .retrieve()
                 .bodyToFlux(String.class)
-                .concatMap(line -> parseAndStreamMessage(line)
+                .concatMap(line -> parseAndStreamMessage(line, chatMessage.getMemberId())
                         .onErrorResume(e -> {
                             log.warn("Parsing error on chunk: {}, skipping", line, e);
                             return Mono.empty();
@@ -55,7 +62,7 @@ public class AIMessageProcessor {
                 .subscribe();
     }
 
-    private Flux<Void> parseAndStreamMessage(String rawData) {
+    private Flux<Void> parseAndStreamMessage(String rawData, String userId) {
         try {
             String trimmed = rawData.trim();
             if (trimmed.startsWith("data:")) {
@@ -77,16 +84,15 @@ public class AIMessageProcessor {
                         .delayElements(Duration.ofMillis(20))
                         .concatMap(character -> {
                             messagingTemplate.convertAndSend(
-                                    "/topic/messages",
+                                    "/topic/messages/" + userId,
                                     "{\"type\":\"continue\",\"text\":\"" + character + "\"}"
                             );
                             return Mono.empty();
                         });
-            }
-            else if ("complete".equals(type)) {
+            } else if ("complete".equals(type)) {
                 log.info("Sending complete message = {}", content);
                 messagingTemplate.convertAndSend(
-                        "/topic/messages",
+                        "/topic/messages/" + userId,
                         "{\"type\":\"complete\",\"text\":\"" + content + "\"}"
                 );
             }
@@ -98,6 +104,14 @@ public class AIMessageProcessor {
         }
     }
 
-
+    private String getUserIdFromMessage(String message) {
+        try {
+            ChatMessageRequest chatMessage = objectMapper.readValue(message, ChatMessageRequest.class);
+            return chatMessage.getMemberId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }
