@@ -3,7 +3,7 @@ package org.noteam.be.kanbanBoard.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.noteam.be.kanbanBoard.domain.KanbanBoard;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardMessageResponse;
+import org.noteam.be.kanbanBoard.dto.*;
 import org.noteam.be.kanbanBoard.repository.KanbanBoardRepository;
 import org.noteam.be.kanbanBoard.service.KanbanBoardService;
 import org.noteam.be.member.domain.Member;
@@ -65,8 +65,8 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
 
     // 타이틀, 팀id로 해당 칸반 보드 조회
     @Override
-    public KanbanBoard getKanbanBoardbyTeamIdAndTitle(Long teamId, String title) {
-        return kanbanBoardRepository.findByTeamIdAndTitle(teamId, title);
+    public KanbanBoard getKanbanBoardbyTeamIdAndTitle(KanbanBoardLookupRequest request) {
+        return kanbanBoardRepository.findByTeamIdAndTitle(request.getTeamId(), request.getTitle());
     }
 
     @Override
@@ -77,12 +77,12 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
 
 
     @Override
-    public KanbanBoardMessageResponse createBoard(Long teamid, String title) {
+    public KanbanBoardMessageResponse createBoard(KanbanBoardCreateRequest request) {
 
         int num = 0;
 
         //teamid 조회
-        Team team = teamService.getTeamById(teamid);
+        Team team = teamService.getTeamById(request.getTeamId());
         log.info("team = {}", team);
 
         Sort sort = Sort.by(Sort.Direction.ASC, "priority");
@@ -99,7 +99,7 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
         }
 
         KanbanBoard board = KanbanBoard.builder()
-                .title(title)
+                .title(request.getTitle())
                 .team(team)
                 .priority((long) num)
                 .build();
@@ -112,7 +112,7 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
                 .build();
     }
 
-    // 내일 수정 해야함
+
     @Override
     public KanbanBoardMessageResponse deleteBoard(Long boardId) {
 
@@ -139,13 +139,13 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
     }
 
     @Override
-    public KanbanBoardMessageResponse updateBoard(Long id, String title) {
+    public KanbanBoardMessageResponse updateBoard(KanbanBoardUpdateRequest request) {
 
-        KanbanBoard kanbanBoard = kanbanBoardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("KanbanBoard not found with id: " + id));
+        KanbanBoard kanbanBoard = kanbanBoardRepository.findById(request.getBoardId())
+                .orElseThrow(() -> new IllegalArgumentException("KanbanBoard not found with id: " + request.getBoardId()));
 
         // 더티 체킹 적용: 엔티티의 값만 변경
-        kanbanBoard.setTitle(title);
+        kanbanBoard.setTitle(request.getTitle());
 
         return KanbanBoardMessageResponse.builder()
                 .message("Success update Board")
@@ -157,19 +157,19 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
 
 
     @Override
-    public KanbanBoardMessageResponse changeBoardPriority(Long boardId, int dropSpotNum, Long teamId) {
+    public KanbanBoardMessageResponse changeBoardPriority(KanbanBoardSwitchRequest request) {
 
-        KanbanBoard fromKanbanBoard = getKanbanBoardbyBoardId(boardId);
-        List<KanbanBoard> kanbanBoardList = getKanbanBoardList(teamId);
+        KanbanBoard fromKanbanBoard = getKanbanBoardbyBoardId(request.getBoardId());
+        List<KanbanBoard> kanbanBoardList = getKanbanBoardList(request.getTeamId());
 
-        for (int i = dropSpotNum; i <= kanbanBoardList.size(); i++ ) {
+        for (int i = request.getDropSpotNum(); i <= kanbanBoardList.size(); i++ ) {
 
             KanbanBoard changeBoard = kanbanBoardList.get(i - 1);
             changeBoard.setPriority((long) (i + 1));
 
         }
 
-        fromKanbanBoard.setPriority((long) dropSpotNum);
+        fromKanbanBoard.setPriority((long) request.getDropSpotNum());
 
         return  KanbanBoardMessageResponse.builder()
                 .message("Sucess Board Position Change")
@@ -177,9 +177,5 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
                 .build();
 
     }
-
-
-
-
 
 }

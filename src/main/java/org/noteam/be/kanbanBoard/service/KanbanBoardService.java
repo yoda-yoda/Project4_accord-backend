@@ -1,7 +1,7 @@
 package org.noteam.be.kanbanBoard.service;
 
 import org.noteam.be.kanbanBoard.domain.KanbanBoard;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardMessageResponse;
+import org.noteam.be.kanbanBoard.dto.*;
 
 import java.util.List;
 
@@ -14,17 +14,17 @@ public interface KanbanBoardService{
 
     List<KanbanBoard> getBoardList(Long teamId);
 
-    KanbanBoard getKanbanBoardbyTeamIdAndTitle(Long teamId, String title);
+    KanbanBoard getKanbanBoardbyTeamIdAndTitle(KanbanBoardLookupRequest request );
 
     KanbanBoard getKanbanBoardbyBoardId(Long boardId);
 
-    KanbanBoardMessageResponse createBoard(Long memberId, String title);
+    KanbanBoardMessageResponse createBoard(KanbanBoardCreateRequest request);
 
     KanbanBoardMessageResponse deleteBoard(Long boardId);
 
-    KanbanBoardMessageResponse updateBoard(Long id, String title);
+    KanbanBoardMessageResponse updateBoard(KanbanBoardUpdateRequest request);
 
-    KanbanBoardMessageResponse changeBoardPriority(Long boardId, int toId, Long teamId);
+    KanbanBoardMessageResponse changeBoardPriority(KanbanBoardSwitchRequest request);
 
     KanbanBoard getKanbanBoardById(Long currentBoardId);
 }

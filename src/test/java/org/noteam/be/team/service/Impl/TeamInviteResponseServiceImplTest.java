@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamInviteResponseServiceImplTest {
 
     @Autowired
-    TeamInviteResponseService teamInviteResponseService;
+    private TeamInviteResponseService teamInviteResponseService;
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
