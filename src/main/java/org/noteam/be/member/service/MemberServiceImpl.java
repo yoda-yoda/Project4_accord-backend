@@ -11,14 +11,18 @@ import org.noteam.be.member.dto.NicknameUpdateRequest;
 import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.member.dto.CustomUserDetails;
 import org.noteam.be.member.dto.OAuthSignUpRequest;
+import org.noteam.be.profileimg.service.ProfileImgService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.member.*;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,6 +30,18 @@ import java.util.Optional;
 public class MemberServiceImpl extends DefaultOAuth2UserService implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final ProfileImgService profileImgService;
+
+    public List<MemberProfileResponse> findMembersByEmail(String query) {
+        return memberRepository.findByEmailContaining(query).stream()
+                .map(member -> new MemberProfileResponse(
+                        member.getMemberId(),
+                        member.getEmail(),
+                        member.getNickname(),
+                        profileImgService.getMembersProfileImg(member)
+                ))
+                .collect(Collectors.toList());
+    }
 
     @Override
     @Transactional
@@ -188,7 +204,9 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
         return new MemberProfileResponse(
                 member.getMemberId(),
                 member.getEmail(),
-                member.getNickname()
+                member.getNickname(),
+                profileImgService.getMembersProfileImg(member)
+
         );
     }
 
@@ -204,4 +222,24 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
         log.info("Member ID={} 탈퇴 처리 완료.", memberId);
     }
 
+    @Override
+
+    public Member getByMemberId(Long memberId) {
+      return memberRepository.findByMemberId(memberId)
+              .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+    }
+
+
+    public MemberProfileResponse getMemberProfile(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+        return new MemberProfileResponse(
+                member.getMemberId(),
+                member.getEmail(),
+                member.getNickname(),
+                profileImgService.getMembersProfileImg(member)
+        );
+    }
+
 }
+

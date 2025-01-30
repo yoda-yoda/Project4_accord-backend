@@ -4,6 +4,6 @@ import org.noteam.be.teamMember.dto.InviteMemberResponse;
 
 public interface SendEmailService {
 
-    InviteMemberResponse sendInviteEmail(String inviter, long teamId, long memberId);
+    public InviteMemberResponse sendInviteEmail(long teamId, long memberId);
 
 }
