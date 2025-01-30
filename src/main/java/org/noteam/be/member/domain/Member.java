@@ -96,4 +96,10 @@ public class Member {
         this.updatedAt = LocalDateTime.now();
     }
 
+    // 권한 변경용 도메인 메서드
+    public void changeRole(Role newRole) {
+        this.role = newRole;
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }

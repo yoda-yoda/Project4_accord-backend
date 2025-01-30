@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String ROLE_PREFIX = "ROLE_";
+//    private static final String ROLE_PREFIX = "ROLE_";
 
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRepository tokenRepository;
@@ -113,8 +113,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .build();
 
         // Authentication principal 로 customUserDetails 설정
-        SimpleGrantedAuthority authority =
-                new SimpleGrantedAuthority(ROLE_PREFIX + tokenBody.getRole());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(tokenBody.getRole()); // 역할 이름에 ROLE_ 접두사 없음
 
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(
                 customUserDetails,

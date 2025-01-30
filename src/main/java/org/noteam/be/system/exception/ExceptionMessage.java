@@ -38,6 +38,13 @@ public class ExceptionMessage {
 
     }
 
+    public static class Jwt {
+        public static final String INVALID_TOKEN_FORMAT = "유효하지 않은 토큰 형식입니다.";
+        public static final String KID_EXTRACTION_FAILED = "토큰에서 kId 추출에 실패했습니다.";
+        public static final String PUBLIC_KEY_NOT_FOUND = "해당 kId의 공개키를 찾을 수 없습니다.";
+        public static final String TOKEN_VALIDATION_FAILED = "토큰 검증에 실패했습니다.";
+    }
+
     public static class ProfileImg {
         public static final String IMAGE_FILE_TOO_LARGE_EXCEPTION = "파일의 크기가 허용치보다 큽니다.";
         public static final String IMAGE_DIMENSION_EXCEEDED_EXCEPTION = "파일의 폭 또는 높이가 초과되었습니다.";
