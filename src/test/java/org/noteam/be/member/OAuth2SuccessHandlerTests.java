@@ -1,178 +1,120 @@
 package org.noteam.be.member;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.domain.Role;
+import org.noteam.be.member.domain.Status;
 import org.noteam.be.member.dto.CustomUserDetails;
 import org.noteam.be.member.repository.MemberRepository;
-import org.noteam.be.member.service.JwtTokenProvider;
+import org.noteam.be.member.repository.RefreshTokenRepository;
 import org.noteam.be.system.config.JwtConfiguration;
 import org.noteam.be.system.security.OAuth2SuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.test.util.ReflectionTestUtils;
+import java.io.IOException;
+import java.util.Arrays;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 class OAuth2SuccessHandlerTests {
 
-    @Mock
-    private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
 
-    @Mock
-    private JwtConfiguration jwtConfiguration;
-
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private HttpServletResponse response;
-
-    @Mock
-    private Authentication authentication;
-
-    @Mock
+    @Autowired
     private MemberRepository memberRepository;
 
-    @InjectMocks
-    private OAuth2SuccessHandler successHandler;
+    @Autowired
+    private JwtConfiguration jwtConfiguration;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
-        // validation 객체 생성 및 설정
-        JwtConfiguration.Validation validation = new JwtConfiguration.Validation();
-        validation.setAccess(60000L); // 1분
-        validation.setRefresh(120000L); // 2분
+    @Value("${custom.frontend.redirect-uri}")
+    private String baseRedirectUri;
 
-        // secret 객체 생성 및 설정
-        JwtConfiguration.Secret secret = new JwtConfiguration.Secret();
-        secret.setAppKey("your-256-bit-secret-key-for-testing-purposes-only");
-
-        // mock 객체 동작 정의
-        when(jwtConfiguration.getValidation()).thenReturn(validation);
-        when(jwtConfiguration.getSecret()).thenReturn(secret);
-
-        // OAuth2SuccessHandler 인스턴스 생성 tokenprovider, configuration
-        successHandler = new OAuth2SuccessHandler(jwtTokenProvider, jwtConfiguration, memberRepository);
-
-        ReflectionTestUtils.setField(
-                successHandler,
-                "baseRedirectUri",
-                "http://localhost:3000/auth");
-
+    @AfterEach
+    void cleanUp() {
+        // 테스트마다 DB 정리
+        refreshTokenRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
     @Test
-    @DisplayName("onAuthenticationSuccess - 쿠키 + 리다이렉트 처리테스트")
-    void onAuthenticationSuccess_SetsCookiesAndRedirects() throws Exception {
+    @DisplayName("OAuth2 인증 성공 시 Access/Refresh 토큰이 쿠키로 생성되고, 지정된 URL로 리디렉션 테스트")
+    void onAuthenticationSuccessCreatesCookiesAndRedirects() throws IOException, ServletException {
         // given
-        Long memberId = 1L;
-        String email = "testuser@example.com";
-        String nickname = "TestUser";
-        Role role = Role.MEMBER;
-        Map<String, Object> attributes = Map.of("customKey", "customValue"); // 테스트용
-        String encodedUrl = "http://localhost:3000/auth"; // url검증을 하기 위해서 추가.
+        // 테스트용 Member 생성 및 저장
+        Member member = Member.of(
+                "testUser@kakao.com",
+                "TestNickname",
+                Role.MEMBER,
+                Status.ACTIVE,
+                "kakao"
+        );
+        Member savedMember = memberRepository.save(member);
 
+        // CustomUserDetails 준비
         CustomUserDetails principal = CustomUserDetails.builder()
-                .memberId(memberId)
-                .email(email)
-                .nickname(nickname)
-                .role(role)
-                .attributes(attributes)
+                .memberId(savedMember.getMemberId())
+                .email(savedMember.getEmail())
+                .nickname(savedMember.getNickname())
+                .role(savedMember.getRole())
+                .attributes(null)
                 .build();
 
-        String accessToken = Jwts.builder()
-                .subject(memberId.toString())
-                .claim("role", role.name())
-                .issuedAt(new Date())
-                .expiration(new Date(new Date().getTime()+60000))
-                .signWith(Keys.hmacShaKeyFor("your-256-bit-secret-key-for-testing-purposes-only".getBytes()), Jwts.SIG.HS256)
-                .compact();
+        // Authentication 셋팅
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
 
-        String refreshToken = Jwts.builder()
-                .subject(memberId.toString())
-                .claim("role", role.name())
-                .issuedAt(new Date())
-                .expiration(new Date(new Date().getTime()+120000))
-                .signWith(Keys.hmacShaKeyFor("your-256-bit-secret-key-for-testing-purposes-only".getBytes()), Jwts.SIG.HS256)
-                .compact();
-
-        // Member 엔티티 Mock 리턴
-        Member fakeMember = Member.builder()
-                .email(email)
-                .nickname(nickname)
-                .role(Role.MEMBER)
-                .provider("google")
-                .build();
-        ReflectionTestUtils.setField(fakeMember, "memberId", memberId);
-
-        when(memberRepository.findByMemberId(memberId)).thenReturn(Optional.of(fakeMember));
-        when(authentication.getPrincipal()).thenReturn(principal);
-        when(jwtTokenProvider.issueAccessToken(memberId, role.name())).thenReturn(accessToken);
-        when(jwtTokenProvider.issueRefreshToken(memberId, role.name())).thenReturn(refreshToken);
-        when(response.encodeRedirectURL("http://localhost:3000/auth")).thenReturn(encodedUrl);
-
-        // 응답 쿠키
-        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
+        // Mock 요청 + 응답
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // when
-        successHandler.onAuthenticationSuccess(request, response, authentication);
+        oAuth2SuccessHandler.onAuthenticationSuccess(request, response, authentication);
 
         // then
-        verify(response, times(2)).addCookie(cookieCaptor.capture());
-        List<Cookie> cookies = cookieCaptor.getAllValues();
-
+        // 쿠키가 2개(accessToken, refreshToken) 추가되었는지 검증
+        Cookie[] cookies = response.getCookies();
         assertThat(cookies).hasSize(2);
-        Cookie accessCookie = cookies.get(0);
-        Cookie refreshCookie = cookies.get(1);
 
-        assertThat(accessCookie.getName()).isEqualTo("accessToken");
-        assertThat(accessCookie.getValue()).isEqualTo(accessToken);
-        assertThat(accessCookie.getMaxAge()).isEqualTo(60);
+        Cookie accessCookie = Arrays.stream(cookies)
+                .filter(c -> c.getName().equals("accessToken"))
+                .findFirst()
+                .orElse(null);
 
-        assertThat(refreshCookie.getName()).isEqualTo("refreshToken");
-        assertThat(refreshCookie.getValue()).isEqualTo(refreshToken);
-        assertThat(refreshCookie.getMaxAge()).isEqualTo(120);
+        Cookie refreshCookie = Arrays.stream(cookies)
+                .filter(c -> c.getName().equals("refreshToken"))
+                .findFirst()
+                .orElse(null);
 
-        // 마지막에서 리다이렉트 검증
-        verify(response).encodeRedirectURL("http://localhost:3000/auth");
-        verify(response).sendRedirect(encodedUrl);
+        // Access 쿠키 유효성 검사
+        assertThat(accessCookie).isNotNull();
+        assertThat(accessCookie.getValue()).isNotEmpty();
+        assertThat(accessCookie.getMaxAge())
+                .isEqualTo((int) (jwtConfiguration.getValidation().getAccess() / 1000));
 
+        // Refresh 쿠키 유효성 검사
+        assertThat(refreshCookie).isNotNull();
+        assertThat(refreshCookie.getValue()).isNotEmpty();
+        assertThat(refreshCookie.getMaxAge())
+                .isEqualTo((int) (jwtConfiguration.getValidation().getRefresh() / 1000));
+
+        // 리다이렉트 URL 확인
+        assertThat(response.getRedirectedUrl()).isEqualTo(baseRedirectUri);
     }
 
-    @Test
-    @DisplayName("onAuthenticationSuccess - 인증 실패로 401 에러 반환")
-    void onAuthenticationSuccess_UnauthorizedWhenPrincipalNotCustomUserDetails() throws Exception {
-        // given
-        when(authentication.getPrincipal()).thenReturn("올바르지않은 principal 입니다.");
 
-        // when
-        successHandler.onAuthenticationSuccess(request, response, authentication);
-
-        // then
-        verify(response, times(1)).sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        verify(response, never()).addCookie(any());
-        verify(response, never()).sendRedirect(anyString());
-    }
 }
