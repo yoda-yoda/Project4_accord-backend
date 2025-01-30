@@ -4,6 +4,8 @@ import io.jsonwebtoken.lang.Strings;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.noteam.be.grpc.client.KeyRotationNotifyClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +26,9 @@ public class RsaKeyManager {
     // 현재 키
     @Getter
     private volatile KeyHolder currentKey;
+
+    @Autowired
+    private KeyRotationNotifyClient keyRotationNotifyClient;
 
     @PostConstruct
     public void init() {
@@ -65,11 +70,16 @@ public class RsaKeyManager {
     @Scheduled(fixedRate = 7 * 24 * 60 * 60 * 1000) // 7일마다 실행
     public void rotateKeys() {
         synchronized (this) {
+            //롤링하고,
+            String oldKid = (previousKey != null) ? previousKey.getKid() : "none";
             this.previousKey = this.currentKey;
             this.currentKey = generateNewKey();
-            log.info("RSA 키 롤링 완료 - 이전 KID: {}, 새 KID: {}",
-                    previousKey != null ? previousKey.getKid() : "없음",
-                    currentKey.getKid());
+            String newKid = this.currentKey.getKid();
+
+            log.info("키 롤링 완료 - 이전 KID:{}, 새 KID:{}", oldKid, newKid);
+
+            // gRPC로 서버B에 알림
+            keyRotationNotifyClient.notifyKeyRolled(oldKid, newKid);
         }
     }
 
