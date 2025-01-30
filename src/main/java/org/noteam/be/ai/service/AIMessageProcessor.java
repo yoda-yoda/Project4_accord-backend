@@ -24,7 +24,7 @@ public class AIMessageProcessor {
     private final SimpMessagingTemplate messagingTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final String CLIENT_ID = "13ca689b-2ae5-4b33-8c2c-1ec581fdfde3"; // 앨런 AI Client ID
+    private static final String CLIENT_ID = "13ca689b-2ae5-4b33-8c2c-1ec581fdfde3";
 
     @RabbitListener(queues = "chat.queue")
     public void processChatMessage(String message) {
@@ -46,7 +46,6 @@ public class AIMessageProcessor {
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .retrieve()
                 .bodyToFlux(String.class)
-                .doOnNext(raw -> System.out.println("SSE raw line: " + raw))
                 .concatMap(line -> parseAndStreamMessage(line)
                         .onErrorResume(e -> {
                             log.warn("Parsing error on chunk: {}, skipping", line, e);
