@@ -5,7 +5,15 @@ import lombok.*;
 import org.noteam.be.joinBoard.domain.JoinBoard;
 import org.noteam.be.profileimg.entity.ProfileImg;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -45,9 +53,14 @@ public class Member {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImg profileImg;
 
+
+    @OneToMany
+    private List<KanbanBoardCard> kanbanBoardCards = new ArrayList<>();
+
     // JoinBoard(팀 구인게시판)과의 @OneToOne 관계 추가
     @OneToOne(mappedBy = "member", orphanRemoval = true)
     private JoinBoard joinBoard;
+
 
     public static Member of(String email,
                             String nickname,
@@ -93,6 +106,12 @@ public class Member {
     // 상태 변경용 도메인 메서드
     public void changeStatus(Status newStatus) {
         this.status = newStatus;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // 권한 변경용 도메인 메서드
+    public void changeRole(Role newRole) {
+        this.role = newRole;
         this.updatedAt = LocalDateTime.now();
     }
 

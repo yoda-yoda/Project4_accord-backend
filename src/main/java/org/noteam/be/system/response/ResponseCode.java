@@ -29,11 +29,14 @@ public enum ResponseCode {
     // serach
     SEARCH_JOIN_BOARD_SUCCESS(Status.OK, Message.READ_SEARCH_JOIN_BOARD),
 
+
+    // image
+    POST_CANVAS_IMAGE_SUCCESS(Status.OK, Message.SAVE_CANVAS_IMAGE),
+    DELETE_CANVAS_IMAGE_SUCCESS(Status.OK, Message.DELETE_CANVAS_IMAGE),
+    POST_NOTE_IMAGE_SUCCESS(Status.OK, Message.SAVE_NOTE_IMAGE),
+    DELETE_NOTE_IMAGE_SUCCESS(Status.OK, Message.DELETE_NOTE_IMAGE),
+
     ;
-
-
-
-
 
 
     private int httpStatus;

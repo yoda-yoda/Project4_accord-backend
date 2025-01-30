@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.profileimg.entity.ProfileImg;
+import org.noteam.be.profileimg.repository.ProfileImgRepository;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.member.MemberNotFoundException;
 import org.noteam.be.system.util.SecurityUtil;
@@ -25,6 +26,11 @@ public class ProfileImgServiceImpl implements ProfileImgService {
     private final StorageService storageService;
     private final ProfileImgConvert profileImgConvert;
     private final MemberRepository memberRepository;
+    private final ProfileImgRepository profileImgRepository;
+
+    public String getMembersProfileImg(Member member) {
+        return profileImgRepository.findProfileImgByMember(member);
+    }
 
     @Override
     @Transactional

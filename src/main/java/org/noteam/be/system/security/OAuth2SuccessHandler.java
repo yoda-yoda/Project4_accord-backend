@@ -6,9 +6,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.dto.CustomUserDetails;
+import org.noteam.be.member.dto.KeyPair;
+import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.member.service.JwtTokenProvider;
 import org.noteam.be.system.config.JwtConfiguration;
+import org.noteam.be.system.exception.ExceptionMessage;
+import org.noteam.be.system.exception.member.MemberNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -21,9 +27,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtConfiguration jwtConfiguration;
+    private final MemberRepository memberRepository;
 
-    // application.yml 에 프론트 리디렉션 경로 설정 현재는 비활성화
-    // @Value("${custom.frontend.redirect-uri}")
+    @Value("${custom.frontend.redirect-uri}")
     private String baseRedirectUri;
 
     @Override
@@ -43,9 +49,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Long memberId = principal.getMemberId(); // 멤버ID
         String role = principal.getRole().name(); // member 로 나옴
 
-        // Access / Refresh 토큰 발급
-        String accessToken = jwtTokenProvider.issueAccessToken(memberId, role);
-        String refreshToken = jwtTokenProvider.issueRefreshToken(memberId, role);
+        // 이미 존재하는 회원 조회
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND_EXCEPTION));
+
+        // Refresh 토큰을 DB에 저장 + Access/Refresh 토큰 발급
+        KeyPair keyPair = jwtTokenProvider.generateKeyPair(member);
+        String accessToken = keyPair.getAccessToken();
+        String refreshToken = keyPair.getRefreshToken();
 
         //쿠키 만료시간설정 -> application.yml에 설정된것을 가져와서 변환
         int accessCookieMaxAge = (int) (jwtConfiguration.getValidation().getAccess() / 1000);
@@ -66,7 +77,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(maxAgeSeconds);
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(false);
         // cookie.setSecure(true); // HTTPS 에서만 전송
         response.addCookie(cookie);
     }

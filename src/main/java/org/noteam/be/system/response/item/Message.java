@@ -25,5 +25,9 @@ public class Message {
     public static final String READ_SEARCH_JOIN_BOARD = "SUCCESS - 조인보드 검색 성공";
 
     
+    public static final String SAVE_CANVAS_IMAGE = "SUCCESS - 캔버스 이미지 저장 성공";
+    public static final String DELETE_CANVAS_IMAGE = "SUCCESS - 캔버스 이미지 삭제 성공";
+    public static final String SAVE_NOTE_IMAGE = "SUCCESS - 노트 이미지 저장 성공";
+    public static final String DELETE_NOTE_IMAGE = "SUCCESS - 노트 이미지 삭제 성공";
 
 }
