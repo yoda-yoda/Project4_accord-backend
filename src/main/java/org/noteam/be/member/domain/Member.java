@@ -58,7 +58,7 @@ public class Member {
     private List<KanbanBoardCard> kanbanBoardCards = new ArrayList<>();
 
     // JoinBoard(팀 구인게시판)과의 @OneToOne 관계 추가
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", orphanRemoval = true)
     private JoinBoard joinBoard;
 
 

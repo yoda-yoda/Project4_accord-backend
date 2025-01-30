@@ -1,16 +1,15 @@
 package org.noteam.be.joinBoard.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.noteam.be.joinBoard.domain.JoinBoard;
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class JoinBoardRegisterRequest {
 
     @NotNull
@@ -56,16 +55,5 @@ public class JoinBoardRegisterRequest {
     }
 
 
-    @Builder
-    public JoinBoardRegisterRequest(String title, String topic, String teamName, String projectBio, String teamBio, String content, LocalDate startDate, LocalDate endDate, int peopleNumber) {
-        this.title = title;
-        this.topic = topic;
-        this.teamName = teamName;
-        this.projectBio = projectBio;
-        this.teamBio = teamBio;
-        this.content = content;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.peopleNumber = peopleNumber;
-    }
+
 }
