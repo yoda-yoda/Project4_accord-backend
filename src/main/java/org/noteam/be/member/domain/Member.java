@@ -57,8 +57,8 @@ public class Member {
     @OneToMany
     private List<KanbanBoardCard> kanbanBoardCards = new ArrayList<>();
 
-    // JoinBoard(팀 구인게시판)과의 @OneToOne 관계 추가
-    @OneToOne(mappedBy = "member", orphanRemoval = true)
+    // JoinBoard(팀 구인게시판)과의 @OneToOne 관계 추가 + cascade 설정 추가
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL , orphanRemoval = true)
     private JoinBoard joinBoard;
 
 
@@ -95,6 +95,16 @@ public class Member {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.profileImg = profileImg;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+        if (this.updatedAt == null) {
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 
     // 닉네임 변경용 도메인 메서드
