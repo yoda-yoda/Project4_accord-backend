@@ -1,11 +1,10 @@
 package org.noteam.be.kanbanBoard.service.impl;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.noteam.be.kanbanBoard.domain.KanbanBoard;
 import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardMessageResponse;
+import org.noteam.be.kanbanBoard.dto.*;
 import org.noteam.be.kanbanBoard.repository.KanbanBoardCardRepository;
 import org.noteam.be.kanbanBoard.service.KanbanBoardCardService;
 import org.noteam.be.kanbanBoard.service.KanbanBoardService;
@@ -30,7 +29,6 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
     private final KanbanBoardCardRepository kanbanBoardCardRepository;
     private final MemberService memberService;
     private final KanbanBoardService kanbanBoardService;
-    private final EntityManager entityManager;
 
     @Override
     public KanbanBoardCard create(String content, Member member, KanbanBoard board, Long num) {
@@ -63,17 +61,17 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
 
     //Card 추가 로직
     @Override
-    public KanbanBoardMessageResponse createCard(Long memberId, Long teamId ,String title, String content) {
+    public KanbanBoardMessageResponse createCard(KanbanBoardCardCreateRequest request) {
 
         int num = 0;
 
         // id로 멤버 조회 이 부분 서큐리티 컨피그로 수정...
-        Member member = memberService.getByMemberId(memberId);
+        Member member = memberService.getByMemberId(request.getMemberId());
         log.info("member = {}", member);
 
-
         //해당 보드 조회
-        KanbanBoard byTeamIdAndBoardName = kanbanBoardService.getKanbanBoardbyTeamIdAndTitle(teamId, title);
+        KanbanBoard byTeamIdAndBoardName = kanbanBoardService.getKanbanBoardbyTeamIdAndTitle(KanbanBoardLookupRequest.builder()
+                .teamId(request.getTeamId()).title(request.getTitle()).build());
         log.info("byTeamIdAndBoardName = {}", byTeamIdAndBoardName);
 
         if (byTeamIdAndBoardName.getCards() == null) {
@@ -84,7 +82,7 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
             num = byTeamIdAndBoardName.getCards().size()+1;
         }
 
-        create(content,member,byTeamIdAndBoardName, (long) num);
+        create(request.getContent(),member,byTeamIdAndBoardName, (long) num);
 
         //보드 카드 추가
         return KanbanBoardMessageResponse.builder()
@@ -125,13 +123,13 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
     }
 
     @Override
-    public KanbanBoardMessageResponse updateCard(Long id, String content) {
+    public KanbanBoardMessageResponse updateCard(KanbanBoardCardUpdateRequest request) {
 
-        KanbanBoardCard kanbanBoardCard = kanbanBoardCardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("KanbanBoard not found with id: " + id));
+        KanbanBoardCard kanbanBoardCard = kanbanBoardCardRepository.findById(request.getCardId())
+                .orElseThrow(() -> new IllegalArgumentException("KanbanBoard not found with id: " + request.getCardId()));
 
         // 더티 체킹 적용: 엔티티의 값만 변경
-        kanbanBoardCard.setContent(content);
+        kanbanBoardCard.setContent(request.getContent());
 
         return  KanbanBoardMessageResponse.builder()
                 .message("Sucess Card Update")
@@ -142,24 +140,24 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
 
     @Transactional
     @Override
-    public KanbanBoardMessageResponse changeCardPriority(Long cardId, Long currentBoardId, int newPriority, Long newBoardId) {
-        KanbanBoardCard targetCard = getKanbanBoardCard(cardId);
+    public KanbanBoardMessageResponse changeCardPriority(KanbanBoardCardSwitchRequest request) {
+        KanbanBoardCard targetCard = getKanbanBoardCard(request.getCardId());
 
-        KanbanBoard currentBoard = kanbanBoardService.getKanbanBoardById(currentBoardId);
-        KanbanBoard newBoard = kanbanBoardService.getKanbanBoardById(newBoardId);
+        KanbanBoard currentBoard = kanbanBoardService.getKanbanBoardById(request.getCurrentBoardId() );
+        KanbanBoard newBoard = kanbanBoardService.getKanbanBoardById(request.getNewBoardId());
 
-        List<KanbanBoardCard> newBoardCardList = getKanbanBoardCardbyBoardId(newBoardId);
+        List<KanbanBoardCard> newBoardCardList = getKanbanBoardCardbyBoardId(request.getNewBoardId());
 
-        if (newPriority < 1 || newPriority > newBoardCardList.size() + 1) {
+        if (request.getNewPriority() < 1 || request.getNewPriority() > newBoardCardList.size() + 1) {
             throw new OutOfRangeKanbanBoardException(ExceptionMessage.Kanbanboard.KANBANBOARD_OUT_OF_RANGE_ERROR);
         }
 
-        boolean isSameBoard = currentBoardId.equals(newBoardId);
+        boolean isSameBoard = request.getCurrentBoardId().equals(request.getNewBoardId());
 
         if (isSameBoard) {
-            return changePriorityWithinSameBoard(targetCard, currentBoard, newPriority);
+            return changePriorityWithinSameBoard(targetCard, currentBoard, Math.toIntExact(request.getNewBoardId()));
         }
-        return moveCardToAnotherBoard(targetCard, currentBoard, newBoard, newPriority);
+        return moveCardToAnotherBoard(targetCard, currentBoard, newBoard, Math.toIntExact(request.getNewBoardId()));
     }
 
     @Transactional

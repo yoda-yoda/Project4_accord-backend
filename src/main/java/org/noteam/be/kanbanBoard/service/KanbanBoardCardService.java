@@ -2,6 +2,9 @@ package org.noteam.be.kanbanBoard.service;
 
 import org.noteam.be.kanbanBoard.domain.KanbanBoard;
 import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
+import org.noteam.be.kanbanBoard.dto.KanbanBoardCardCreateRequest;
+import org.noteam.be.kanbanBoard.dto.KanbanBoardCardSwitchRequest;
+import org.noteam.be.kanbanBoard.dto.KanbanBoardCardUpdateRequest;
 import org.noteam.be.kanbanBoard.dto.KanbanBoardMessageResponse;
 import org.noteam.be.member.domain.Member;
 
@@ -17,13 +20,13 @@ public interface KanbanBoardCardService {
 
     List<KanbanBoardCard> getKanbanBoardCardbyBoardId(Long boardId);
 
-    KanbanBoardMessageResponse createCard(Long memberId, Long teamId , String title, String content);
+    KanbanBoardMessageResponse createCard(KanbanBoardCardCreateRequest request);
 
     KanbanBoardMessageResponse deleteBoardCard(Long boardId);
 
-    KanbanBoardMessageResponse updateCard(Long id, String content);
+    KanbanBoardMessageResponse updateCard(KanbanBoardCardUpdateRequest request);
 
-    public KanbanBoardMessageResponse changeCardPriority(Long cardId, Long boardId, int newPriority, Long newBoardId);
+    public KanbanBoardMessageResponse changeCardPriority(KanbanBoardCardSwitchRequest request);
 
     String forEachCard(List<KanbanBoardCard> cardList);
 }

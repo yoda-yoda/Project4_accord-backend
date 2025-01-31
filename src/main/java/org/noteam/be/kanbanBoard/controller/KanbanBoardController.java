@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.noteam.be.kanbanBoard.domain.KanbanBoard;
 import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardMessageResponse;
+import org.noteam.be.kanbanBoard.dto.*;
 import org.noteam.be.kanbanBoard.service.KanbanBoardCardService;
 import org.noteam.be.kanbanBoard.service.KanbanBoardService;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class KanbanBoardController {
 
@@ -24,44 +24,42 @@ public class KanbanBoardController {
     private final KanbanBoardCardService kanbanBoardCardService;
 
 
-    // 나중에 로그인 정보로 member id 가져오는 걸로 교체
-    // 칸반보드 조회 하는 로직
-    @GetMapping("/kanbanboard/{memberId}")
-    public String getKanbanBoardList(@PathVariable Long memberId, Model model) {
-
-        List<KanbanBoard> boards = kanbanBoardService.getKanbanBoardList(memberId);
-
-        model.addAttribute("boards",boards);
-
-        return "kanbanboard";
-
-    }
+//    // 나중에 로그인 정보로 member id 가져오는 걸로 교체
+//    // 칸반보드 조회 하는 로직
+//    @GetMapping("/kanbanboard/{memberId}")
+//    public String getKanbanBoardList(@PathVariable Long memberId, Model model) {
+//
+//        List<KanbanBoard> boards = kanbanBoardService.getKanbanBoardList(memberId);
+//
+//        model.addAttribute("boards",boards);
+//
+//        return "kanbanboard";
+//
+//    }
 
     //칸반 보드 추가
     @PostMapping("/kanbanboard/create")
-    public ResponseEntity<KanbanBoardMessageResponse> createKanbanBoard(@RequestParam Long teamId, @RequestParam String title) {
+    public ResponseEntity<KanbanBoardMessageResponse> createKanbanBoard(@RequestBody KanbanBoardCreateRequest request) {
 
-        KanbanBoardMessageResponse result = kanbanBoardService.createBoard(teamId, title);
+        KanbanBoardMessageResponse result = kanbanBoardService.createBoard(request);
 
         return ResponseEntity.ok(result);
     }
 
     //칸반 보드 카드 추가
-    @ResponseBody
     @PostMapping("/kanbanboardcard/create")
-    public ResponseEntity<KanbanBoardMessageResponse> createKanbanBoardCard(@RequestParam Long memberId,@RequestParam Long teamId,@RequestParam String title
-            ,@RequestParam String content) {
+    public ResponseEntity<KanbanBoardMessageResponse> createKanbanBoardCard(@RequestBody KanbanBoardCardCreateRequest request) {
 
-        KanbanBoardMessageResponse result = kanbanBoardCardService.createCard(memberId,teamId,title,content);
+        KanbanBoardMessageResponse result = kanbanBoardCardService.createCard(request);
 
         return ResponseEntity.ok(result);
 
     }
 
+    //테스트 코드 작성해야합니다 ..
     // 칸반보드 삭제
-    @ResponseBody
     @PostMapping("/kanbanboard/delete")
-    public ResponseEntity<KanbanBoardMessageResponse> deleteKanbanBoard(@RequestParam Long boardId) {
+    public ResponseEntity<KanbanBoardMessageResponse> deleteKanbanBoard(@RequestBody Long boardId) {
 
         KanbanBoardMessageResponse result = kanbanBoardService.deleteBoard(boardId);
 
@@ -70,9 +68,8 @@ public class KanbanBoardController {
 
 
     //칸반보드 카드 삭제
-    @ResponseBody
     @PostMapping("/kanbanboardcard/delete")
-    public ResponseEntity<KanbanBoardMessageResponse> deleteKanbanBoardCard(@RequestParam Long cardId) {
+    public ResponseEntity<KanbanBoardMessageResponse> deleteKanbanBoardCard(@RequestBody Long cardId) {
 
         KanbanBoardMessageResponse result = kanbanBoardCardService.deleteBoardCard(cardId);
 
@@ -80,54 +77,43 @@ public class KanbanBoardController {
     }
 
     //칸반보드 제목 변경
-    @ResponseBody
     @PostMapping("/kanbanboard/update")
-    public ResponseEntity<KanbanBoardMessageResponse> updateKanbanBoardTitle(@RequestParam Long boardId,@RequestParam String title) {
+    public ResponseEntity<KanbanBoardMessageResponse> updateKanbanBoardTitle(@RequestBody KanbanBoardUpdateRequest request) {
 
-        KanbanBoardMessageResponse result = kanbanBoardService.updateBoard(boardId, title);
+        KanbanBoardMessageResponse result = kanbanBoardService.updateBoard(request);
 
         return ResponseEntity.ok(result);
 
     }
 
     //칸반보드 카드 업데이트
-    @ResponseBody
     @PostMapping("/kanbanboardcard/update")
-    public ResponseEntity<KanbanBoardMessageResponse> updateKanbanBoardCard(@RequestParam Long cardId,@RequestParam String content) {
+    public ResponseEntity<KanbanBoardMessageResponse> updateKanbanBoardCard(@RequestBody KanbanBoardCardUpdateRequest request) {
 
-        KanbanBoardMessageResponse result = kanbanBoardCardService.updateCard(cardId, content);
+        KanbanBoardMessageResponse result = kanbanBoardCardService.updateCard(request);
 
         return ResponseEntity.ok(result);
 
     }
 
-    // 보드 순서 변경 문제!
-    @ResponseBody
+    // 보드 순서 변경
     @PostMapping("/kanbanboard/switch")
-    public ResponseEntity<KanbanBoardMessageResponse> changeBoardPriority (@RequestParam Long boardId, @RequestParam  int dropSpotNum, @RequestParam Long teamId) {
+    public ResponseEntity<KanbanBoardMessageResponse> changeBoardPriority (@RequestBody KanbanBoardSwitchRequest request) {
 
-        KanbanBoardMessageResponse result = kanbanBoardService.changeBoardPriority(boardId, dropSpotNum, teamId);
+        KanbanBoardMessageResponse result = kanbanBoardService.changeBoardPriority(request);
 
         return ResponseEntity.ok(result);
     }
 
 
-
-    // 카드 순서 변경 문제!
-    @ResponseBody
+    // 카드 순서 변경
     @PostMapping("/kanbanboardcard/switch")
-    public ResponseEntity<KanbanBoardMessageResponse> changeBoardCardPriority (@RequestParam Long cardId,@RequestParam Long boardId ,@RequestParam int dropSpotNum, @RequestParam Long newBoardId) {
+    public ResponseEntity<KanbanBoardMessageResponse> changeBoardCardPriority (@RequestBody KanbanBoardCardSwitchRequest request) {
 
-        KanbanBoardMessageResponse result = kanbanBoardCardService.changeCardPriority(cardId, boardId, dropSpotNum, newBoardId);
-        List<KanbanBoardCard> card = kanbanBoardCardService.getKanbanBoardCardbyBoardId(boardId);
-        kanbanBoardCardService.forEachCard(card);
+        KanbanBoardMessageResponse result = kanbanBoardCardService.changeCardPriority(request);
 
         return ResponseEntity.ok(result);
     }
-
-
-
-
 
 }
 
