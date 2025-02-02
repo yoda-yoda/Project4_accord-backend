@@ -20,8 +20,8 @@ public class JoinBoard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @Column(nullable = false)
@@ -103,7 +103,7 @@ public class JoinBoard {
 
 
     @Builder
-    public JoinBoard(String title, String topic, String teamName, String projectBio, String teamBio, String content, LocalDate startDate, LocalDate endDate, int peopleNumber) {
+    public JoinBoard(String title, String topic, String teamName, String projectBio, String teamBio, String content, LocalDate startDate, LocalDate endDate, int peopleNumber , Member member) {
         this.title = title;
         this.topic = topic;
         this.teamName = teamName;
@@ -113,6 +113,6 @@ public class JoinBoard {
         this.startDate = startDate;
         this.endDate = endDate;
         this.peopleNumber = peopleNumber;
-
+        this.member = member;
     }
 }

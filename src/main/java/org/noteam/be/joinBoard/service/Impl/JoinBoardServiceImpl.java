@@ -9,14 +9,20 @@ import org.noteam.be.joinBoard.dto.JoinBoardResponse;
 import org.noteam.be.joinBoard.dto.JoinBoardUpdateRequest;
 import org.noteam.be.joinBoard.repository.JoinBoardRepository;
 import org.noteam.be.joinBoard.service.JoinBoardService;
+import org.noteam.be.member.domain.Member;
+import org.noteam.be.member.repository.MemberRepository;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.joinBoard.JoinBoardNotFoundException;
+import org.noteam.be.system.exception.member.ExistingAuthenticationIsNull;
+import org.noteam.be.system.exception.member.MemberNotFound;
+import org.noteam.be.system.util.SecurityUtil;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,14 +34,16 @@ public class JoinBoardServiceImpl implements JoinBoardService {
 
 
     private final JoinBoardRepository joinBoardRepository;
+    private final MemberRepository memberRepository;
 
 
-    // 메서드 기능: dto를 매개변수로 받아서 저장한다.
-    // 반환: 저장한 엔티티를 JoinBoardResponse 로 변환하고 반환한다.
+    // 메서드 기능: 작성 dto와 멤버를 매개변수로 받아서, JoinBoard 엔티티 내부에 할당한뒤 저장한다.
+    // 예외: X
+    // 반환: 저장한 JoinBoard 엔티티를 JoinBoardResponse 로 변환하고 반환한다.
     @Transactional
-    public JoinBoardResponse createJoinBoardByDto(JoinBoardRegisterRequest dto) {
+    public JoinBoardResponse createJoinBoardByDto(JoinBoardRegisterRequest dto, Member member) {
 
-        JoinBoard entity = JoinBoardRegisterRequest.toEntity(dto);
+        JoinBoard entity = JoinBoardRegisterRequest.toEntity(dto, member);
 
         JoinBoard savedEntity = joinBoardRepository.save(entity);
 
@@ -111,7 +119,7 @@ public class JoinBoardServiceImpl implements JoinBoardService {
     }
 
 
-    // 메서드 기능: 구인 게시판을 처음 들어갔을때 글 목록을 전부 보여주기위한 백엔드 메서드다.
+    // 메서드 기능: 구인 게시판을 처음 들어갔을때 글 목록을 전부 카드 형식으로(약간 더 간략한 형식으로) 보여주기위한 메서드다.
     // 즉, DB에서 글을 전부 찾아 카드용 응답으로 변환후 리스트에 담아 반환한다.
     // 예외: 없다. 즉 찾지못해도 예외없이 빈 리스트를 반환한다.
     // 반환: 카드 응답 dto들을 List에 담아 반환한다.
@@ -153,7 +161,6 @@ public class JoinBoardServiceImpl implements JoinBoardService {
 
         JoinBoard entity = getJoinBoardEntityByIdWithNoDeleted(id);
         entity.updateFromDto(dto);
-
 
         // 이렇게 해야, 이 메서드가 종료되기전에 @PreUpdate 메서드가(엔티티 내부에 있는 변경될때 시간 최신화하는 메서드가) 실행되어서 시간이 최신화된다.
         joinBoardRepository.saveAndFlush(entity);
@@ -213,6 +220,18 @@ public class JoinBoardServiceImpl implements JoinBoardService {
         // 최종 Page 객체 반환
         return pagingCard;
     }
+
+
+    // 메서드 기능: 멤버 id를 통해 멤버 엔티티를 찾는다. 이 서비스 파일에서 사용하고자 만들었다.
+    // 예외: 해당 멤버가 없다면 예외를 던진다.
+    // 반환: 해당하는 멤버 Member 엔티티를 반환한다.
+    public Member findMemberById(Long currentMemberId) {
+
+        return memberRepository.findById(currentMemberId)
+                .orElseThrow( () -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND) );
+    }
+
+    
 
 
 

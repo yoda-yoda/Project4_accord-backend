@@ -6,6 +6,8 @@ import org.noteam.be.joinBoard.domain.JoinBoard;
 import org.noteam.be.profileimg.entity.ProfileImg;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -45,9 +47,10 @@ public class Member {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImg profileImg;
 
-    // JoinBoard(팀 구인게시판)과의 @OneToOne 관계 추가
-    @OneToOne(mappedBy = "member", orphanRemoval = true)
-    private JoinBoard joinBoard;
+    // JoinBoard(팀 구인게시판)과의 @OneToMany 관계 추가
+    @Setter
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JoinBoard> joinBoardList = new ArrayList<>();
 
     public static Member of(String email,
                             String nickname,

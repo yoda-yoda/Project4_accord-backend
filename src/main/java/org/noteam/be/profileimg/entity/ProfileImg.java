@@ -15,6 +15,7 @@ public class ProfileImg {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter // 조인보드 테스트 땜에잠시추가 나중에 지우자
     @OneToOne
     @JoinColumn(name = "member_id") // Member의 PK를 참조하는 외래 키
     private Member member;

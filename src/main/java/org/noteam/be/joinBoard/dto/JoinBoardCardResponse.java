@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.noteam.be.joinBoard.domain.JoinBoard;
+import org.noteam.be.member.domain.Member;
 import org.noteam.be.system.util.TimeAgoUtil;
 
 import java.time.LocalDate;
@@ -47,9 +48,13 @@ public class JoinBoardCardResponse {
     @NotNull
     private String updatedAt;
 
+    @NotNull
+    private Member member;
+
     public static JoinBoardCardResponse getResponseFromEntity(JoinBoard joinBoard){
        return JoinBoardCardResponse.builder()
                 .id(joinBoard.getId())
+                .member(joinBoard.getMember())
                 .title(joinBoard.getTitle())
                 .topic(joinBoard.getTopic())
                 .teamName(joinBoard.getTeamName())
@@ -59,6 +64,7 @@ public class JoinBoardCardResponse {
                 .peopleNumber(joinBoard.getPeopleNumber())
                 .createdAt(TimeAgoUtil.formatElapsedTime(joinBoard.getCreatedAt()))
                 .updatedAt(TimeAgoUtil.formatElapsedTime(joinBoard.getUpdatedAt()))
+
                 .build();
     }
 

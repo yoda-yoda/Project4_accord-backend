@@ -3,6 +3,8 @@ package org.noteam.be.joinBoard.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.noteam.be.joinBoard.domain.JoinBoard;
+import org.noteam.be.member.domain.Member;
+
 import java.time.LocalDate;
 
 @Getter
@@ -39,8 +41,7 @@ public class JoinBoardRegisterRequest {
     @NotNull
     private int peopleNumber;
 
-
-    public static JoinBoard toEntity(JoinBoardRegisterRequest dto) {
+    public static JoinBoard toEntity(JoinBoardRegisterRequest dto, Member member) {
         return JoinBoard.builder()
                 .title(dto.getTitle())
                 .topic(dto.getTopic())
@@ -51,6 +52,7 @@ public class JoinBoardRegisterRequest {
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
                 .peopleNumber(dto.getPeopleNumber())
+                .member(member)
                 .build();
     }
 
