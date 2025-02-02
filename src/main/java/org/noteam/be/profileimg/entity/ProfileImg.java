@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@Table(name = "profile_img")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProfileImg {
 
@@ -26,12 +27,10 @@ public class ProfileImg {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "status")
-    private Status status;
-
     @Builder
-    public ProfileImg(String imageUrl) {
+    public ProfileImg(String imageUrl, Member member) {
         this.imageUrl = imageUrl;
+        this.member = member;
         this.updatedAt = LocalDateTime.now();
     }
 

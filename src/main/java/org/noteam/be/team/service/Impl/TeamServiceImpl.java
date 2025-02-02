@@ -2,13 +2,17 @@ package org.noteam.be.team.service.Impl;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.noteam.be.member.service.MemberService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.team.TeamNotFoundException;
+import org.noteam.be.system.util.SecurityUtil;
 import org.noteam.be.team.domain.Team;
 import org.noteam.be.team.dto.TeamRegisterRequest;
 import org.noteam.be.team.dto.TeamResponse;
 import org.noteam.be.team.repository.TeamRepository;
 import org.noteam.be.team.service.TeamService;
+import org.noteam.be.teamMember.service.TeamMemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,16 +23,25 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
+    private final TeamMemberService teamMemberService;
+    private final MemberService memberService;
+
+    public List<TeamResponse> getTeamsByMemberId(Long memberId) {
+        return teamRepository.findTeamsByMemberId(memberId).stream()
+                .map(TeamResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
 
     // 메서드 기능: 등록Dto를 매개변수로 받아서, 엔티티로 변환후 Team DB에 저장한다
     // 반환: 엔티티를 fromEntity 메서드를통해 응답Dto로 바꾼후 반환한다
     @Transactional
     public TeamResponse createTeamByDto(TeamRegisterRequest dto) {
-
         Team team = TeamRegisterRequest.toEntity(dto);
+        teamMemberService.save(memberService.getByMemberId(SecurityUtil.getCurrentMemberId()), team);
 
         Team savedTeam = teamRepository.save(team);
 

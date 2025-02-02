@@ -3,6 +3,7 @@ package org.noteam.be.member.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.noteam.be.joinBoard.domain.JoinBoard;
+import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
 import org.noteam.be.profileimg.entity.ProfileImg;
 
 import java.time.LocalDateTime;
@@ -51,6 +52,10 @@ public class Member {
     @Setter
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JoinBoard> joinBoardList = new ArrayList<>();
+
+    @OneToMany
+    private List<KanbanBoardCard> kanbanBoardCards = new ArrayList<>();
+
 
     public static Member of(String email,
                             String nickname,

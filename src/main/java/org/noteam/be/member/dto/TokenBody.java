@@ -12,5 +12,7 @@ public class TokenBody {
 
     private Long memberId;
     private String role;
+    //토큰 구분을 위해 추가했음.
+    private boolean isRefresh;
 
 }

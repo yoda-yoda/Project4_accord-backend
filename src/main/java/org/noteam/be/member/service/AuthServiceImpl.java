@@ -9,7 +9,7 @@ import org.noteam.be.member.repository.TokenRepository;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.member.EmptyRefreshToken;
 import org.noteam.be.system.exception.member.ExistingAuthenticationIsNull;
-import org.noteam.be.system.exception.member.InvalidRefreshTokenProvided;
+import org.noteam.be.system.exception.jwt.InvalidRefreshTokenProvided;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -54,17 +54,25 @@ public class AuthServiceImpl implements AuthService {
             throw new ExistingAuthenticationIsNull(ExceptionMessage.MemberAuth.EXISTING_AUTHENTICATION_IS_NULL);
         }
 
-        // Access Token, Refresh Token 블랙리스트 등록
-        tokenRepository.appendBlackList(RefreshToken.builder()
-                .refreshToken(accessToken)
-                .build()
-        );
-        tokenRepository.appendBlackList(RefreshToken.builder()
-                .refreshToken(refreshTokenValue)
-                .build()
-        );
+        // Refresh 토큰만 DB 검증 후 블랙리스트에 추가
+        Optional<RefreshToken> refreshTokenOptional = tokenRepository.findValidRefTokenByToken(refreshTokenValue);
+        if (refreshTokenOptional.isPresent()) {
+            tokenRepository.appendBlackList(refreshTokenOptional.get());
+            log.info("로그아웃 처리 완료 - Refresh 토큰 블랙리스트 등록됨. refresh={}", refreshTokenValue);
+        } else {
+            // 이미 블랙리스트이거나, 존재하지 않는 토큰
+            log.info("로그아웃 처리 완료 - Refresh 토큰이 DB에 없거나 이미 블랙리스트에 있음. refresh={}", refreshTokenValue);
+        }
 
-        log.info("로그아웃 처리 완료 - access={}, refresh={}", accessToken, refreshTokenValue);
+//        // Access Token 은 블랙리스트 처리하지않도록 변경. db에 저장도 하지않고 만료시간이 짧기때문에 로그아웃시 자연만료되도록함.
+//        tokenRepository.appendBlackList(RefreshToken.builder()
+//                .refreshToken(accessToken)
+//                .build()
+//        );
+//        tokenRepository.appendBlackList(RefreshToken.builder()
+//                .refreshToken(refreshTokenValue)
+//                .build()
+//        );
 
     }
 }
