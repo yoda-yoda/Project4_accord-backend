@@ -1,3 +1,4 @@
+// 250202 23:20 최신상태 확인용 주석
 package org.noteam.be.joinBoard.controller;
 
 import lombok.RequiredArgsConstructor;
