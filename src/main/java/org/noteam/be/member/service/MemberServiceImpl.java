@@ -223,7 +223,6 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
     }
 
     @Override
-
     public Member getByMemberId(Long memberId) {
       return memberRepository.findByMemberId(memberId)
               .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
