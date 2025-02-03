@@ -9,7 +9,7 @@ import org.noteam.be.member.repository.TokenRepository;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.member.EmptyRefreshToken;
 import org.noteam.be.system.exception.member.ExistingAuthenticationIsNull;
-import org.noteam.be.system.exception.member.InvalidRefreshTokenProvided;
+import org.noteam.be.system.exception.jwt.InvalidRefreshTokenProvided;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 

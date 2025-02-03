@@ -1,6 +1,7 @@
 package org.noteam.be.joinBoard.dto;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class JoinBoardCardResponse {
 
     @NotNull
@@ -59,17 +62,5 @@ public class JoinBoardCardResponse {
                 .build();
     }
 
-    @Builder
-    public JoinBoardCardResponse(Long id, String title, String topic, String teamName, String projectBio, LocalDate startDate, LocalDate endDate, int peopleNumber, String createdAt, String updatedAt) {
-        this.id = id;
-        this.title = title;
-        this.topic = topic;
-        this.teamName = teamName;
-        this.projectBio = projectBio;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.peopleNumber = peopleNumber;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+
 }
