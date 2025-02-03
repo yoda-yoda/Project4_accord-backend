@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -31,6 +32,17 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
     private final MemberService memberService;
     private final TeamMemberService teamMemberService;
     private final TeamService teamService;
+
+    @Override
+    public KanbanBoardAndCardResponse findByTeamId(Long teamId) {
+        List<KanbanBoard> allTeamBoards = getAllTeamBoards(teamId);
+        return KanbanBoardAndCardResponse.builder()
+                .kanbanBoards(allTeamBoards.stream().map(KanbanBoardResponse::fromEntity)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+
 
     @Override
     public KanbanBoard getKanbanBoardById(Long currentBoardId) {

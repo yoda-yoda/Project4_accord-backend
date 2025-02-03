@@ -26,5 +26,7 @@ public interface KanbanBoardService{
 
     KanbanBoardMessageResponse changeBoardPriority(KanbanBoardSwitchRequest request);
 
+    KanbanBoardAndCardResponse findByTeamId(Long teamId);
+
     KanbanBoard getKanbanBoardById(Long currentBoardId);
 }

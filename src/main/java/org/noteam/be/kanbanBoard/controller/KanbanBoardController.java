@@ -3,39 +3,32 @@ package org.noteam.be.kanbanBoard.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.noteam.be.kanbanBoard.domain.KanbanBoard;
-import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
 import org.noteam.be.kanbanBoard.dto.*;
 import org.noteam.be.kanbanBoard.service.KanbanBoardCardService;
 import org.noteam.be.kanbanBoard.service.KanbanBoardService;
+import org.noteam.be.system.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class KanbanBoardController {
 
     private final KanbanBoardService kanbanBoardService;
     private final KanbanBoardCardService kanbanBoardCardService;
 
+    // 나중에 로그인 정보로 member id 가져오는 걸로 교체
+    // 칸반보드 조회 하는 로직
+    @GetMapping("/kanbanboard/{teamId}")
+    public ResponseEntity<KanbanBoardAndCardResponse> getKanbanBoardList(@PathVariable Long teamId) {
 
-//    // 나중에 로그인 정보로 member id 가져오는 걸로 교체
-//    // 칸반보드 조회 하는 로직
-//    @GetMapping("/kanbanboard/{memberId}")
-//    public String getKanbanBoardList(@PathVariable Long memberId, Model model) {
-//
-//        List<KanbanBoard> boards = kanbanBoardService.getKanbanBoardList(memberId);
-//
-//        model.addAttribute("boards",boards);
-//
-//        return "kanbanboard";
-//
-//    }
+        KanbanBoardAndCardResponse result = kanbanBoardService.findByTeamId(teamId);
+
+        return ResponseEntity.ok(result);
+    }
 
     //칸반 보드 추가
     @PostMapping("/kanbanboard/create")
@@ -46,7 +39,7 @@ public class KanbanBoardController {
         return ResponseEntity.ok(result);
     }
 
-    //칸반 보드 카드 추가
+    //칸반 보드 카드 추가 로직
     @PostMapping("/kanbanboardcard/create")
     public ResponseEntity<KanbanBoardMessageResponse> createKanbanBoardCard(@RequestBody KanbanBoardCardCreateRequest request) {
 
@@ -59,7 +52,9 @@ public class KanbanBoardController {
     //테스트 코드 작성해야합니다 ..
     // 칸반보드 삭제
     @PostMapping("/kanbanboard/delete")
-    public ResponseEntity<KanbanBoardMessageResponse> deleteKanbanBoard(@RequestBody Long boardId) {
+    public ResponseEntity<KanbanBoardMessageResponse> deleteKanbanBoard(@RequestBody KanbanBoardDeleteRequest request) {
+
+        Long boardId = request.getBoardId();
 
         KanbanBoardMessageResponse result = kanbanBoardService.deleteBoard(boardId);
 
@@ -74,6 +69,7 @@ public class KanbanBoardController {
         KanbanBoardMessageResponse result = kanbanBoardCardService.deleteBoardCard(cardId);
 
         return ResponseEntity.ok(result);
+
     }
 
     //칸반보드 제목 변경
@@ -104,7 +100,6 @@ public class KanbanBoardController {
 
         return ResponseEntity.ok(result);
     }
-
 
     // 카드 순서 변경
     @PostMapping("/kanbanboardcard/switch")
