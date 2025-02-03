@@ -14,6 +14,7 @@ message NotifyKeyRolledRequest {
   string previousKid = 1;
   string currentKid  = 2;
   string rolledAt    = 3;
+  string currentPublicKeyPem = 4;
 }
 
 message NotifyKeyRolledResponse {
