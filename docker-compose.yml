@@ -1,0 +1,48 @@
+services:
+  consul:
+    image: hashicorp/consul:latest
+    container_name: consul
+    ports:
+      - "8500:8500"        # Consul UI 및 API 포트
+      - "8600:8600/udp"    # DNS 포트
+    command: "agent -dev -client=0.0.0.0"  # 개발 모드로 실행
+    volumes:
+      - consul-data:/consul/data
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"      # MongoDB 기본 포트
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpassword
+      MONGO_INITDB_DATABASE: mydatabase  # 초기 데이터베이스 설정 (필요 시 변경)
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"        # Redis 기본 포트
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  consul-data:
+    driver: local
+  mongo-data:
+    driver: local
+  redis-data:
+    driver: local

@@ -33,4 +33,6 @@ public interface JoinBoardService {
 
     Member findMemberById(Long currentMemberId);
 
+    Page<JoinBoardCardResponse> getAllJoinBoardCardByTitle(int page);
+
 }

@@ -1,4 +1,4 @@
-// 250202 23:20 최신상태 확인용 주석
+
 package org.noteam.be.joinBoard.controller;
 
 import lombok.RequiredArgsConstructor;
@@ -47,12 +47,20 @@ public class JoinBoardController {
 
 
 
-
     @GetMapping
     public ResponseEntity<ResponseData<Page<JoinBoardCardResponse>>> getPagedList(
             @RequestParam(value = "page", defaultValue = "0") int page)
     {
         Page<JoinBoardCardResponse> pagedList = joinBoardService.getAllJoinBoardCardByPage(page);
+
+        return ResponseData.toResponseEntity(ResponseCode.GET_JOIN_BOARD_SUCCESS, pagedList);
+    }
+
+    @GetMapping("/sort-by-title")
+    public ResponseEntity<ResponseData<Page<JoinBoardCardResponse>>> getPagedListSortByTitle(
+            @RequestParam(value = "page", defaultValue = "0") int page)
+    {
+        Page<JoinBoardCardResponse> pagedList = joinBoardService.getAllJoinBoardCardByTitle(page);
 
         return ResponseData.toResponseEntity(ResponseCode.GET_JOIN_BOARD_SUCCESS, pagedList);
     }

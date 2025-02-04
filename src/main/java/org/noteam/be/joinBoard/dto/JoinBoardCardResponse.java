@@ -48,13 +48,23 @@ public class JoinBoardCardResponse {
     @NotNull
     private String updatedAt;
 
+
     @NotNull
-    private Member member;
+    private Long memberId;
+
+    @NotNull
+    private String memberNickname;
+
+    @NotNull
+    private String memberProfileUrl;
+
 
     public static JoinBoardCardResponse getResponseFromEntity(JoinBoard joinBoard){
        return JoinBoardCardResponse.builder()
                 .id(joinBoard.getId())
-                .member(joinBoard.getMember())
+                .memberId(joinBoard.getMember().getMemberId())
+                .memberNickname(joinBoard.getMember().getNickname())
+                .memberProfileUrl( joinBoard.getMember().getProfileImg() == null ? null : joinBoard.getMember().getProfileImg().getImageUrl() )
                 .title(joinBoard.getTitle())
                 .topic(joinBoard.getTopic())
                 .teamName(joinBoard.getTeamName())
@@ -64,7 +74,6 @@ public class JoinBoardCardResponse {
                 .peopleNumber(joinBoard.getPeopleNumber())
                 .createdAt(TimeAgoUtil.formatElapsedTime(joinBoard.getCreatedAt()))
                 .updatedAt(TimeAgoUtil.formatElapsedTime(joinBoard.getUpdatedAt()))
-
                 .build();
     }
 

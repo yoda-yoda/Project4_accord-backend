@@ -52,8 +52,18 @@ public class JoinBoardResponse {
     @NotNull
     private String updatedAt;
 
+
     @NotNull
-    private Member member;
+    private Long memberId;
+
+    @NotNull
+    private String memberNickname;
+
+    @NotNull
+    private String memberProfileUrl;
+
+
+
 
 
 
@@ -72,7 +82,9 @@ public class JoinBoardResponse {
                 .peopleNumber(joinBoard.getPeopleNumber())
                 .createdAt( TimeAgoUtil.formatElapsedTime(joinBoard.getCreatedAt()) )
                 .updatedAt( TimeAgoUtil.formatElapsedTime(joinBoard.getUpdatedAt()) )
-                .member(joinBoard.getMember())
+                .memberId(joinBoard.getMember().getMemberId())
+                .memberNickname(joinBoard.getMember().getNickname())
+                .memberProfileUrl( joinBoard.getMember().getProfileImg() == null ? null : joinBoard.getMember().getProfileImg().getImageUrl() )
                 .build();
 
     }

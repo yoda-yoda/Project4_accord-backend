@@ -111,7 +111,6 @@ public class JoinBoardServiceImpl implements JoinBoardService {
         for (JoinBoard joinBoard : collect) {
             JoinBoardResponse joinBoardResponse = JoinBoardResponse.fromEntity(joinBoard);
             responses.add(joinBoardResponse);
-
         }
 
         return responses;
@@ -144,7 +143,6 @@ public class JoinBoardServiceImpl implements JoinBoardService {
         for (JoinBoard joinBoard : collect) {
             JoinBoardCardResponse response = JoinBoardCardResponse.getResponseFromEntity(joinBoard);
             responses.add(response);
-
         }
 
         return responses;
@@ -229,6 +227,37 @@ public class JoinBoardServiceImpl implements JoinBoardService {
 
         return memberRepository.findById(currentMemberId)
                 .orElseThrow( () -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND) );
+    }
+
+
+
+
+    public Page<JoinBoardCardResponse> getAllJoinBoardCardByTitle(int page) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.asc("title")); // 제목 기준 오름차순 정렬
+
+        // 페이지 설정값(설정 객체) 생성
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+
+        // 해당 설정값을 매개변수로 전달하며 동시에 ACTIVE 상태의 글을 찾아 Page 객체를 생성
+        Page<JoinBoard> pagingEntity = joinBoardRepository.findByStatus(Status.ACTIVE, pageable);
+
+        // 나중에 페이지 객체로 바꿀때 사용할 List 변수
+        List<JoinBoardCardResponse> cardList = new ArrayList<>();
+
+        // 만약 DB에 해당 값이 없다면, 비어있는 페이지 객체를 만들어서 반환
+        if (pagingEntity.getContent().isEmpty()) {
+            return new PageImpl<>(cardList, pageable, pagingEntity.getTotalElements());
+        }
+
+        // 값이 존재한다면, 페이지 객체 내부에 있는 각각의 엔티티를 모두 Card dto로 변환하여 List 변수에 담는다
+        for (JoinBoard joinBoard : pagingEntity.getContent()) {
+            JoinBoardCardResponse res = JoinBoardCardResponse.getResponseFromEntity(joinBoard);
+            cardList.add(res);
+        }
+
+        // 최종 Page 객체 반환
+        return new PageImpl<>(cardList, pageable, pagingEntity.getTotalElements());
     }
 
     
