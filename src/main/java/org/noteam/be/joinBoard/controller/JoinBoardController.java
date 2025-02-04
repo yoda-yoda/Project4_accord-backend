@@ -25,9 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class JoinBoardController {
 
-
     private final JoinBoardService joinBoardService;
-
 
     @PostMapping
     public ResponseEntity<ResponseData<JoinBoardResponse>> createJoinBoard(@RequestBody JoinBoardRegisterRequest dto){
