@@ -13,5 +13,6 @@ public class MemberProfileResponse {
     private String email;
     private String nickname;
     private String profileImage;
+    private String role;
 
 }
