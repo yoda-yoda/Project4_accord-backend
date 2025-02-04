@@ -38,7 +38,8 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
                         member.getMemberId(),
                         member.getEmail(),
                         member.getNickname(),
-                        profileImgService.getMembersProfileImg(member)
+                        profileImgService.getMembersProfileImg(member),
+                        member.getRole().toString()
                 ))
                 .collect(Collectors.toList());
     }
@@ -205,8 +206,8 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
                 member.getMemberId(),
                 member.getEmail(),
                 member.getNickname(),
-                profileImgService.getMembersProfileImg(member)
-
+                profileImgService.getMembersProfileImg(member),
+                member.getRole().toString()
         );
     }
 
@@ -232,13 +233,15 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
     public MemberProfileResponse getMemberProfile(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+        String userRole = member.getRole().toString();
+        log.info("롤 세팅값 : "+userRole);
         return new MemberProfileResponse(
                 member.getMemberId(),
                 member.getEmail(),
                 member.getNickname(),
-                profileImgService.getMembersProfileImg(member)
+                profileImgService.getMembersProfileImg(member),
+                member.getRole().toString()
         );
     }
 
 }
-

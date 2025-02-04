@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class MemberSearchResponse {
+    private Long memberId;
     private String nickname;
     private Status status;
     private Role role;

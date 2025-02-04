@@ -26,6 +26,7 @@ public class AdminMemberService {
         );
 
         return members.map(m -> new MemberSearchResponse(
+                m.getMemberId(),
                 m.getNickname(),
                 m.getStatus(),
                 m.getRole(),
