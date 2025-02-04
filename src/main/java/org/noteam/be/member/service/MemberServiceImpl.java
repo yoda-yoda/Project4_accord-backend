@@ -110,6 +110,12 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
         return memberRepository.save(newMember);
     }
 
+    @Override
+    public Member findMemberByMemberId(Long memberId) {
+        return memberRepository.findByMemberId(memberId)
+                .orElseThrow(()->new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND_EXCEPTION));
+    }
+
     // provider별로 email 추출
     // kakao는 받아온 nickname@kakao.com 형식으로 임시 설정. 추후 변경해야함.
     @Override
@@ -214,9 +220,9 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
     @Override
     @Transactional
     public void deleteMember(Long memberId) {
+
         // Member 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+        Member member = this.findMemberByMemberId(memberId);
 
         // 삭제상태로 status 변경.(Soft Delete)
         member.changeStatus(Status.DELETED);

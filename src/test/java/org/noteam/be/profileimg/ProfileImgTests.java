@@ -25,7 +25,7 @@ public class ProfileImgTests {
 
     @Test
     @DisplayName("멤버만들면 프로파일이미지 테이블 반응 테스트")
-    void memberAndProfileImgTest() throws Exception{
+    void memberAndProfileImgTest() throws Exception {
 
         // given
         Member member = Member.of("tlgus7777@naver.com", "philo", Role.MEMBER, Status.ACTIVE, "naver");
