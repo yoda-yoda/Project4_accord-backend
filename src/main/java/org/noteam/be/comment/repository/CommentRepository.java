@@ -1,7 +1,11 @@
 package org.noteam.be.comment.repository;
-import org.noteam.be.joinBoard.domain.JoinBoard;
+import org.noteam.be.comment.domain.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CommentRepository extends JpaRepository<JoinBoard, Long> {
-    
+import java.util.List;
+
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+
+    List<Comment> findAllByJoinBoardId(Long joinBoardId);
+
 }

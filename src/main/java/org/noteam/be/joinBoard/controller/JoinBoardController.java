@@ -1,4 +1,3 @@
-
 package org.noteam.be.joinBoard.controller;
 
 import lombok.RequiredArgsConstructor;
@@ -53,6 +52,8 @@ public class JoinBoardController {
 
         return ResponseData.toResponseEntity(ResponseCode.GET_JOIN_BOARD_SUCCESS, pagedList);
     }
+
+
 
     @GetMapping("/sort-by-title")
     public ResponseEntity<ResponseData<Page<JoinBoardCardResponse>>> getPagedListSortByTitle(
