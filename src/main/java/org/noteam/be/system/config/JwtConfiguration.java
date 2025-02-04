@@ -12,19 +12,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtConfiguration {
 
-    private final Secret secret = new Secret();
     private final Validation validation = new Validation();
 
-    @Getter
-    @Setter
-    public static class Secret {
-
-        private String appKey;
-
-        public void setAppKey(String appKey) {
-            this.appKey = appKey;
-        }
-    }
+    // 비대칭key 전략으로 변경하면서 사용안함.
+//    private final Secret secret = new Secret();
+//    @Getter
+//    @Setter
+//    public static class Secret {
+//
+//        private String appKey;
+//
+//        public void setAppKey(String appKey) {
+//            this.appKey = appKey;
+//        }
+//    }
 
     @Getter
     @Setter

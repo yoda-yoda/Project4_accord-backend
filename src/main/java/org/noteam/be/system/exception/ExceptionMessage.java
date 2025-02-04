@@ -30,12 +30,19 @@ public class ExceptionMessage {
         public static final String MEMBER_NOT_FOUND_EXCEPTION = "회원을 찾을 수 없습니다.";
         public static final String MEMBER_NOT_FOUND = "대상 멤버가 없습니다.";
         public static final String NICKNAME_ALREADY_EXIST = "변경하려는 닉네임이 중복됩니다.";
-        public static final String INVALID_REFRESH_TOKEN_PROVIDED = "올바르지 않은 리프레쉬 토큰입니다.";
-        public static final String EMPTY_REFRESH_TOKEN = "리프레쉬 토큰이 비어있습니다.";
+        public static final String INVALID_REFRESH_TOKEN_PROVIDED = "변경하려는 닉네임이 중복됩니다.";
+        public static final String EMPTY_REFRESH_TOKEN = "변경하려는 닉네임이 중복됩니다.";
         public static final String EXISTING_AUTHENTICATION_IS_NULL = "인가정보가 존재하지 않습니다.";
         public static final String DELETED_ACCOUNT_EXCEPTION = "탈퇴한 회원 입니다.";
         public static final String BANNED_ACCOUNT_EXCEPTION = "차단된 회원 입니다.";
 
+    }
+
+    public static class Jwt {
+        public static final String INVALID_TOKEN_FORMAT = "유효하지 않은 토큰 형식입니다.";
+        public static final String KID_EXTRACTION_FAILED = "토큰에서 kId 추출에 실패했습니다.";
+        public static final String PUBLIC_KEY_NOT_FOUND = "해당 kId의 공개키를 찾을 수 없습니다.";
+        public static final String TOKEN_VALIDATION_FAILED = "토큰 검증에 실패했습니다.";
     }
 
     public static class ProfileImg {
@@ -46,6 +53,18 @@ public class ExceptionMessage {
     public static class Chat {
         public static final String CHATROOM_DIFFERENT_EXCEPTION = "TeamId 불일치.";
         public static final String CHATROOM_NOTFOUND_EXCEPTION = "TeamId 못찾음.";
+    }
+
+
+    public static class Kanbanboard {
+        public static final String KANBANBOARD_NOT_FOUND_ERROR = "해당하는 보드를 찾을 수 없습니다";
+        public static final String KANBANBOARD_CARD_NOT_FOUND_ERROR = "해당하는 카드를 찾을 수 없습니다";
+        public static final String KANBANBOARD_OUT_OF_RANGE_ERROR = "카드가 범위를 벗어났습니다.";
+    }
+    public static class Image {
+        public static final String INVALID_FILENAME_ERROR = "유효하지 않은 이미지 파일 이름 입니다.";
+        public static final String FILE_SIZE_EXCEEDED_ERROR = "파일 크기가 5 MB를 초과하여 업로드할 수 없습니다. ";
+
     }
 
 

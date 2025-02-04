@@ -4,7 +4,6 @@ package org.noteam.be.member.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.noteam.be.member.dto.CustomUserDetails;
-import org.noteam.be.member.dto.NicknameUpdateRequest;
 import org.noteam.be.member.service.MemberService;
 import org.springframework.security.core.Authentication;
 import org.noteam.be.member.service.AuthService;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class AuthRestController {
+public class AuthController {
 
     private final MemberService memberService;
     private final AuthService authService;

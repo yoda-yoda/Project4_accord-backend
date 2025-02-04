@@ -12,18 +12,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/join-board")
 @RequiredArgsConstructor
 public class JoinBoardController {
 
-
     private final JoinBoardService joinBoardService;
 
 
     @PostMapping
-    public ResponseEntity<ResponseData<JoinBoardResponse>> createJoinBoard(JoinBoardRegisterRequest dto){
+    public ResponseEntity<ResponseData<JoinBoardResponse>> createJoinBoard(@RequestBody JoinBoardRegisterRequest dto){
 
         JoinBoardResponse res = joinBoardService.createJoinBoardByDto(dto);
 
@@ -51,7 +49,7 @@ public class JoinBoardController {
 
 
     @PutMapping("/{joinBoardId}")
-    public ResponseEntity<ResponseData<JoinBoardResponse>> updateJoinBoard(@PathVariable Long joinBoardId, JoinBoardUpdateRequest dto) {
+    public ResponseEntity<ResponseData<JoinBoardResponse>> updateJoinBoard(@PathVariable Long joinBoardId, @RequestBody JoinBoardUpdateRequest dto) {
 
         JoinBoardResponse res = joinBoardService.updateJoinBoardById(joinBoardId, dto);
 

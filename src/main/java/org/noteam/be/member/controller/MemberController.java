@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
-public class MemberRestController {
+public class MemberController {
 
     private final MemberService memberService;
 
@@ -43,6 +43,19 @@ public class MemberRestController {
         }
 
         return ResponseEntity.ok(Map.of("nickname", userDetails.getNickname()));
+
+    }
+
+    @GetMapping("/userinfos")
+    public ResponseEntity<?> getUserInfos(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Unauthorized");
+        }
+
+        return ResponseEntity.ok(Map.of("memberInfo", memberService.getMemberProfile(userDetails.getMemberId())));
 
     }
 

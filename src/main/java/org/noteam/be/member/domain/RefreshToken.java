@@ -14,7 +14,7 @@ public class RefreshToken {
     private Long id;
 
     // 실제 Refresh Token 문자열 (JWT)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 2048)
     private String refreshToken;
 
     // 연관관계 매핑

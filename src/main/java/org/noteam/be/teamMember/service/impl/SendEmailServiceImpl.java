@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.repository.MemberRepository;
+import org.noteam.be.member.service.MemberService;
+import org.noteam.be.system.util.SecurityUtil;
 import org.noteam.be.teamMember.service.SendEmailService;
 import org.noteam.be.teamMember.dto.InviteMemberResponse;
 import org.noteam.be.system.exception.EmailSendException;
@@ -25,17 +27,18 @@ public class SendEmailServiceImpl implements SendEmailService {
 
 
     private final JavaMailSender mailSender;
+    private final MemberService memberService;
     private final MemberRepository memberRepository;
 
     @Value("${custom.mail}")
     private String sender;
 
-    private String url = "http://localhost:8080/test3";
+    private String url = "http://localhost:3000/accept-invite";
 
 
     @Override
-    public InviteMemberResponse sendInviteEmail(String inviter, long teamId, long memberId) {
-
+    public InviteMemberResponse sendInviteEmail(long teamId, long memberId) {
+        String inviter = memberService.getByMemberId(SecurityUtil.getCurrentMemberId()).getNickname();
         MimeMessage message = mailSender.createMimeMessage();
 
         Member member = memberRepository.findById(memberId).orElseThrow();
@@ -49,7 +52,7 @@ public class SendEmailServiceImpl implements SendEmailService {
             helper.setTo(receiverEmail);
             helper.setSubject("[Accord] " + inviter + "님이 팀에 초대를 했습니다");
             helper.setText("<h3>안녕하세요!</h3><p>"+inviter+"님이 초대를 하셨습니다</p>" +
-                            "<a href='" + url + "/" + teamId + "/" + memberId + "' " +
+                            "<a href='" + url + "/" + teamId  + "' " +
                             "style='display: inline-block; padding: 10px 20px; font-size: 16px; color: white; " +
                             "background-color: #0078D7; text-decoration: none; border-radius: 5px;'>팀에 가입하기</a>",
                     true);

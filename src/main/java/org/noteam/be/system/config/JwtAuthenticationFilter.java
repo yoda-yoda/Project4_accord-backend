@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String ROLE_PREFIX = "ROLE_";
+//    private static final String ROLE_PREFIX = "ROLE_";
 
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRepository tokenRepository;
@@ -69,6 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void processToken(String token) {
+        log.info("[JwtAuthenticationFilter] processing token: {}", token);
         try {
 
             if (!jwtTokenProvider.validate(token)) {
@@ -99,6 +100,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void setSecurityContext(TokenBody tokenBody) {
+        log.info("setSecurityContext tokenBody={}", tokenBody);
         // DB 조회
         Member member = memberRepository.findById(tokenBody.getMemberId())
                 .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
@@ -113,8 +115,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .build();
 
         // Authentication principal 로 customUserDetails 설정
-        SimpleGrantedAuthority authority =
-                new SimpleGrantedAuthority(ROLE_PREFIX + tokenBody.getRole());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(tokenBody.getRole());
+
+
 
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(
                 customUserDetails,

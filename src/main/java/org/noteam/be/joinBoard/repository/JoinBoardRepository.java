@@ -10,4 +10,6 @@ public interface JoinBoardRepository extends JpaRepository<JoinBoard, Long> {
 
     Page<JoinBoard> findByStatus(Status status, Pageable pageable);
 
+    Page<JoinBoard> findByMember_MemberId(Long memberId, Pageable pageable);
+
 }
