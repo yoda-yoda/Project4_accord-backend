@@ -10,6 +10,8 @@ public interface MemberService {
 
     Member registerOAuthMember(OAuthSignUpRequest request, String provider);
 
+    Member findMemberByMemberId(Long memberId);
+
     String extractEmail(OAuth2User oAuth2User, String registrationId);
 
     String extractNickname(OAuth2User oAuth2User, String registrationId);

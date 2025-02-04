@@ -30,7 +30,7 @@ public class Team {
 
     private boolean deleted;
 
-//     // 아직 팀멤버 도메인이 없어서 주석처리했다.
+     // 아직 팀멤버 도메인이 없어서 주석처리했다.
      @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
      private List<TeamMember> teamMembers;
 
