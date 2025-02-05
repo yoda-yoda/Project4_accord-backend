@@ -7,12 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class KanbanBoardSwitchRequest {
-
-    Long boardId;
-    int newPriority;
+@NoArgsConstructor
+public class KanbanBoardSecondLookupRequest {
     Long teamId;
-
+    Long boardId;
 }

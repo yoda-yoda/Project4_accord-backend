@@ -3,6 +3,7 @@ package org.noteam.be.team.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.noteam.be.kanbanBoard.dto.KanbanBoardTeamResponse;
 import org.noteam.be.member.service.MemberService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.team.TeamNotFoundException;
@@ -141,12 +142,25 @@ public class TeamServiceImpl implements TeamService {
 
 
     // 메서드 기능: db에서 데이터를 전부 다 지우는 메서드
+
     @Transactional
     public void hardDeleteAll() {
         teamRepository.deleteAll();
     }
 
+    @Override
+    public KanbanBoardTeamResponse getTeamForKanbanBoard(Long teamId) {
 
+        Team team = getTeamById(teamId);
+
+        String teamName = team.getTeamName();
+
+        KanbanBoardTeamResponse result = KanbanBoardTeamResponse.builder()
+                .teamName(teamName)
+                .build();
+
+        return result;
+    }
 
 
 }

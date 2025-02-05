@@ -13,6 +13,8 @@ public interface KanbanBoardRepository extends JpaRepository<KanbanBoard, Long> 
 
     KanbanBoard findByTeamIdAndTitle(Long teamId, String title);
 
+    KanbanBoard findByTeamIdAndId(Long teamId, long id);
+
     KanbanBoard findById(long id);
 
 
