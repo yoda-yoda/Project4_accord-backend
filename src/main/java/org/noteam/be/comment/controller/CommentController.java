@@ -46,7 +46,7 @@ public class CommentController {
 
 
 
-    // 해당 조인보드의 ACTIVE인 모든 댓글을 반환한다.
+    // 해당 조인보드의 ACTIVE인 모든 댓글을 반환한다. //
     // 표시될 댓글이 없다면 빈 리스트가 반환된다.
     @GetMapping("/{joinBoardId}")
     public ResponseEntity<ResponseData<List<CommentResponse>>> getAllComment(@PathVariable Long joinBoardId){
