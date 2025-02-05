@@ -28,10 +28,8 @@ public class JoinBoard {
     private Member member;
 
 
-
     // Comment(조인보드 내의 댓글)과의 @OneToMany 관계 추가
-    @Setter
-    @OneToMany(mappedBy = "joinBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "joinBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
 

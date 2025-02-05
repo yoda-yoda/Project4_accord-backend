@@ -26,6 +26,9 @@ public class CommentResponse {
 
 
     @NotNull
+    private Long joinBoardId;
+
+    @NotNull
     private Long memberId;
 
     @NotNull
@@ -44,6 +47,7 @@ public class CommentResponse {
                 .content(comment.getContent())
                 .createdAt( TimeAgoUtil.formatElapsedTime(comment.getCreatedAt()) )
                 .updatedAt( TimeAgoUtil.formatElapsedTime(comment.getUpdatedAt()) )
+                .joinBoardId(comment.getJoinBoard().getId())
                 .memberId( comment.getMember().getMemberId() )
                 .memberNickname( comment.getMember().getNickname() )
                 .memberProfileUrl( comment.getMember().getProfileImg() == null ? null : comment.getMember().getProfileImg().getImageUrl() )

@@ -4,7 +4,7 @@ import io.jsonwebtoken.lang.Strings;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-//import org.noteam.be.grpc.client.KeyRotationNotifyClient;
+import org.noteam.be.grpc.client.KeyRotationNotifyClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,10 +25,10 @@ public class RsaKeyManager {
     private volatile KeyHolder previousKey;
     // 현재 키
     @Getter
-    private volatile KeyHolder currentKey;
+    private volatile KeyHolder currentKey; 
 
-//    @Autowired
-//    private KeyRotationNotifyClient keyRotationNotifyClient;
+    @Autowired
+    private KeyRotationNotifyClient keyRotationNotifyClient;
 
     @PostConstruct
     public void init() {
@@ -79,7 +79,7 @@ public class RsaKeyManager {
             log.info("키 롤링 완료 - 이전 KID:{}, 새 KID:{}", oldKid, newKid);
 
             // gRPC로 서버B에 알림
-//            keyRotationNotifyClient.notifyKeyRolled(oldKid, newKid);
+            keyRotationNotifyClient.notifyKeyRolled(oldKid, newKid);
         }
     }
 

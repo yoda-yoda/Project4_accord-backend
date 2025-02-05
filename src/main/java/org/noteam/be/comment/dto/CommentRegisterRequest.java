@@ -1,12 +1,16 @@
 package org.noteam.be.comment.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
+import lombok.*;
 import org.noteam.be.comment.domain.Comment;
 import org.noteam.be.joinBoard.domain.JoinBoard;
 import org.noteam.be.member.domain.Member;
 
+@NoArgsConstructor
 @Getter
+@Setter
+@Builder
+@AllArgsConstructor
 public class CommentRegisterRequest {
 
     @NotNull

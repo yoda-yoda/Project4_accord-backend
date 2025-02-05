@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.noteam.be.comment.dto.CommentRegisterRequest;
 import org.noteam.be.comment.dto.CommentUpdateRequest;
 import org.noteam.be.joinBoard.domain.JoinBoard;
 import org.noteam.be.member.domain.Member;

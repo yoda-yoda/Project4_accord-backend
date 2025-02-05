@@ -135,7 +135,6 @@ public class CommentServiceImpl implements CommentService {
                 .filter( entity -> entity.getStatus().equals(org.noteam.be.comment.domain.Status.ACTIVE) )
                 .collect(Collectors.toList());
 
-
         // 해당값이 없으면 빈 리스트를 반환하고 종료
         if (collect.isEmpty()) {
             return responses;

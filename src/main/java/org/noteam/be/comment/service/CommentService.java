@@ -22,6 +22,8 @@ public interface CommentService {
 
     List<CommentResponse> getAllComment();
 
+    List<CommentResponse> getAllCommentByJoinBoardId(Long joinBoardId);
+
     CommentResponse updateCommentById(Long id, CommentUpdateRequest dto);
 
     void deleteCommentById(Long id);
