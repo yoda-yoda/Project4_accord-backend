@@ -25,7 +25,7 @@ public class RsaKeyManager {
     private volatile KeyHolder previousKey;
     // 현재 키
     @Getter
-    private volatile KeyHolder currentKey; 
+    private volatile KeyHolder currentKey;
 
     @Autowired
     private KeyRotationNotifyClient keyRotationNotifyClient;
