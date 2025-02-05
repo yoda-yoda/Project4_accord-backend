@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class KanbanBoardSwitchRequest {
 
     Long boardId;
-    int dropSpotNum;
+    int newPriority;
     Long teamId;
 
 }

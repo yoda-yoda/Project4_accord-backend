@@ -32,6 +32,7 @@ public class ProfileImg {
         this.imageUrl = imageUrl;
         this.member = member;
         this.updatedAt = LocalDateTime.now();
+        this.member = member;
     }
 
 }

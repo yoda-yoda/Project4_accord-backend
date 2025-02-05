@@ -111,10 +111,9 @@ public class JoinBoard {
     }
 
 
-
-
     @Builder
-    public JoinBoard(String title, String topic, String teamName, String projectBio, String teamBio, String content, LocalDate startDate, LocalDate endDate, int peopleNumber , Member member) {
+    public JoinBoard(Member member, String title, String topic, String teamName, String projectBio, String teamBio, String content, LocalDate startDate, LocalDate endDate, int peopleNumber) {
+        this.member = member;
         this.title = title;
         this.topic = topic;
         this.teamName = teamName;

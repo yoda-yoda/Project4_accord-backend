@@ -1,5 +1,6 @@
 package org.noteam.be.team.service;
 
+import org.noteam.be.kanbanBoard.dto.KanbanBoardTeamResponse;
 import org.noteam.be.team.domain.Team;
 import org.noteam.be.team.dto.TeamRegisterRequest;
 import org.noteam.be.team.dto.TeamResponse;
@@ -19,4 +20,5 @@ public interface TeamService {
     Optional<Team> findById(Long id);
     void hardDeleteAll();
 
+    KanbanBoardTeamResponse getTeamForKanbanBoard(Long teamId);
 }

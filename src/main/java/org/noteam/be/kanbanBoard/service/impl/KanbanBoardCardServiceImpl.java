@@ -59,6 +59,8 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
         return byBoardId;
     }
 
+
+
     //Card 추가 로직
     @Override
     public KanbanBoardMessageResponse createCard(KanbanBoardCardCreateRequest request) {
@@ -70,8 +72,12 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
         log.info("member = {}", member);
 
         //해당 보드 조회
-        KanbanBoard byTeamIdAndBoardName = kanbanBoardService.getKanbanBoardbyTeamIdAndTitle(KanbanBoardLookupRequest.builder()
-                .teamId(request.getTeamId()).title(request.getTitle()).build());
+        KanbanBoard byTeamIdAndBoardName = kanbanBoardService.getKanbanBoardByTeamIdAndBoardId(KanbanBoardSecondLookupRequest
+                .builder()
+                .teamId(request.getTeamId())
+                .boardId(request.getColumnId())
+                .build());
+
         log.info("byTeamIdAndBoardName = {}", byTeamIdAndBoardName);
 
         if (byTeamIdAndBoardName.getCards() == null) {
@@ -81,6 +87,8 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
         if (byTeamIdAndBoardName.getCards() != null) {
             num = byTeamIdAndBoardName.getCards().size()+1;
         }
+
+
 
         create(request.getContent(),member,byTeamIdAndBoardName, (long) num);
 
@@ -140,64 +148,79 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
 
     @Transactional
     @Override
-    public KanbanBoardMessageResponse changeCardPriority(KanbanBoardCardSwitchRequest request) {
+    public KanbanBoardAndCardResponse changeCardPriority(KanbanBoardCardSwitchRequest request) {
+        // 타겟 카드를 가져온다.
         KanbanBoardCard targetCard = getKanbanBoardCard(request.getCardId());
-
+        // 기존 보드를 가져온다
         KanbanBoard currentBoard = kanbanBoardService.getKanbanBoardById(request.getCurrentBoardId() );
         KanbanBoard newBoard = kanbanBoardService.getKanbanBoardById(request.getNewBoardId());
-
+        // 새로운 보드를 가져온다.
+        // 새로운 보드의 카드를 가져온다.
         List<KanbanBoardCard> newBoardCardList = getKanbanBoardCardbyBoardId(request.getNewBoardId());
-
+        // 프리오리티가 1보다 작다면 거나 새로운 카드리스트의 사이즈 보다 작다면 에러를 던진다.
         if (request.getNewPriority() < 1 || request.getNewPriority() > newBoardCardList.size() + 1) {
             throw new OutOfRangeKanbanBoardException(ExceptionMessage.Kanbanboard.KANBANBOARD_OUT_OF_RANGE_ERROR);
         }
-
+        // 기존 보드가 와 새로운 보드가 같은지 비교를 한다.
         boolean isSameBoard = request.getCurrentBoardId().equals(request.getNewBoardId());
 
+        // changePriorityWitheSameBoard라는 코드를 실행한다.
         if (isSameBoard) {
-            return changePriorityWithinSameBoard(targetCard, currentBoard, Math.toIntExact(request.getNewBoardId()));
+            return changePriorityWithinSameBoard(targetCard, currentBoard, request.getNewPriority(), request.getTeamId());
         }
-        return moveCardToAnotherBoard(targetCard, currentBoard, newBoard, Math.toIntExact(request.getNewBoardId()));
+        return moveCardToAnotherBoard(targetCard, currentBoard, newBoard, request.getNewPriority(), request.getTeamId());
     }
 
     @Transactional
-    protected KanbanBoardMessageResponse changePriorityWithinSameBoard(KanbanBoardCard targetCard, KanbanBoard board, int newPriority) {
+    protected KanbanBoardAndCardResponse changePriorityWithinSameBoard(KanbanBoardCard targetCard, KanbanBoard board, int newPriority, Long teamId) {
+
+        //보드 정보를 가져온다.
         List<KanbanBoardCard> cardList = getKanbanBoardCardbyBoardId(board.getId());
 
+        //타겟 카드의 priority를 가져온다. int로.
         int currentPriority = targetCard.getPriority().intValue();
-        if (currentPriority == newPriority) {
-            return KanbanBoardMessageResponse.builder()
-                    .message("No change in card priority")
-                    .result(true)
-                    .build();
-        }
 
+        //타겟 카드와 새로운 카드의 프리오리티가 같다면 그냥 기존 보드를 내려준다.
+        if (currentPriority == newPriority) {
+            return kanbanBoardService.findByTeamId(teamId);
+        }
+        //cardList의 카드를 foreach문을 돌린다.
         for (KanbanBoardCard card : cardList) {
+            // 카드의 priority를 가져온다.
             int priority = card.getPriority().intValue();
+
+            // 기존대상 카드의 priority가 새로운 drop할 장소 priority보다 작다면
             if (currentPriority < newPriority) {
+                // 반복문의 priority가 기존대상의 priority 보다 작고 , 새로운 priority보다 같거나 작다면.
+                // 반복문의 priority 보다 -1을 하여 저장한다.
                 if (priority > currentPriority && priority <= newPriority) {
                     card.setPriority((long) (priority - 1));
                 }
             } else {
+                // 기존대상 카드의 priority가 새로운 drop할 장소 priority랑 같거나 크다면
+                // 반복문의 priority가 새로운 drop할 장소 priority보다 크거나 같고, 기존의 priority보다 작으면
+                // 반복문의 priority 보다 +1을 하여 저장한다.
                 if (priority >= newPriority && priority < currentPriority) {
                     card.setPriority((long) (priority + 1));
                 }
             }
         }
-
+        // 그리고 targetCard의 priority를 바꿔준다.
         targetCard.setPriority((long) newPriority);
 
+        // 반복한 카드 리스트를 저장해준다.
         kanbanBoardCardRepository.saveAll(cardList);
+        // targetCard를 저장해준다.
         kanbanBoardCardRepository.save(targetCard);
+        // flush를 해야지 return에서 반영된 데이터를 가져 갈 수 있다.
+        kanbanBoardCardRepository.flush();
 
-        return KanbanBoardMessageResponse.builder()
-                .message("Successfully changed card priority within the same board")
-                .result(true)
-                .build();
+        return kanbanBoardService.findByTeamId(teamId);
+
     }
 
     @Transactional
-    protected KanbanBoardMessageResponse moveCardToAnotherBoard(KanbanBoardCard targetCard, KanbanBoard currentBoard, KanbanBoard newBoard, int newPriority) {
+    protected KanbanBoardAndCardResponse moveCardToAnotherBoard(KanbanBoardCard targetCard, KanbanBoard currentBoard, KanbanBoard newBoard, int newPriority, Long teamId) {
         List<KanbanBoardCard> currentBoardCardList = getKanbanBoardCardbyBoardId(currentBoard.getId());
 
         currentBoardCardList.remove(targetCard);
@@ -225,10 +248,9 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
         kanbanBoardCardRepository.saveAll(newBoardCardList);
         kanbanBoardCardRepository.save(targetCard);
 
-        return KanbanBoardMessageResponse.builder()
-                .message("Successfully moved card to another board and changed priority")
-                .result(true)
-                .build();
+        kanbanBoardCardRepository.flush();
+
+        return kanbanBoardService.findByTeamId(teamId);
     }
 
     @Override
