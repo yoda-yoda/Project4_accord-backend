@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.noteam.be.joinBoard.domain.JoinBoard;
+import org.noteam.be.member.domain.Member;
 import org.noteam.be.system.util.TimeAgoUtil;
 
 import java.time.LocalDate;
@@ -52,6 +53,19 @@ public class JoinBoardResponse {
     private String updatedAt;
 
 
+    @NotNull
+    private Long memberId;
+
+    @NotNull
+    private String memberNickname;
+
+    @NotNull
+    private String memberProfileUrl;
+
+
+
+
+
 
     public static JoinBoardResponse fromEntity (JoinBoard joinBoard) {
 
@@ -68,6 +82,9 @@ public class JoinBoardResponse {
                 .peopleNumber(joinBoard.getPeopleNumber())
                 .createdAt( TimeAgoUtil.formatElapsedTime(joinBoard.getCreatedAt()) )
                 .updatedAt( TimeAgoUtil.formatElapsedTime(joinBoard.getUpdatedAt()) )
+                .memberId(joinBoard.getMember().getMemberId())
+                .memberNickname(joinBoard.getMember().getNickname())
+                .memberProfileUrl( joinBoard.getMember().getProfileImg() == null ? null : joinBoard.getMember().getProfileImg().getImageUrl() )
                 .build();
 
     }

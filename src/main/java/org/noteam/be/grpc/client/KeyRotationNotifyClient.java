@@ -1,3 +1,4 @@
+
 package org.noteam.be.grpc.client;
 
 import io.grpc.ManagedChannel;
@@ -28,7 +29,7 @@ public class KeyRotationNotifyClient {
                 .setCurrentPublicKeyPem(currentPublicKeyPem)
                 .build();
 
-        NotifyKeyRolledResponse response = stub.notifyKeyRolled(request);
-        log.info("GO SERVER 응답: " + response.getMessage());
+//        NotifyKeyRolledResponse response = stub.notifyKeyRolled(request);
+//        log.info("GO SERVER 응답: " + response.getMessage());
     }
 }

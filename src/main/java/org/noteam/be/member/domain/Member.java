@@ -3,13 +3,8 @@ package org.noteam.be.member.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.noteam.be.joinBoard.domain.JoinBoard;
-import org.noteam.be.profileimg.entity.ProfileImg;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
+import org.noteam.be.profileimg.entity.ProfileImg;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,13 +48,13 @@ public class Member {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImg profileImg;
 
+    // JoinBoard(팀 구인게시판)과의 @OneToMany 관계 추가
+    @Setter
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JoinBoard> joinBoardList = new ArrayList<>();
 
     @OneToMany
     private List<KanbanBoardCard> kanbanBoardCards = new ArrayList<>();
-
-    // JoinBoard(팀 구인게시판)과의 @OneToOne 관계 추가 + cascade 설정 추가
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL , orphanRemoval = true)
-    private JoinBoard joinBoard;
 
 
     public static Member of(String email,
