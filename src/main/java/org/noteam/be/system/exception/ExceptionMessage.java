@@ -50,6 +50,11 @@ public class ExceptionMessage {
         public static final String IMAGE_DIMENSION_EXCEEDED_EXCEPTION = "파일의 폭 또는 높이가 초과되었습니다.";
     }
 
+    public static class Chat {
+        public static final String CHATROOM_DIFFERENT_EXCEPTION = "TeamId 불일치.";
+        public static final String CHATROOM_NOTFOUND_EXCEPTION = "TeamId 못찾음.";
+    }
+
 
     public static class Kanbanboard {
         public static final String KANBANBOARD_NOT_FOUND_ERROR = "해당하는 보드를 찾을 수 없습니다";

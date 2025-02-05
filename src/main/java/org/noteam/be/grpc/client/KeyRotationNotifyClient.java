@@ -21,11 +21,12 @@ public class KeyRotationNotifyClient {
         this.stub = KeyRotationNotifyServiceGrpc.newBlockingStub(keyRotationChannel);
     }
 
-    public void notifyKeyRolled(String prevKid, String currKid) {
+    public void notifyKeyRolled(String prevKid, String currKid, String currentPublicKeyPem) {
         NotifyKeyRolledRequest request = NotifyKeyRolledRequest.newBuilder()
                 .setPreviousKid(prevKid)
                 .setCurrentKid(currKid)
                 .setRolledAt(Instant.now().toString())
+                .setCurrentPublicKeyPem(currentPublicKeyPem)
                 .build();
 
 //        NotifyKeyRolledResponse response = stub.notifyKeyRolled(request);
