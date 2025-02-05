@@ -84,7 +84,7 @@ public class AIMessageProcessor {
                         .delayElements(Duration.ofMillis(20))
                         .concatMap(character -> {
                             messagingTemplate.convertAndSend(
-                                    "/topic/messages/" + userId,
+                                    "/topic/messages." + userId,
                                     "{\"type\":\"continue\",\"text\":\"" + character + "\"}"
                             );
                             return Mono.empty();
@@ -92,7 +92,7 @@ public class AIMessageProcessor {
             } else if ("complete".equals(type)) {
                 log.info("Sending complete message = {}", content);
                 messagingTemplate.convertAndSend(
-                        "/topic/messages/" + userId,
+                        "/topic/messages." + userId,
                         "{\"type\":\"complete\",\"text\":\"" + content + "\"}"
                 );
             }
