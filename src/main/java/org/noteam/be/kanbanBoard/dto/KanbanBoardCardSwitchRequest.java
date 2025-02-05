@@ -1,16 +1,15 @@
 package org.noteam.be.kanbanBoard.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class KanbanBoardCardSwitchRequest {
 
+    Long teamId;
     Long cardId;
     Long currentBoardId;
     int newPriority;

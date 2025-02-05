@@ -82,6 +82,11 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
     }
 
     @Override
+    public KanbanBoard getKanbanBoardByTeamIdAndBoardId(KanbanBoardSecondLookupRequest request) {
+        return kanbanBoardRepository.findByTeamIdAndId(request.getTeamId(), request.getBoardId());
+    }
+
+    @Override
     public KanbanBoard getKanbanBoardbyBoardId(Long boardId) {
         KanbanBoard kanbanBoard = kanbanBoardRepository.findById(boardId).orElseThrow();
         return kanbanBoard;
@@ -167,26 +172,54 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
         // 트랜잭션 종료 시 자동으로 업데이트 수행 (더티 체킹)
     }
 
-
+    //수정 해야된다.
     @Override
-    public KanbanBoardMessageResponse changeBoardPriority(KanbanBoardSwitchRequest request) {
+    public KanbanBoardAndCardResponse changeBoardPriority(KanbanBoardSwitchRequest request) {
 
-        KanbanBoard fromKanbanBoard = getKanbanBoardbyBoardId(request.getBoardId());
+        // 전체 보드 리스트를 조회한다.
         List<KanbanBoard> kanbanBoardList = getKanbanBoardList(request.getTeamId());
+        // 타켓 보드를 조회한다.
+        KanbanBoard targetBoard = getKanbanBoardbyBoardId(request.getBoardId());
 
-        for (int i = request.getDropSpotNum(); i <= kanbanBoardList.size(); i++ ) {
+        int currentPriority = targetBoard.getPriority().intValue();
 
-            KanbanBoard changeBoard = kanbanBoardList.get(i - 1);
-            changeBoard.setPriority((long) (i + 1));
+        int newPriority = request.getNewPriority();
 
+        if (currentPriority == newPriority) {
+            return findByTeamId(request.getTeamId());
         }
 
-        fromKanbanBoard.setPriority((long) request.getDropSpotNum());
+        // 반복을 한다.
+        /* 1. board에서 priority를 가져온다.
+        *  2. 만약 current priority가 new priority보다 작다면
+        * */
+        for (KanbanBoard board : kanbanBoardList) {
 
-        return  KanbanBoardMessageResponse.builder()
-                .message("Sucess Board Position Change")
-                .result(true)
-                .build();
+            int priority = board.getPriority().intValue();
+            // 만약 기존 priority 가 1이고 대상 priority가 3이라면
+            // 기존 기존 2-> 1 , 기존 3 -> 2 으로 하나씩 내려준다.
+
+            if (currentPriority < newPriority) {
+
+                if (priority > currentPriority && priority <= newPriority) {
+                    board.setPriority((long) priority - 1);
+                }
+
+            } else {
+                if ( priority < currentPriority && priority >= newPriority) {
+                    board.setPriority((long) priority + 1);
+                }
+            }
+        }
+
+        targetBoard.setPriority((long) newPriority);
+
+        kanbanBoardRepository.saveAll(kanbanBoardList);
+        kanbanBoardRepository.save(targetBoard);
+        kanbanBoardRepository.flush();
+
+
+        return  findByTeamId(request.getTeamId());
 
     }
 

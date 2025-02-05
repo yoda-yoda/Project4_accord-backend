@@ -16,6 +16,8 @@ public interface KanbanBoardService{
 
     KanbanBoard getKanbanBoardbyTeamIdAndTitle(KanbanBoardLookupRequest request );
 
+    KanbanBoard getKanbanBoardByTeamIdAndBoardId(KanbanBoardSecondLookupRequest request);
+
     KanbanBoard getKanbanBoardbyBoardId(Long boardId);
 
     KanbanBoardMessageResponse createBoard(KanbanBoardCreateRequest request);
@@ -24,7 +26,7 @@ public interface KanbanBoardService{
 
     KanbanBoardMessageResponse updateBoard(KanbanBoardUpdateRequest request);
 
-    KanbanBoardMessageResponse changeBoardPriority(KanbanBoardSwitchRequest request);
+    KanbanBoardAndCardResponse changeBoardPriority(KanbanBoardSwitchRequest request);
 
     KanbanBoardAndCardResponse findByTeamId(Long teamId);
 
