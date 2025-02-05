@@ -83,7 +83,7 @@ public class CommentController {
 
             CommentResponse res = commentService.updateCommentById(commentId, dto);
 
-            return ResponseData.toResponseEntity(ResponseCode.UPDATE_COMMENT_SUCCESS, res);
+            return ResponseData.toResponseEntity(ResponseCode.UPDATE_COMMENT_SUCCESS, res); //
 
         } else {
             throw new ExistingAuthenticationIsNull(ExceptionMessage.MemberAuth.EXISTING_AUTHENTICATION_IS_NULL);
