@@ -1,4 +1,3 @@
-
 package org.noteam.be.joinBoard.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -78,7 +77,6 @@ public class JoinBoardController {
 
         return ResponseData.toResponseEntity(ResponseCode.GET_JOIN_BOARD_SUCCESS, res);
     }
-
 
 
     @Operation(summary = "게시글 수정", description = "JoinBoard 게시판 작성된 게시글 수정")

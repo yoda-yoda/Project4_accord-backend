@@ -56,13 +56,13 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
     }
 
     @Override
-    public List<KanbanBoard> getKanbanBoardList(Long id) {
+    public List<KanbanBoard> getKanbanBoardList(Long teamId) {
 
-        Member memberinfo = memberService.getByMemberId(id);
-
-        TeamMember teamMemberInfo = teamMemberService.getTeamMember(memberinfo);
-
-        Long teamId = teamMemberInfo.getTeam().getId();
+//        Member memberinfo = memberService.getByMemberId(id);
+//
+//        TeamMember teamMemberInfo = teamMemberService.getTeamMember(memberinfo);
+//
+//        Long teamId = teamMemberInfo.getTeam().getId();
 
         return  getAllTeamBoards(teamId);
 
@@ -89,6 +89,7 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
     @Override
     public KanbanBoard getKanbanBoardbyBoardId(Long boardId) {
         KanbanBoard kanbanBoard = kanbanBoardRepository.findById(boardId).orElseThrow();
+        kanbanBoard.getCards();
         return kanbanBoard;
     }
 

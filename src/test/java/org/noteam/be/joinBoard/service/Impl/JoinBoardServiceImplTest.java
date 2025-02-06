@@ -29,7 +29,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-
+// ddl auto - create 로 했을때 클래스 메서드(통합) 통과확인
 @SpringBootTest
 @Slf4j
 class JoinBoardServiceImplTest {
@@ -263,7 +263,7 @@ class JoinBoardServiceImplTest {
         assertThat(res.getId()).isEqualTo(find1.getId());
         assertThat(res.getContent()).isEqualTo(req.getContent());
         assertThat(find1.getStatus()).isEqualTo(Status.ACTIVE);
-        assertThat(res.getMember().getMemberId()).isEqualTo(find1.getMember().getMemberId());
+        assertThat(res.getMemberId()).isEqualTo(find1.getMember().getMemberId());
 
     }
 
