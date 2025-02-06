@@ -1,15 +1,15 @@
 package org.noteam.be.joinBoard.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.noteam.be.comment.domain.Comment;
 import org.noteam.be.joinBoard.dto.JoinBoardUpdateRequest;
 import org.noteam.be.member.domain.Member;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,9 +20,20 @@ public class JoinBoard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+
+    // 멤버와의 @ManyToOne 관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+
+    // Comment(조인보드 내의 댓글)과의 @OneToMany 관계 추가
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "joinBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
+
+
 
     @Column(nullable = false)
     private String title;

@@ -51,7 +51,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway-mvc'
     testImplementation 'org.mockito:mockito-core:4.8.0'  // Mockito 버전 추가
-    testImplementation 'org.mockito:mockito-inline:5.2.0'
     testImplementation 'io.findify:s3mock_2.12:0.2.6'
     testImplementation 'io.projectreactor:reactor-test'
 
@@ -112,6 +111,8 @@ dependencies {
 
     implementation 'io.micrometer:micrometer-core'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 }
 
 dependencyManagement {

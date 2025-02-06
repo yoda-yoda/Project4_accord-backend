@@ -67,6 +67,12 @@ public class ExceptionMessage {
 
     }
 
+    public static class Comment {
+
+        public static final String COMMENT_NOT_FOUND_ERROR = "해당하는 댓글을 찾을 수 없습니다";
+
+    }
+
 
 
 

@@ -3,22 +3,17 @@ package org.noteam.be.kanbanBoard;
 
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.noteam.be.kanbanBoard.domain.KanbanBoard;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardCreateRequest;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardMessageResponse;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardSwitchRequest;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardUpdateRequest;
+import org.noteam.be.kanbanBoard.dto.*;
 import org.noteam.be.kanbanBoard.repository.KanbanBoardRepository;
 import org.noteam.be.kanbanBoard.service.KanbanBoardService;
 import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.domain.Role;
 import org.noteam.be.member.domain.Status;
 import org.noteam.be.member.repository.MemberRepository;
-import org.noteam.be.member.service.MemberService;
 import org.noteam.be.team.domain.Team;
 import org.noteam.be.team.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Rollback(true)
 @Transactional
 @SpringBootTest
-public class KanbanBoardServiceImpl {
+public class KanbanBoardServiceImplTest {
 
     @Autowired
     private KanbanBoardService kanbanBoardService;
@@ -51,9 +46,12 @@ public class KanbanBoardServiceImpl {
 
     Member member;
     Team team;
+    KanbanBoard board1;
+    KanbanBoard board2;
 
     @BeforeEach
     @DisplayName("테스트 시작을 위한 ")
+    @Transactional
     void setUp() {
 
         member = Member.builder()
@@ -71,6 +69,21 @@ public class KanbanBoardServiceImpl {
                 .teamName("TestTeam")
                 .build();
         teamRepository.save(team);
+
+       board1 = KanbanBoard.builder()
+                .team(team)
+                .priority(1L)
+                .title("TestKanbanBoard1")
+                .build();
+        kanbanBoardRepository.save(board1);
+
+        board2 = KanbanBoard.builder()
+                .team(team)
+                .priority(2L)
+                .title("TestKanbanBoard2")
+                .build();
+        kanbanBoardRepository.save(board2);
+
 
     }
 
@@ -178,7 +191,29 @@ public class KanbanBoardServiceImpl {
         log.info(" updateCard 테스트 성공: {}", message);
     }
 
+    @Test
+    @Transactional
+    @DisplayName("보드 위치 변경")
+    void changeBoardPriority() throws Exception {
+        log.info("😂");
+        KanbanBoardSwitchRequest request = KanbanBoardSwitchRequest.builder()
+                .boardId(board1.getId())
+                .teamId(team.getId())
+                .newPriority(2)
+                .build();
+        log.info("😂request = {}", request);
 
+        KanbanBoardAndCardResponse result = kanbanBoardService.changeBoardPriority(request);
+        log.info("😀result = {}", result);
+        log.info("result.getKanbanBoards().get(0) = {}", result.getKanbanBoards().get(0));
+        log.info("board1.getId() = {}", board1.getId());
 
+        KanbanBoardResponse resultboard1 = result.getKanbanBoards().get(0);
+        KanbanBoardResponse resultboard2 = result.getKanbanBoards().get(1);
 
+        assertEquals(resultboard1.getPriority(),1L, "priority가 일치해야합니다");
+        assertEquals(resultboard2.getId(), board1.getId(), "ID가 일치해야 합니다." );
+        assertEquals(resultboard2.getPriority(), 2L ,"priority가 변경되어야 합니다.");
+
+    }
 }

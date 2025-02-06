@@ -37,7 +37,15 @@ public enum ResponseCode {
     POST_NOTE_IMAGE_SUCCESS(Status.OK, Message.SAVE_NOTE_IMAGE),
     DELETE_NOTE_IMAGE_SUCCESS(Status.OK, Message.DELETE_NOTE_IMAGE),
 
+    // comment
+    POST_COMMENT_SUCCESS(Status.OK, Message.SAVE_COMMENT),
+    GET_COMMENT_SUCCESS(Status.OK, Message.READ_COMMENT),
+    UPDATE_COMMENT_SUCCESS(Status.OK, Message.UPDATE_COMMENT),
+    DELETE_COMMENT_SUCCESS(Status.OK, Message.DELETE_COMMENT),
+    UPDATE_COMMENT_FAIL(Status.FORBIDDEN, Message.UPDATE_COMMENT_FAIL),
+
     ;
+
 
 
     private int httpStatus;

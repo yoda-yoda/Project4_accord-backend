@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.noteam.be.team.domain.Team;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,7 +32,7 @@ public class KanbanBoard {
 
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<KanbanBoardCard> cards;
+    private List<KanbanBoardCard> cards = new ArrayList<>();
 
     @Builder
     public KanbanBoard(Team team, String title,Long priority) {

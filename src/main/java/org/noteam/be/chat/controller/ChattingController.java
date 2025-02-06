@@ -1,5 +1,7 @@
 package org.noteam.be.chat.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.noteam.be.chat.dto.MessageChunkRequest;
@@ -35,6 +37,8 @@ public class ChattingController {
     }
 
     //이전의 대화기록을 불러온다. (더블클릭을 하거나/ 창이 켜졌을 경우)
+    @Tag(name = "채팅", description = "채팅API")
+    @Operation(summary = "채팅기록 불러오기", description = "채팅방 입장 시 대화기록 불러오기")
     @ResponseBody
     @GetMapping("/api/chat/messages")
     public ResponseEntity<Page<MessageResponse>> chunkMessages(@ModelAttribute MessageChunkRequest msgChunk) {
