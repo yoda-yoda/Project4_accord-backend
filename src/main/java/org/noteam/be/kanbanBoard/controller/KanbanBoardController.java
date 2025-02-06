@@ -3,14 +3,10 @@ package org.noteam.be.kanbanBoard.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
+import org.noteam.be.kanbanBoard.anotation.CheckTeam;
 import org.noteam.be.kanbanBoard.dto.*;
 import org.noteam.be.kanbanBoard.service.KanbanBoardCardService;
 import org.noteam.be.kanbanBoard.service.KanbanBoardService;
-import org.noteam.be.system.exception.team.TeamNotFoundException;
-import org.noteam.be.system.util.SecurityUtil;
-import org.noteam.be.team.domain.Team;
-import org.noteam.be.team.dto.TeamResponse;
 import org.noteam.be.team.service.TeamService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +25,9 @@ public class KanbanBoardController {
     private final TeamService teamService;
 
     // aop 추가
-    // 나중에 로그인 정보로 member id 가져오는 걸로 교체
     // 칸반보드 조회 하는 로직
+    // 나중에 로그인 정보로 member id 가져오는 걸로 교체
+    @CheckTeam
     @GetMapping("/kanbanboard/{teamId}")
     public ResponseEntity<KanbanBoardAndCardResponse> getKanbanBoardList(@PathVariable Long teamId) {
 
@@ -39,7 +36,7 @@ public class KanbanBoardController {
 
         return ResponseEntity.ok(result);
     }
-
+    @CheckTeam
     @GetMapping("/kanbanboard/team/{teamId}")
     public ResponseEntity<KanbanBoardTeamResponse> getTeam(@PathVariable Long teamId) {
 

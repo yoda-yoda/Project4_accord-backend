@@ -6,8 +6,6 @@ import org.noteam.be.member.dto.MemberProfileResponse;
 import org.noteam.be.member.service.MemberService;
 import org.noteam.be.profileimg.service.ProfileImgService;
 import org.noteam.be.team.domain.Team;
-import org.noteam.be.team.dto.TeamResponse;
-import org.noteam.be.team.service.TeamService;
 import org.noteam.be.teamMember.service.TeamMemberService;
 import org.noteam.be.teamMember.repository.TeamMemberRepository;
 import org.noteam.be.teamMember.domain.TeamMember;
@@ -67,5 +65,10 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Override
     public TeamMember getTeamMember(Member member) {
         return teamMemberRepository.findByMember(member);
+    }
+
+    @Override
+    public TeamMember getTeamMemberByMemberAndTeam(Member member, Team team) {
+        return teamMemberRepository.findByMemberAndTeam(member, team);
     }
 }

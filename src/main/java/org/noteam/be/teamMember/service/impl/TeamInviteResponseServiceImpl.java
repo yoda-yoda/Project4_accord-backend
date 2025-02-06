@@ -44,7 +44,8 @@ public class TeamInviteResponseServiceImpl implements TeamInviteResponseService 
         Member member = memberRepository.findById(memberId).get();
 
         // 기존 멤버아이디가 조회 안되는지 확인하고 조회가 알될경우 save실행
-        TeamMember findMember = teamMemberRepository.findByMember(member);
+        TeamMember findMember = teamMemberRepository.findByMemberAndTeam(member, team);
+
         System.out.println("서비스 도착");
         log.info("findMember = {}", findMember);
 

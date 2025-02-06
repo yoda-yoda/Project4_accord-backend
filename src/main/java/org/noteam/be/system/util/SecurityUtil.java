@@ -3,7 +3,9 @@ package org.noteam.be.system.util;
 import org.noteam.be.member.dto.CustomUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SecurityUtil {
 
     public static Long getCurrentMemberId() {

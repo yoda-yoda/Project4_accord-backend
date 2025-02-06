@@ -16,4 +16,6 @@ public interface TeamMemberService {
     TeamMember save (Member member, Team team);
 
     TeamMember getTeamMember(Member member);
+
+    TeamMember getTeamMemberByMemberAndTeam(Member member, Team team);
 }
