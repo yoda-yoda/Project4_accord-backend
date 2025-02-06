@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public interface CommentService {
 
-    CommentResponse createCommentByDto(CommentRegisterRequest dto, Member member, Long joinBoardId);
+    CommentResponse createCommentByDto(CommentRegisterRequest dto, Member member, Long joinBoardId, Long parentCommentId);
 
     Comment getCommentEntityById(Long id);
 

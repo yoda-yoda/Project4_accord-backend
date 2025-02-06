@@ -28,7 +28,13 @@ public class CommentController {
 
 
     @PostMapping("/{joinBoardId}")
-    public ResponseEntity<ResponseData<CommentResponse>> createComment(@RequestBody CommentRegisterRequest dto, @PathVariable Long joinBoardId){
+    public ResponseEntity<ResponseData<CommentResponse>> createComment(
+            @RequestBody CommentRegisterRequest dto,
+            @PathVariable Long joinBoardId,
+            @RequestParam(required = false) Long parentCommentId
+    ) {
+
+        System.out.println(parentCommentId);
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
 
@@ -38,7 +44,7 @@ public class CommentController {
 
         Member findMember = commentService.findMemberById(currentMemberId);
 
-        CommentResponse res = commentService.createCommentByDto(dto, findMember, joinBoardId);
+        CommentResponse res = commentService.createCommentByDto(dto, findMember, joinBoardId, parentCommentId);
 
         return ResponseData.toResponseEntity(ResponseCode.POST_COMMENT_SUCCESS, res);
     }

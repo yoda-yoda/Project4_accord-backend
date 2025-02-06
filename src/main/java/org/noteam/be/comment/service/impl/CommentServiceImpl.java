@@ -40,11 +40,11 @@ public class CommentServiceImpl implements CommentService {
     // 예외: 내부 메서드에서 조인보드를 찾지못할시 예외가 발생한다.
     // 반환: 저장한 Comment 엔티티를 CommentResponse 로 변환하고 반환한다.
     @Transactional
-    public CommentResponse createCommentByDto(CommentRegisterRequest dto, Member member, Long joinBoardId) {
+    public CommentResponse createCommentByDto(CommentRegisterRequest dto, Member member, Long joinBoardId,  Long parentCommentId) {
 
         JoinBoard findJoinBoard = getJoinBoardEntityById(joinBoardId);
 
-        Comment comment = CommentRegisterRequest.toEntity(dto, member, findJoinBoard);
+        Comment comment = CommentRegisterRequest.toEntity(dto, member, findJoinBoard, parentCommentId);
 
         Comment savedComment = commentRepository.save(comment);
 
