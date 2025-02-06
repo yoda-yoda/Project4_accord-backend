@@ -22,7 +22,7 @@ public class NoteImage {
     private String noteId;
     @Column(nullable = false, unique = true)
     private String fileName;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, columnDefinition = "TEXT")
     private String imageUrl;
     @Column(nullable = false)
     private LocalDateTime createdAt;

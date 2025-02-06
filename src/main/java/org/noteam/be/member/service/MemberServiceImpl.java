@@ -14,6 +14,9 @@ import org.noteam.be.member.dto.OAuthSignUpRequest;
 import org.noteam.be.profileimg.service.ProfileImgService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.member.*;
+import org.noteam.be.team.dto.TeamResponse;
+import org.noteam.be.team.service.TeamService;
+import org.noteam.be.teamMember.service.TeamMemberService;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -38,7 +41,8 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
                         member.getMemberId(),
                         member.getEmail(),
                         member.getNickname(),
-                        profileImgService.getMembersProfileImg(member)
+                        profileImgService.getMembersProfileImg(member),
+                        member.getRole().toString()
                 ))
                 .collect(Collectors.toList());
     }
@@ -107,6 +111,12 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
                 provider
         );
         return memberRepository.save(newMember);
+    }
+
+    @Override
+    public Member findMemberByMemberId(Long memberId) {
+        return memberRepository.findByMemberId(memberId)
+                .orElseThrow(()->new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND_EXCEPTION));
     }
 
     // provider별로 email 추출
@@ -205,17 +215,17 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
                 member.getMemberId(),
                 member.getEmail(),
                 member.getNickname(),
-                profileImgService.getMembersProfileImg(member)
-
+                profileImgService.getMembersProfileImg(member),
+                member.getRole().toString()
         );
     }
 
     @Override
     @Transactional
     public void deleteMember(Long memberId) {
+
         // Member 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+        Member member = this.findMemberByMemberId(memberId);
 
         // 삭제상태로 status 변경.(Soft Delete)
         member.changeStatus(Status.DELETED);
@@ -232,13 +242,15 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
     public MemberProfileResponse getMemberProfile(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
+        String userRole = member.getRole().toString();
+        log.info("롤 세팅값 : "+userRole);
         return new MemberProfileResponse(
                 member.getMemberId(),
                 member.getEmail(),
                 member.getNickname(),
-                profileImgService.getMembersProfileImg(member)
+                profileImgService.getMembersProfileImg(member),
+                member.getRole().toString()
         );
     }
 
 }
-

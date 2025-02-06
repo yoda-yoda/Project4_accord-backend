@@ -38,57 +38,57 @@ class SearchServiceImplTest {
     List<JoinBoardResponse> joinBoardResponseList = new ArrayList<>();
 
 
-    @BeforeEach
-    void setUp1() {
-
-        JoinBoardRegisterRequest req1 = JoinBoardRegisterRequest.builder()
-                .title("테스트 테스트1")
-                .topic("topic")
-                .teamName("teamName")
-                .projectBio("projectBio")
-                .teamBio("teamBio")
-                .content("content")
-                .startDate(LocalDate.now())
-                .endDate(LocalDate.now().plusDays(1))
-                .peopleNumber(3)
-                .build();
-
-
-        JoinBoardRegisterRequest req2 = JoinBoardRegisterRequest.builder()
-                .title("title")
-                .topic("테스트 테스트2")
-                .teamName("teamName")
-                .projectBio("projectBio")
-                .teamBio("teamBio")
-                .content("content")
-                .startDate(LocalDate.now())
-                .endDate(LocalDate.now().plusDays(1))
-                .peopleNumber(3)
-                .build();
-
-
-        JoinBoardRegisterRequest req3 = JoinBoardRegisterRequest.builder()
-                .title("테스트 테스트3")
-                .topic("topic")
-                .teamName("teamName")
-                .projectBio("projectBio")
-                .teamBio("teamBio")
-                .content("content")
-                .startDate(LocalDate.now())
-                .endDate(LocalDate.now().plusDays(1))
-                .peopleNumber(3)
-                .build();
-
-
-        JoinBoardResponse joinBoardRes1 = joinBoardService.createJoinBoardByDto(req1);
-        JoinBoardResponse joinBoardRes2 = joinBoardService.createJoinBoardByDto(req2);
-        JoinBoardResponse joinBoardRes3 = joinBoardService.createJoinBoardByDto(req3);
-
-        joinBoardService.deleteJoinBoardById(joinBoardRes3.getId());
-
-        log.info("==========BeforeEach 끝==========");
-
-    }
+//    @BeforeEach
+//    void setUp1() {
+//
+//        JoinBoardRegisterRequest req1 = JoinBoardRegisterRequest.builder()
+//                .title("테스트 테스트1")
+//                .topic("topic")
+//                .teamName("teamName")
+//                .projectBio("projectBio")
+//                .teamBio("teamBio")
+//                .content("content")
+//                .startDate(LocalDate.now())
+//                .endDate(LocalDate.now().plusDays(1))
+//                .peopleNumber(3)
+//                .build();
+//
+//
+//        JoinBoardRegisterRequest req2 = JoinBoardRegisterRequest.builder()
+//                .title("title")
+//                .topic("테스트 테스트2")
+//                .teamName("teamName")
+//                .projectBio("projectBio")
+//                .teamBio("teamBio")
+//                .content("content")
+//                .startDate(LocalDate.now())
+//                .endDate(LocalDate.now().plusDays(1))
+//                .peopleNumber(3)
+//                .build();
+//
+//
+//        JoinBoardRegisterRequest req3 = JoinBoardRegisterRequest.builder()
+//                .title("테스트 테스트3")
+//                .topic("topic")
+//                .teamName("teamName")
+//                .projectBio("projectBio")
+//                .teamBio("teamBio")
+//                .content("content")
+//                .startDate(LocalDate.now())
+//                .endDate(LocalDate.now().plusDays(1))
+//                .peopleNumber(3)
+//                .build();
+//
+//
+//        JoinBoardResponse joinBoardRes1 = joinBoardService.createJoinBoardByDto(req1);
+//        JoinBoardResponse joinBoardRes2 = joinBoardService.createJoinBoardByDto(req2);
+//        JoinBoardResponse joinBoardRes3 = joinBoardService.createJoinBoardByDto(req3);
+//
+//        joinBoardService.deleteJoinBoardById(joinBoardRes3.getId());
+//
+//        log.info("==========BeforeEach 끝==========");
+//
+//    }
 
     @AfterEach
     void tearDown() {

@@ -46,12 +46,14 @@ public class SecurityConfig {
 
                 // 인증, 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws", "/ws/**", "/ws/info")
+                        .requestMatchers("/ws", "/ws/**", "/ws/info", "/actuator/health")
                         .permitAll()
                         .requestMatchers("/api/members/**")
                         .hasAnyAuthority("ADMIN", "MEMBER")
-                        .requestMatchers("/api/admins/**")
+                        .requestMatchers("/api/admin/**")
                         .hasAuthority("ADMIN")
+                        .requestMatchers("/chat/**","/publish/**")
+                        .permitAll()
                         .anyRequest()
                         .permitAll()
                 )

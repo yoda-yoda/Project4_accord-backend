@@ -33,7 +33,8 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                             member.getMemberId(),
                             member.getEmail(),
                             member.getNickname(),
-                            profileImgService.getMembersProfileImg(member)
+                            profileImgService.getMembersProfileImg(member),
+                            member.getRole().toString()
                     );
                 })
                 .collect(Collectors.toList());
