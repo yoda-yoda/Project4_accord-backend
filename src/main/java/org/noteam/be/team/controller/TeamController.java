@@ -1,6 +1,8 @@
 package org.noteam.be.team.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "팀관리", description = "협업 팀 관리 API")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ public class TeamController {
 
     // 메서드 기능: 등록Dto를 매개변수로 받아서, 엔티티로 변환후 Team DB에 저장한다
     // 반환: 엔티티를 fromEntity 메서드를통해 응답Dto로 바꾼후 반환한다
+    @Operation(summary = "팀 생성", description = "새로운 팀 생성")
     @PostMapping("/members/teams")
     public ResponseEntity<ResponseData<TeamResponse>> createTeam(@RequestBody TeamRegisterRequest dto) {
 
@@ -40,6 +44,7 @@ public class TeamController {
     // 조건: delete false 인것만 찾는다
     // 예외: 존재하지않으면 예외를 던진다
     // 반환: 엔티티를 fromEntity 메서드를통해 응답Dto로 바꾼후 반환한다
+    @Operation(summary = "팀 조회", description = "팀 이름을 조회")
     @GetMapping("/teams/{teamId}")
     public ResponseEntity<ResponseData<TeamResponse>> getTeamById(@PathVariable Long teamId) {
 
@@ -54,6 +59,7 @@ public class TeamController {
     // 그리고 setter를 이용하여 Dto에 저장된 팀명으로 바꾼뒤 다시 저장한다. 등록할때 입력받는 변수가 같아서 그대로 RegisterDto를 사용했다.
     // 예외: 내부메서드에서 예외처리된다
     // 반환: 엔티티를 fromEntity 메서드를통해 응답Dto로 바꾼후 반환한다
+    @Operation(summary = "팀 이름 수정", description = "팀 이름 수정")
     @PutMapping("/teams/{teamId}")
     public ResponseEntity<ResponseData<TeamResponse>> updateTeamByDto(@PathVariable Long teamId, TeamRegisterRequest dto) {
 
@@ -67,6 +73,7 @@ public class TeamController {
 
     // 메서드 기능: id로 team 엔티티를 찾아서, setter로 소프트 딜리트 처리한다
     // 예외: 해당 엔티티가 존재하지않으면 예외를 던진다
+    @Operation(summary = "팀 삭제", description = "팀 삭제 여부를 TRUE 로 변경 해서 삭제")
     @DeleteMapping("/teams/{teamId}")
     public ResponseEntity<ResponseData> deleteTeam(@PathVariable Long teamId) {
 
@@ -75,6 +82,7 @@ public class TeamController {
         return ResponseData.toResponseEntity(ResponseCode.DELETE_TEAM_SUCCESS);
     }
 
+    @Operation(summary = "회원이 속한 팀 조회", description = "회원id로 해당 회원이 속한 팀 조회")
     @GetMapping("/members/teams/{memberId}")
     public ResponseEntity<ResponseData<List<TeamResponse>>> getTeamByMemberId(@PathVariable Long memberId) {
         List<TeamResponse> teams = teamService.getTeamsByMemberId(memberId);
