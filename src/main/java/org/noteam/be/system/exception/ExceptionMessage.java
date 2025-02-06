@@ -60,6 +60,7 @@ public class ExceptionMessage {
         public static final String KANBANBOARD_NOT_FOUND_ERROR = "해당하는 보드를 찾을 수 없습니다";
         public static final String KANBANBOARD_CARD_NOT_FOUND_ERROR = "해당하는 카드를 찾을 수 없습니다";
         public static final String KANBANBOARD_OUT_OF_RANGE_ERROR = "카드가 범위를 벗어났습니다.";
+        public static final String KANBANBOARD_TEAM_ID_NOT_PROVIDED = "팀 ID가 제공되지 않았습니다";
     }
     public static class Image {
         public static final String INVALID_FILENAME_ERROR = "유효하지 않은 이미지 파일 이름 입니다.";

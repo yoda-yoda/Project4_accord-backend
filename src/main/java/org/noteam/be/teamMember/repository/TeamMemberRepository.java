@@ -1,6 +1,7 @@
 package org.noteam.be.teamMember.repository;
 
 import org.noteam.be.member.domain.Member;
+import org.noteam.be.team.domain.Team;
 import org.noteam.be.teamMember.domain.TeamMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,6 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
 
     @Query("SELECT tm.member.memberId FROM TeamMember tm WHERE tm.team.id = :teamId AND tm.deleted = false")
     List<Long> findMemberIdsByTeamIdAndDeletedFalse(@Param("teamId") Long teamId);
+
+    TeamMember findByMemberAndTeam (Member member, Team team);
 }

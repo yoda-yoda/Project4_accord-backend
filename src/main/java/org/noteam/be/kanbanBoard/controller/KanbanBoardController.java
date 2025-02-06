@@ -5,14 +5,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
+import org.noteam.be.kanbanBoard.anotation.CheckTeam;
 import org.noteam.be.kanbanBoard.dto.*;
 import org.noteam.be.kanbanBoard.service.KanbanBoardCardService;
 import org.noteam.be.kanbanBoard.service.KanbanBoardService;
-import org.noteam.be.system.exception.team.TeamNotFoundException;
-import org.noteam.be.system.util.SecurityUtil;
-import org.noteam.be.team.domain.Team;
-import org.noteam.be.team.dto.TeamResponse;
 import org.noteam.be.team.service.TeamService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +27,10 @@ public class KanbanBoardController {
     private final TeamService teamService;
 
     // aop 추가
-    // 나중에 로그인 정보로 member id 가져오는 걸로 교체
     // 칸반보드 조회 하는 로직
+
+    // 나중에 로그인 정보로 member id 가져오는 걸로 교체
+    @CheckTeam
     @Operation(summary = "칸반보드 조회", description = "팀id에 해당하는 칸반보드 조회")
     @GetMapping("/kanbanboard/{teamId}")
     public ResponseEntity<KanbanBoardAndCardResponse> getKanbanBoardList(@PathVariable Long teamId) {
@@ -43,6 +41,7 @@ public class KanbanBoardController {
         return ResponseEntity.ok(result);
     }
 
+    @CheckTeam
     @Operation(summary = "칸반보드 팀 id 조회", description = "칸반보드 조회를 위한 팀 id 조회")
     @GetMapping("/kanbanboard/team/{teamId}")
     public ResponseEntity<KanbanBoardTeamResponse> getTeam(@PathVariable Long teamId) {
