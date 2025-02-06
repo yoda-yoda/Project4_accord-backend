@@ -4,6 +4,9 @@ package org.noteam.be.team.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
+import org.noteam.be.kanbanBoard.dto.KanbanBoardCreateRequest;
+import org.noteam.be.kanbanBoard.dto.KanbanBoardMessageResponse;
+import org.noteam.be.kanbanBoard.service.KanbanBoardService;
 import org.noteam.be.system.response.ResponseCode;
 import org.noteam.be.system.response.ResponseData;
 import org.noteam.be.team.dto.TeamRegisterRequest;
@@ -21,6 +24,7 @@ import java.util.List;
 public class TeamController {
 
     private final TeamService teamService;
+    private final KanbanBoardService kanbanBoardService;
 
 
     // 메서드 기능: 등록Dto를 매개변수로 받아서, 엔티티로 변환후 Team DB에 저장한다
@@ -29,7 +33,12 @@ public class TeamController {
     public ResponseEntity<ResponseData<TeamResponse>> createTeam(@RequestBody TeamRegisterRequest dto) {
 
         TeamResponse teamByDto = teamService.createTeamByDto(dto);
-
+        KanbanBoardMessageResponse kanbanBoardResponse = kanbanBoardService.createBoard(
+                KanbanBoardCreateRequest.builder()
+                        .teamId(teamByDto.getId())
+                        .title("Untitled")
+                        .build()
+        );
         return ResponseData.toResponseEntity(ResponseCode.POST_TEAM_SUCCESS, teamByDto);
 
     }
