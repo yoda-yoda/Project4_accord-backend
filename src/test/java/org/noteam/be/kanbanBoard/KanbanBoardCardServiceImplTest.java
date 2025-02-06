@@ -218,6 +218,10 @@ public class KanbanBoardCardServiceImplTest {
         assertEquals(resultboard.getCards().get(0).getId(), card1.getId(), "ID가 일치해야 합니다.");
         assertEquals(resultboard.getCards().get(0).getPriority(),2L, "priority가 일치해야 합니다.");
 
+        //then
+       Assertions.assertThat(message).isEqualTo("Successfully changed card priority within the same board");
+       log.info("changeCardPriority 테스트 성공: {}", message);
+
 
     }
 

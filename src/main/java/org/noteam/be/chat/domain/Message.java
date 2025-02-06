@@ -48,6 +48,7 @@ public class Message {
                 .senderMember(senderMember) //이부분
                 .teamId(msgReq.getTeamId())
                 .message(msgReq.getMessage())
+                .sendAt(LocalDateTime.now())
                 .build();
     }
 

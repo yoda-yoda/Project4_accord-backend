@@ -3,7 +3,9 @@ package org.noteam.be.team.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.noteam.be.kanbanBoard.dto.KanbanBoardCreateRequest;
 import org.noteam.be.kanbanBoard.dto.KanbanBoardTeamResponse;
+import org.noteam.be.kanbanBoard.service.KanbanBoardService;
 import org.noteam.be.member.service.MemberService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.team.TeamNotFoundException;
@@ -43,9 +45,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamResponse createTeamByDto(TeamRegisterRequest dto) {
         Team team = TeamRegisterRequest.toEntity(dto);
         teamMemberService.save(memberService.getByMemberId(SecurityUtil.getCurrentMemberId()), team);
-
         Team savedTeam = teamRepository.save(team);
-
         return  TeamResponse.fromEntity(savedTeam);
 
     }

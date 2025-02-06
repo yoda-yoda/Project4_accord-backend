@@ -52,6 +52,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway-mvc'
     testImplementation 'org.mockito:mockito-core:4.8.0'  // Mockito 버전 추가
     testImplementation 'io.findify:s3mock_2.12:0.2.6'
+    testImplementation 'io.projectreactor:reactor-test'
 
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
