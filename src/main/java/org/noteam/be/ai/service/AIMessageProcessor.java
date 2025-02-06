@@ -65,7 +65,7 @@ public class AIMessageProcessor {
                 .subscribe();
     }
 
-    private Flux<Void> parseAndStreamMessage(String rawData, String userId) {
+    public Flux<Void> parseAndStreamMessage(String rawData, String userId) {
         try {
             String trimmed = rawData.trim();
             if (trimmed.startsWith("data:")) {
@@ -111,7 +111,7 @@ public class AIMessageProcessor {
         }
     }
 
-    private void sendChunk(String userId, String type, String content) {
+    public void sendChunk(String userId, String type, String content) {
         Map<String, String> msgMap = new HashMap<>();
         msgMap.put("type", type);
         msgMap.put("text", content);

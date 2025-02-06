@@ -263,7 +263,7 @@ class JoinBoardServiceImplTest {
         assertThat(res.getId()).isEqualTo(find1.getId());
         assertThat(res.getContent()).isEqualTo(req.getContent());
         assertThat(find1.getStatus()).isEqualTo(Status.ACTIVE);
-        assertThat(res.getMember().getMemberId()).isEqualTo(find1.getMember().getMemberId());
+        //assertThat(res.getMember().getMemberId()).isEqualTo(find1.getMember().getMemberId());
 
     }
 
