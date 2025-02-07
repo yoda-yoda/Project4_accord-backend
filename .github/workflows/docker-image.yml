@@ -43,9 +43,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # 중복 실행 방지를 위해 기존 컨테이너 종료 및 삭제 (컨테이너 이름: my-app)
-            docker stop my-app || true
-            docker rm my-app || true
+            sudo docker stop my-app || true
+            sudo docker rm my-app || true
             # 최신 이미지 풀
-            docker pull ${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+            sudo docker pull ${{ secrets.DOCKERHUB_REPOSITORY }}:latest
             # 새 컨테이너 실행 (예: 호스트의 8080 포트를 컨테이너의 8080 포트로 매핑)
-            docker run -d --name my-app -p 8080:8080 ${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+            sudo docker run -d --name my-app -p 8080:8080 ${{ secrets.DOCKERHUB_REPOSITORY }}:latest
