@@ -54,7 +54,7 @@ public class KanbanBoardController {
 
     //칸반 보드 추가
     @Operation(summary = "칸반보드 추가", description = "팀id에 해당하는 칸반보드 추가")
-    @PostMapping("/kanbanboard/create")
+    @PostMapping("/kanbanboard")
     public ResponseEntity<KanbanBoardCreateResponse> createKanbanBoard(@RequestBody KanbanBoardCreateRequest request) {
 
         KanbanBoardCreateResponse result = kanbanBoardService.createBoard(request);
@@ -64,7 +64,7 @@ public class KanbanBoardController {
 
     //칸반 보드 카드 추가 로직
     @Operation(summary = "카드 추가", description = "칸반보드 칼럼에 카드 추가")
-    @PostMapping("/kanbanboardcard/create")
+    @PostMapping("/kanbanboardcard")
     public ResponseEntity<KanbanBoardCardCreateResponse> createKanbanBoardCard(@RequestBody KanbanBoardCardCreateRequest request) {
 
         log.info("😀request = {}", request);
@@ -79,7 +79,7 @@ public class KanbanBoardController {
     //테스트 코드 작성해야합니다 ..
     // 칸반보드 삭제
     @Operation(summary = "칸반보드 삭제", description = "칸반보드 삭제")
-    @DeleteMapping("/kanbanboard/delete")
+    @DeleteMapping("/kanbanboard")
     public ResponseEntity<KanbanBoardMessageResponse> deleteKanbanBoard(@RequestBody KanbanBoardDeleteRequest request) {
 
         Long boardId = request.getBoardId();
@@ -92,7 +92,7 @@ public class KanbanBoardController {
 
     //칸반보드 카드 삭제
     @Operation(summary = "카드 삭제", description = "칸반보드 칼럼의 카드 삭제")
-    @DeleteMapping("/kanbanboardcard/delete")
+    @DeleteMapping("/kanbanboardcard")
     public ResponseEntity<KanbanBoardMessageResponse> deleteKanbanBoardCard(@RequestBody KanbanBoardCardDeleteRequest request) {
 
         Long cardId = request.getCardId();
@@ -107,7 +107,7 @@ public class KanbanBoardController {
 
     //칸반보드 제목 변경
     @Operation(summary = "제목 변경", description = "칸반보드 칼럼이름 변경")
-    @PutMapping("/kanbanboard/update")
+    @PutMapping("/kanbanboard")
     public ResponseEntity<KanbanBoardMessageResponse> updateKanbanBoardTitle(@RequestBody KanbanBoardUpdateRequest request) {
 
         KanbanBoardMessageResponse result = kanbanBoardService.updateBoard(request);

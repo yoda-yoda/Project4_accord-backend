@@ -52,18 +52,4 @@ public class MemberController {
 
     }
 
-    @Operation(summary = "회원정보 조회", description = "회원정보 memberId로 조회")
-    @GetMapping("/userinfos")
-    public ResponseEntity<?> getUserInfos(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-
-        if (userDetails == null) {
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Unauthorized");
-        }
-
-        return ResponseEntity.ok(Map.of("memberInfo", memberService.getMemberProfile(userDetails.getMemberId())));
-
-    }
-
 }
