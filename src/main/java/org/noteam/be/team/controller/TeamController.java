@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.noteam.be.kanbanBoard.dto.KanbanBoardCreateRequest;
+import org.noteam.be.kanbanBoard.dto.KanbanBoardCreateResponse;
 import org.noteam.be.kanbanBoard.dto.KanbanBoardMessageResponse;
 import org.noteam.be.kanbanBoard.service.KanbanBoardService;
 import org.noteam.be.system.response.ResponseCode;
@@ -37,7 +38,7 @@ public class TeamController {
     public ResponseEntity<ResponseData<TeamResponse>> createTeam(@RequestBody TeamRegisterRequest dto) {
 
         TeamResponse teamByDto = teamService.createTeamByDto(dto);
-        KanbanBoardMessageResponse kanbanBoardResponse = kanbanBoardService.createBoard(
+        KanbanBoardCreateResponse kanbanBoardResponse = kanbanBoardService.createBoard(
                 KanbanBoardCreateRequest.builder()
                         .teamId(teamByDto.getId())
                         .title("Untitled")
