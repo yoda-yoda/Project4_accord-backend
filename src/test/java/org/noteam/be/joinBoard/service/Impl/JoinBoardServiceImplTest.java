@@ -265,6 +265,7 @@ class JoinBoardServiceImplTest {
         assertThat(find1.getStatus()).isEqualTo(Status.ACTIVE);
         assertThat(res.getMemberId()).isEqualTo(find1.getMember().getMemberId());
 
+
     }
 
 

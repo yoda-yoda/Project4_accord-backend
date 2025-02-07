@@ -1,5 +1,6 @@
 package org.noteam.be.ai.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,7 +39,7 @@ public class AIMessageProcessor {
             e.printStackTrace();
             String userId = getUserIdFromMessage(message);
             if (userId != null) {
-                messagingTemplate.convertAndSend("/topic/messages/" + userId, "Error processing message.");
+                messagingTemplate.convertAndSend("/topic/messages." + userId, "Error processing message.");
             } else {
                 log.error("Failed to extract userId from message: {}", message);
             }
@@ -62,7 +65,7 @@ public class AIMessageProcessor {
                 .subscribe();
     }
 
-    private Flux<Void> parseAndStreamMessage(String rawData, String userId) {
+    public Flux<Void> parseAndStreamMessage(String rawData, String userId) {
         try {
             String trimmed = rawData.trim();
             if (trimmed.startsWith("data:")) {
@@ -83,18 +86,12 @@ public class AIMessageProcessor {
                 return Flux.fromIterable(charList)
                         .delayElements(Duration.ofMillis(20))
                         .concatMap(character -> {
-                            messagingTemplate.convertAndSend(
-                                    "/topic/messages." + userId,
-                                    "{\"type\":\"continue\",\"text\":\"" + character + "\"}"
-                            );
+                            sendChunk(userId, "continue", character);
                             return Mono.empty();
                         });
+
             } else if ("complete".equals(type)) {
-                log.info("Sending complete message = {}", content);
-                messagingTemplate.convertAndSend(
-                        "/topic/messages." + userId,
-                        "{\"type\":\"complete\",\"text\":\"" + content + "\"}"
-                );
+                sendChunk(userId, "complete", content);
             }
             return Flux.empty();
 
@@ -113,5 +110,19 @@ public class AIMessageProcessor {
             return null;
         }
     }
+
+    public void sendChunk(String userId, String type, String content) {
+        Map<String, String> msgMap = new HashMap<>();
+        msgMap.put("type", type);
+        msgMap.put("text", content);
+
+        try {
+            String jsonString = objectMapper.writeValueAsString(msgMap);
+            messagingTemplate.convertAndSend("/topic/messages." + userId, jsonString);
+        } catch (JsonProcessingException e) {
+            log.error("JSON 직렬화 에러: {}", e.getMessage(), e);
+        }
+    }
+
 
 }

@@ -1,5 +1,7 @@
 package org.noteam.be.chat.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.noteam.be.chat.dto.MessageChunkRequest;
@@ -9,9 +11,9 @@ import org.noteam.be.chat.service.MessageService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.chat.InvalidTeamIdException;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -35,11 +37,12 @@ public class ChattingController {
     }
 
     //이전의 대화기록을 불러온다. (더블클릭을 하거나/ 창이 켜졌을 경우)
+    @Tag(name = "채팅", description = "채팅API")
+    @Operation(summary = "채팅기록 불러오기", description = "채팅방 입장 시 대화기록 불러오기")
     @ResponseBody
-    @PostMapping("/api/chat/Messages")
-    public Page<MessageResponse> chunkMessages(MessageChunkRequest msgChunk) {
-
-        return messageService.requestChunkMessages(msgChunk);
+    @GetMapping("/api/chat/messages")
+    public ResponseEntity<Page<MessageResponse>> chunkMessages(@ModelAttribute MessageChunkRequest msgChunk) {
+        return ResponseEntity.ok(messageService.requestChunkMessages(msgChunk));
     }
 
 }

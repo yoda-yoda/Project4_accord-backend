@@ -14,6 +14,9 @@ import org.noteam.be.member.dto.OAuthSignUpRequest;
 import org.noteam.be.profileimg.service.ProfileImgService;
 import org.noteam.be.system.exception.ExceptionMessage;
 import org.noteam.be.system.exception.member.*;
+import org.noteam.be.team.dto.TeamResponse;
+import org.noteam.be.team.service.TeamService;
+import org.noteam.be.teamMember.service.TeamMemberService;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -240,12 +243,12 @@ public class MemberServiceImpl extends DefaultOAuth2UserService implements Membe
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFound(ExceptionMessage.MemberAuth.MEMBER_NOT_FOUND));
         String userRole = member.getRole().toString();
-        log.info("롤 세팅값 : "+userRole);
+        log.info("롤 세팅값 : "+ userRole);
         return new MemberProfileResponse(
                 member.getMemberId(),
                 member.getEmail(),
                 member.getNickname(),
-                profileImgService.getMembersProfileImg(member),
+                member.getProfileImg() == null ? null : member.getProfileImg().getImageUrl(),
                 member.getRole().toString()
         );
     }

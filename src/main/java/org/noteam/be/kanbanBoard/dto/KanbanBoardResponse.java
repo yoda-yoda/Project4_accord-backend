@@ -30,7 +30,7 @@ public class KanbanBoardResponse {
                 .id(kanbanBoard.getId())
                 .name(kanbanBoard.getTitle())
                 .priority(kanbanBoard.getPriority())
-                .cards(kanbanBoard.getCards()
+                .cards(kanbanBoard.getCards() == null ? null : kanbanBoard.getCards()
                     .stream().map(c -> KanbanBoardCardResponse.fromEntity(c))
                     .collect(Collectors.toList()))
                 .build();

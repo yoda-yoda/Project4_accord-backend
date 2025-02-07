@@ -8,12 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.noteam.be.kanbanBoard.domain.KanbanBoard;
 import org.noteam.be.kanbanBoard.domain.KanbanBoardCard;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardCardSwitchRequest;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardCardUpdateRequest;
-import org.noteam.be.kanbanBoard.dto.KanbanBoardMessageResponse;
+import org.noteam.be.kanbanBoard.dto.*;
 import org.noteam.be.kanbanBoard.repository.KanbanBoardCardRepository;
 import org.noteam.be.kanbanBoard.repository.KanbanBoardRepository;
 import org.noteam.be.kanbanBoard.service.KanbanBoardCardService;
+import org.noteam.be.kanbanBoard.service.KanbanBoardService;
 import org.noteam.be.member.domain.Member;
 import org.noteam.be.member.domain.Role;
 import org.noteam.be.member.domain.Status;
@@ -43,6 +42,10 @@ public class KanbanBoardCardServiceImplTest {
     private KanbanBoardCardService kanbanBoardCardService;
 
     @Autowired
+    private KanbanBoardService kanbanBoardService;
+
+
+    @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
@@ -54,9 +57,12 @@ public class KanbanBoardCardServiceImplTest {
     Team team;
     Member member;
     KanbanBoard board;
+    KanbanBoardCard card1;
+    KanbanBoardCard card2;
 
     @BeforeEach
     @DisplayName("테스트 시작을 위한 ")
+    @Transactional
     void setUp() {
 
         member = Member.builder()
@@ -82,6 +88,34 @@ public class KanbanBoardCardServiceImplTest {
                 .build();
         kanbanBoardRepository.save(board);
 
+        card1 = KanbanBoardCard.builder()
+                .content("testCard1")
+                .member(member)
+                .board(board)
+                .priority(1L)
+                .build();
+        kanbanBoardCardRepository.save(card1);
+
+
+        card2 = KanbanBoardCard.builder()
+                .content("testCard1")
+                .member(member)
+                .board(board)
+                .priority(2L)
+                .build();
+        kanbanBoardCardRepository.save(card2);
+
+        // 방향성 문제 다시 공부
+        // db랑 orm은 다르다
+        // 1차 캐시때문에 찾아온 인스턴스에 카드를 따로 추가 해준다. add
+
+        board.getCards().add(card1);
+        board.getCards().add(card2);
+
+
+
+        board = kanbanBoardRepository.findById(board.getId()).orElseThrow();
+
     }
 
     @Test
@@ -89,7 +123,7 @@ public class KanbanBoardCardServiceImplTest {
     void createKanbanBoardCard() throws Exception {
 
         // given
-        Long priority = 1L;
+        Long priority = 3L;
         String content = "TestContent";
 
         // when
@@ -115,7 +149,7 @@ public class KanbanBoardCardServiceImplTest {
     void getKanbanBoardCard() throws Exception {
 
         // given
-        Long priority = 1L;
+        Long priority = 3L;
         String content = "TestContent";
 
         KanbanBoardCard createdCard = kanbanBoardCardService.create(content, member, board, priority);
@@ -139,15 +173,11 @@ public class KanbanBoardCardServiceImplTest {
     @DisplayName("카드 수정")
     void updateKanbanBoardCard() throws Exception {
 
-        // given
-        Long priority = 1L;
-        String content = "TestContent";
 
-        KanbanBoardCard createdCard = kanbanBoardCardService.create(content, member, board, priority);
-        KanbanBoardCard getCard = kanbanBoardCardService.getKanbanBoardCard(createdCard.getId());
+        KanbanBoardCard getCard = kanbanBoardCardService.getKanbanBoardCard(1L);
 
         KanbanBoardCardUpdateRequest updateRequest = KanbanBoardCardUpdateRequest.builder()
-                .cardId(createdCard.getId())
+                .cardId(getCard.getId())
                 .content("updated content")
                 .build();
 
@@ -160,36 +190,38 @@ public class KanbanBoardCardServiceImplTest {
         log.info(" updateCard 테스트 성공: {}", message);
     }
 
+
+    // 일단 조금 있다가 하자 ...
     @Test
     @DisplayName("카드 위치 변경")
+    @Transactional
     void changeCardPriority() throws Exception {
 
-        // given
-        Long priority1 = 1L;
-        Long priority2 = 2L;
-
-        String content1 = "TestContent1";
-        String content2 = "TestContent2";
-
-        KanbanBoardCard createdCard1 = kanbanBoardCardService.create(content1, member, board, priority1);
-        KanbanBoardCard createdCard2 = kanbanBoardCardService.create(content2, member, board, priority2);
+        log.info("board = {}", board);
 
         KanbanBoardCardSwitchRequest request = KanbanBoardCardSwitchRequest.builder()
-                .cardId(createdCard1.getId())
-                .currentBoardId(createdCard1.getBoard().getId())
-                .newPriority(Math.toIntExact(createdCard2.getPriority()))
-                .newBoardId(createdCard2.getBoard().getId())
+                .teamId(team.getId())
+                .cardId(card1.getId())
+                .currentBoardId(board.getId())
+                .newPriority(Math.toIntExact(2L))
+                .newBoardId(board.getId())
                 .build();
 
         //when
         //cardid currentBoardId, newPriority, new BoardId
-        KanbanBoardMessageResponse kanbanBoardMessageResponse = kanbanBoardCardService.changeCardPriority(request);
-        String message = kanbanBoardMessageResponse.getMessage();
+        KanbanBoardAndCardResponse result = kanbanBoardCardService.changeCardPriority(request);
+        log.info("result = {}", result);
 
+        KanbanBoardResponse board1 = result.getKanbanBoards().get(0);
+
+        assertNotNull(result, "카드가 not null 이여야 합니다.");
+        assertEquals(board1.getCards().get(0).getId(), card1.getId(), "ID가 일치해야 합니다.");
+        assertEquals(board1.getCards().get(0).getPriority(),2L, "priority가 일치해야 합니다.");
 
         //then
-        Assertions.assertThat(message).isEqualTo("Successfully changed card priority within the same board");
-        log.info("changeCardPriority 테스트 성공: {}", message);
+       Assertions.assertThat(message).isEqualTo("Successfully changed card priority within the same board");
+       log.info("changeCardPriority 테스트 성공: {}", message);
+
 
     }
 
@@ -211,7 +243,6 @@ public class KanbanBoardCardServiceImplTest {
         Assertions.assertThat(message).isEqualTo("Success Delete Card");
         log.info(" deleteCard 테스트 성공: {}", message);
 
+
     }
-
-
 }

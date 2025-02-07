@@ -1,5 +1,7 @@
 package org.noteam.be.search.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.noteam.be.joinBoard.dto.JoinBoardCardResponse;
 import org.noteam.be.search.dto.SearchRequest;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "조인보드", description = "조인보드 게시판 API")
 @RestController
 @RequestMapping("/api/join-board")
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class SearchController {
     // 그리고 페이지 설정값을 매개변수로 받아 page 객체를 반환한다. 글 정렬은 최신순으로 이뤄진다.
     // 예외: 없다. 즉 DB에 해당 값이 없다면, 빈 페이지 객체를 반환한다.
     // 반환: 해당 엔티티를 전부 JoinBoardCardResponse 라는 dto로 변환하고, 그것을 page 객체로 만들어 반환한다.
+    @Operation(summary = "joinboard 게시판 내 글 검색", description = "검색값으로 조회해온 게시글 출력")
     @PostMapping("/search")
     public ResponseEntity<ResponseData<Page<JoinBoardCardResponse>>> getSearchPagedList(
             @RequestParam(value = "page", defaultValue = "0") int page, @RequestBody SearchRequest dto)
