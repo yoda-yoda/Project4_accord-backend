@@ -31,4 +31,11 @@ public class Message {
     public static final String SAVE_NOTE_IMAGE = "SUCCESS - 노트 이미지 저장 성공";
     public static final String DELETE_NOTE_IMAGE = "SUCCESS - 노트 이미지 삭제 성공";
 
+    // comment
+    public static final String SAVE_COMMENT = "SUCCESS - 댓글 정보 저장 성공";
+    public static final String READ_COMMENT = "SUCCESS - 댓글 정보 조회 성공";
+    public static final String UPDATE_COMMENT = "SUCCESS - 댓글 정보 수정 성공";
+    public static final String DELETE_COMMENT = "SUCCESS - 댓글 정보 삭제 성공";
+    public static final String UPDATE_COMMENT_FAIL = "FAIL - 댓글 정보 수정 실패";
+
 }
