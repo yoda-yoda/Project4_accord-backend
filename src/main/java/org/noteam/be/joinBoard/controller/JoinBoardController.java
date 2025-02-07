@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/join-board")
+@RequestMapping("/api/members/join-board")
 @RequiredArgsConstructor
 public class JoinBoardController {
 
