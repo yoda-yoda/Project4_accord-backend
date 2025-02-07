@@ -10,7 +10,7 @@ public class GrpcChannelConfig {
 
     @Bean
     public ManagedChannel keyRotationChannel() {
-        return NettyChannelBuilder.forAddress("localhost", 50051)
+        return NettyChannelBuilder.forAddress("go-server", 50051)
                 .usePlaintext()
                 .build();
     }

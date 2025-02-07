@@ -1,15 +1,15 @@
-version: '3.8'
-
 services:
   consul:
     image: hashicorp/consul:latest
     container_name: consul
     command: "agent -dev -client=0.0.0.0"
     ports:
-      - "8500:8500"       # HTTP 인터페이스
-      - "8600:8600/udp"   # DNS (UDP) 포트
+      - "8500:8500"
+      - "8600:8600/udp"
     volumes:
       - consul-data:/consul/data
+    networks:
+      - backend
 
   mariadb:
     image: mariadb:latest
@@ -24,6 +24,8 @@ services:
       - "3306:3306"
     volumes:
       - mariadb-data:/var/lib/mysql
+    networks:
+      - backend
 
   mongodb:
     image: mongo:latest
@@ -31,8 +33,14 @@ services:
     restart: always
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpassword
+      MONGO_INITDB_DATABASE: accord
     volumes:
       - mongodb-data:/data/db
+    networks:
+      - backend
 
   redis:
     image: redis:latest
@@ -42,6 +50,8 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+    networks:
+      - backend
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -49,28 +59,85 @@ services:
     restart: always
     ports:
       - "15672:15672"  # 관리 콘솔
-      - "5672:5672"    # AMQP 포트
-      - "61613:61613"  # STOMP 포트
+      - "5672:5672"     # AMQP 포트
+      - "61613:61613"   # STOMP 포트
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - backend
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    command: >
+      sh -c "rabbitmq-plugins enable rabbitmq_stomp &&
+             rabbitmq-server"
+
+  gateway:
+    image: cassidy65/accord-gateway:latest
+    container_name: gateway
+    restart: always
+    ports:
+      - "8082:8082"
+    networks:
+      - backend
+
+  spring-app:
+    image: cassidy65/accord-spring:latest
+    container_name: spring-app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+      - consul
+      - rabbitmq
+    environment:
+      - SPRING_CONFIG_LOCATION=/config/application.yml
+    volumes:
+      - /home/ubuntu/config:/config
+    networks:
+      - backend
+
+  go-server:
+    image: cassidy65/go-server:latest
+    container_name: go-server
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongodb
+      - consul
+      - redis
+      - spring-app
+    networks:
+      - backend
 
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
     restart: always
     ports:
-      - "9091:9090"  # 호스트 포트 9091 -> 컨테이너의 9090
+      - "9091:9091"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - /home/ubuntu/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    networks:
+      - backend
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
     restart: always
     ports:
-      - "3001:3000"  # 호스트 포트 3001 -> 컨테이너의 3000
+      - "3001:3001"
     volumes:
       - grafana-data:/var/lib/grafana
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
 
 volumes:
   consul-data:
