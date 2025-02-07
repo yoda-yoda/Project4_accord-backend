@@ -212,16 +212,12 @@ public class KanbanBoardCardServiceImplTest {
         KanbanBoardAndCardResponse result = kanbanBoardCardService.changeCardPriority(request);
         log.info("result = {}", result);
 
+        //then
         KanbanBoardResponse board1 = result.getKanbanBoards().get(0);
 
         assertNotNull(result, "카드가 not null 이여야 합니다.");
         assertEquals(board1.getCards().get(0).getId(), card1.getId(), "ID가 일치해야 합니다.");
         assertEquals(board1.getCards().get(0).getPriority(),2L, "priority가 일치해야 합니다.");
-
-        //then
-       Assertions.assertThat(message).isEqualTo("Successfully changed card priority within the same board");
-       log.info("changeCardPriority 테스트 성공: {}", message);
-
 
     }
 

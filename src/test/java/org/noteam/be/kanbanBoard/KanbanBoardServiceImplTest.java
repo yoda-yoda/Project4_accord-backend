@@ -98,11 +98,10 @@ public class KanbanBoardServiceImplTest {
                 .build();
 
         // when
-        KanbanBoardMessageResponse createdBoard = kanbanBoardService.createBoard(request);
-        String message = createdBoard.getMessage();
+        KanbanBoardCreateResponse response = kanbanBoardService.createBoard(request);
+
         // then
-        Assertions.assertThat(message).isEqualTo("Success Create Board");
-        log.info(" createKanbanBoard 테스트 성공: {}", message);
+        Assertions.assertThat(response.getTitle()).isEqualTo("test Board");
 
     }
 
