@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/members/join-board")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class JoinBoardController {
 
@@ -28,7 +28,7 @@ public class JoinBoardController {
     private final JoinBoardService joinBoardService;
 
 
-    @PostMapping
+    @PostMapping("/members/join-board")
     public ResponseEntity<ResponseData<JoinBoardResponse>> createJoinBoard(@RequestBody JoinBoardRegisterRequest dto){
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
@@ -46,7 +46,7 @@ public class JoinBoardController {
 
 
 
-    @GetMapping
+    @GetMapping("/join-board")
     public ResponseEntity<ResponseData<Page<JoinBoardCardResponse>>> getPagedList(
             @RequestParam(value = "page", defaultValue = "0") int page)
     {
@@ -57,7 +57,7 @@ public class JoinBoardController {
 
 
 
-    @GetMapping("/sort-by-title")
+    @GetMapping("/join-board/sort-by-title")
     public ResponseEntity<ResponseData<Page<JoinBoardCardResponse>>> getPagedListSortByTitle(
             @RequestParam(value = "page", defaultValue = "0") int page)
     {
@@ -69,7 +69,7 @@ public class JoinBoardController {
 
 
 
-    @GetMapping("/{joinBoardId}")
+    @GetMapping("/join-board/{joinBoardId}")
     public ResponseEntity<ResponseData<JoinBoardResponse>> getJoinBoard(@PathVariable Long joinBoardId){
 
         JoinBoardResponse res = joinBoardService.getJoinBoardById(joinBoardId);
@@ -79,7 +79,7 @@ public class JoinBoardController {
 
 
 
-    @PutMapping("/{joinBoardId}")
+    @PutMapping("/members/join-board/{joinBoardId}")
     public ResponseEntity<ResponseData<JoinBoardResponse>> updateJoinBoard(@PathVariable Long joinBoardId, @RequestBody JoinBoardUpdateRequest dto) {
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
@@ -105,7 +105,7 @@ public class JoinBoardController {
     }
 
 
-    @DeleteMapping("/{joinBoardId}")
+    @DeleteMapping("/members/join-board/{joinBoardId}")
     public ResponseEntity<ResponseData> deleteJoinBoard(@PathVariable Long joinBoardId) {
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId();

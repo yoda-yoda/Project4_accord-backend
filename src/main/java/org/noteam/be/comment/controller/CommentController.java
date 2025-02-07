@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/members/comment")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -27,7 +27,7 @@ public class CommentController {
     private final CommentService commentService;
 
 
-    @PostMapping("/{joinBoardId}")
+    @PostMapping("/members/comment/{joinBoardId}")
     public ResponseEntity<ResponseData<CommentResponse>> createComment(
             @RequestBody CommentRegisterRequest dto,
             @PathVariable Long joinBoardId,
@@ -52,7 +52,7 @@ public class CommentController {
 
     // 해당 조인보드의 ACTIVE인 모든 댓글을 반환한다. //
     // 표시될 댓글이 없다면 빈 리스트가 반환된다.
-    @GetMapping("/{joinBoardId}")
+    @GetMapping("/comment/{joinBoardId}")
     public ResponseEntity<ResponseData<List<CommentResponse>>> getAllComment(@PathVariable Long joinBoardId){
 
         List<CommentResponse> list = commentService.getAllCommentByJoinBoardId(joinBoardId);
@@ -61,7 +61,7 @@ public class CommentController {
     }
 
 
-    @GetMapping("/{joinBoardId}/{commentId}")
+    @GetMapping("/comment/{joinBoardId}/{commentId}")
     public ResponseEntity<ResponseData<CommentResponse>> getComment(@PathVariable Long commentId){
 
         CommentResponse res = commentService.getCommentById(commentId);
@@ -71,7 +71,7 @@ public class CommentController {
 
 
 
-    @PutMapping("/{commentId}")
+    @PutMapping("/members/comment/{commentId}")
     public ResponseEntity<ResponseData<CommentResponse>> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateRequest dto) {
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
@@ -97,7 +97,7 @@ public class CommentController {
 
 
 
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/members/comment/{commentId}")
     public ResponseEntity<ResponseData> deleteComment(@PathVariable Long commentId) {
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
