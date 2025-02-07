@@ -1,3 +1,4 @@
+
 package org.noteam.be.grpc.client;
 
 import io.grpc.ManagedChannel;
@@ -29,7 +30,7 @@ public class KeyRotationNotifyClient {
                 .build();
 
         NotifyKeyRolledResponse response = stub.notifyKeyRolled(request);
+        log.info("NotifyKeyRolled response: {}", request);
         log.info("GO SERVER 응답: " + response.getMessage());
     }
 }
-
