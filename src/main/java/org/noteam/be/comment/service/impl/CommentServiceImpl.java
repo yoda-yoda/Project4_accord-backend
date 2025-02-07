@@ -170,18 +170,55 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
-    // 메서드 기능: 해당 id의 Comment 를 소프트 딜리트 처리한다.
-    // 즉 Enum 타입인 status 변수를, DELETE로 변경한다.
+    // 메서드 기능: 해당 id의 Comment를 소프트 딜리트 처리한다. 만약 ACTIVE인 자식댓글이 존재한다면 그들도 전부 딜리트 처리한다. 대댓글까지만 허용되는 정책이라서 가능한 처리이다.
+    // 소프트 딜리트 방식: Enum 타입인 status 변수를, DELETE로 변경한다.
     // 참고: 기존 엔티티를 조회할때 이곳 내부 메서드를 활용했다.
     // 예외: 내부 메서드에 예외가 내재되어있다.
     // 반환: X
     @Transactional
     public void deleteCommentById(Long id) {
 
+
+        // id로 해당 댓글을 찾아온다.
         Comment entity = getCommentEntityByIdWithNoDeleted(id);
+
+
+        // 해당 댓글이 부모 뎁스의 댓글이라면 진입한다.
+        if (entity.getParentCommentId() == null) {
+
+
+            // ACTIVE인 자식댓글들을 찾아 list에 담는다.
+            List<Comment> list = commentRepository.findAllByParentCommentIdAndStatus(entity.getId(), Status.ACTIVE);
+
+
+
+            // 비어있다면(ACTIVE 인 자식댓글이 없다면) 부모댓글 본인만 DELETE 처리하고 메서드를 종료한다
+            if ( list.isEmpty() ) {
+                entity.changeStatus(org.noteam.be.comment.domain.Status.DELETE);
+                return;
+            }
+
+
+            // 자식댓글이 존재한다면 그들도 전부 DELETE 처리하고 저장한다
+            for (Comment findComment : list) {
+                findComment.changeStatus(org.noteam.be.comment.domain.Status.DELETE);
+            }
+
+            // 마지막에 부모댓글 본인만 DELETE 처리하고 종료한다.
+            entity.changeStatus(org.noteam.be.comment.domain.Status.DELETE);
+            return;
+
+
+        }
+
+        
+        // 여기 도달한다는것은 해당 댓글이 대댓글인거기 때문에, 본인만 DELETE 처리하고 종료한다.
         entity.changeStatus(org.noteam.be.comment.domain.Status.DELETE);
 
     }
+
+
+
 
 
     // 메서드 기능: 멤버 id를 통해 멤버 엔티티를 찾는다. 이 서비스 파일에서 사용하고자 만들었다.

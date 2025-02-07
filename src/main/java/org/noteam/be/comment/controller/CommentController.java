@@ -34,8 +34,6 @@ public class CommentController {
             @RequestParam(required = false) Long parentCommentId
     ) {
 
-        System.out.println(parentCommentId);
-
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
 
         if ( currentMemberId==null ) {
