@@ -81,23 +81,6 @@ services:
     networks:
       - backend
 
-  spring-app:
-    image: cassidy65/accord-spring:latest
-    container_name: spring-app
-    restart: always
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mariadb
-      - consul
-      - rabbitmq
-    environment:
-      - SPRING_CONFIG_LOCATION=/config/application.yml
-    volumes:
-      - /home/ubuntu/config:/config
-    networks:
-      - backend
-
   go-server:
     image: cassidy65/go-server:latest
     container_name: go-server
@@ -108,7 +91,24 @@ services:
       - mongodb
       - consul
       - redis
-      - spring-app
+    networks:
+      - backend
+
+  spring-app:
+    image: cassidy65/accord-spring:latest
+    container_name: spring-app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+      - consul
+      - rabbitmq
+      - go-server
+    environment:
+      - SPRING_CONFIG_LOCATION=/config/application.yml
+    volumes:
+      - /home/ubuntu/config:/config
     networks:
       - backend
 
