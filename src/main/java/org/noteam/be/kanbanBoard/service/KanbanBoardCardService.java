@@ -17,7 +17,7 @@ public interface KanbanBoardCardService {
 
     List<KanbanBoardCard> getKanbanBoardCardbyBoardId(Long boardId);
 
-    KanbanBoardMessageResponse createCard(KanbanBoardCardCreateRequest request);
+    public KanbanBoardCardCreateResponse createCard(KanbanBoardCardCreateRequest request);
 
     KanbanBoardMessageResponse deleteBoardCard(Long boardId);
 

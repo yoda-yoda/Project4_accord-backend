@@ -63,7 +63,7 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
 
     //Card 추가 로직
     @Override
-    public KanbanBoardMessageResponse createCard(KanbanBoardCardCreateRequest request) {
+    public KanbanBoardCardCreateResponse createCard(KanbanBoardCardCreateRequest request) {
 
         int num = 0;
 
@@ -89,13 +89,13 @@ public class KanbanBoardCardServiceImpl implements KanbanBoardCardService {
         }
 
 
-
-        create(request.getContent(),member,byTeamIdAndBoardName, (long) num);
+        KanbanBoardCard kanbanBoardCard = create(request.getContent(), member, byTeamIdAndBoardName, (long) num);
 
         //보드 카드 추가
-        return KanbanBoardMessageResponse.builder()
-                .message("Success Create Card")
-                .result(true)
+        return KanbanBoardCardCreateResponse.builder()
+                .title(request.getContent())
+                .cardId(kanbanBoardCard.getId())
+                .memberNickname(member.getNickname())
                 .build();
     }
 

@@ -51,12 +51,16 @@ public class ProfileImgServiceImpl implements ProfileImgService {
 
         //프로파일 이미지 URL Entity 생성
         ProfileImg profileImg = ProfileImg.builder()
+                .member(member)
                 .imageUrl(s3ImgUrl)
                 .build();
 
         //저장
         member.setProfileImg(profileImg);
+        log.info("img uploaded successfully {}", s3ImgUrl);
         memberRepository.save(member);
+        memberRepository.flush();
+        log.info("profile img uploaded successfully {}", member.getProfileImg().getImageUrl());
     }
 
     @Override
@@ -73,6 +77,7 @@ public class ProfileImgServiceImpl implements ProfileImgService {
 
         //프로파일 기본 이미지 URL 생성.
         ProfileImg profileImg = ProfileImg.builder()
+                .member(member)
                 .imageUrl(storageService.getDefaultPath())
                 .build();
         //저장

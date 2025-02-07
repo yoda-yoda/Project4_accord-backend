@@ -94,7 +94,7 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
 
 
     @Override
-    public KanbanBoardMessageResponse createBoard(KanbanBoardCreateRequest request) {
+    public KanbanBoardCreateResponse createBoard(KanbanBoardCreateRequest request) {
 
         int num = 0;
 
@@ -123,9 +123,9 @@ public class KanbanBoardServiceImpl implements KanbanBoardService {
 
         kanbanBoardRepository.save(board);
 
-        return KanbanBoardMessageResponse.builder()
-                .message("Success Create Board")
-                .result(true)
+        return KanbanBoardCreateResponse.builder()
+                .columnId(board.getId())
+                .title(request.getTitle())
                 .build();
     }
 

@@ -20,7 +20,7 @@ public interface KanbanBoardService{
 
     KanbanBoard getKanbanBoardbyBoardId(Long boardId);
 
-    KanbanBoardMessageResponse createBoard(KanbanBoardCreateRequest request);
+    KanbanBoardCreateResponse createBoard(KanbanBoardCreateRequest request);
 
     KanbanBoardMessageResponse deleteBoard(Long boardId);
 

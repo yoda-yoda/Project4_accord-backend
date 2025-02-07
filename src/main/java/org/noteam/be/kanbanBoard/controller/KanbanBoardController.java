@@ -51,20 +51,20 @@ public class KanbanBoardController {
 
     //칸반 보드 추가
     @PostMapping("/kanbanboard/create")
-    public ResponseEntity<KanbanBoardMessageResponse> createKanbanBoard(@RequestBody KanbanBoardCreateRequest request) {
+    public ResponseEntity<KanbanBoardCreateResponse> createKanbanBoard(@RequestBody KanbanBoardCreateRequest request) {
 
-        KanbanBoardMessageResponse result = kanbanBoardService.createBoard(request);
+        KanbanBoardCreateResponse result = kanbanBoardService.createBoard(request);
 
         return ResponseEntity.ok(result);
     }
 
     //칸반 보드 카드 추가 로직
     @PostMapping("/kanbanboardcard/create")
-    public ResponseEntity<KanbanBoardMessageResponse> createKanbanBoardCard(@RequestBody KanbanBoardCardCreateRequest request) {
+    public ResponseEntity<KanbanBoardCardCreateResponse> createKanbanBoardCard(@RequestBody KanbanBoardCardCreateRequest request) {
 
         log.info("😀request = {}", request);
 
-        KanbanBoardMessageResponse result = kanbanBoardCardService.createCard(request);
+        KanbanBoardCardCreateResponse result = kanbanBoardCardService.createCard(request);
 
         return ResponseEntity.ok(result);
 
