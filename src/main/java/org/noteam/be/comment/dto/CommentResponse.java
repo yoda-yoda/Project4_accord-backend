@@ -1,6 +1,7 @@
 package org.noteam.be.comment.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +38,8 @@ public class CommentResponse {
     @NotNull
     private String memberProfileUrl;
 
+    @Null
+    private Long parentCommentId;
 
 
 
@@ -51,6 +54,7 @@ public class CommentResponse {
                 .memberId( comment.getMember().getMemberId() )
                 .memberNickname( comment.getMember().getNickname() )
                 .memberProfileUrl( comment.getMember().getProfileImg() == null ? null : comment.getMember().getProfileImg().getImageUrl() )
+                .parentCommentId( comment.getParentCommentId() == null ? null : comment.getParentCommentId() )
                 .build();
     }
 

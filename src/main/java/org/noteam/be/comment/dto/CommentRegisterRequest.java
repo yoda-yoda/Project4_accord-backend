@@ -17,11 +17,12 @@ public class CommentRegisterRequest {
     private String content;
 
 
-    public static Comment toEntity(CommentRegisterRequest dto, Member member, JoinBoard joinBoard) {
+    public static Comment toEntity(CommentRegisterRequest dto, Member member, JoinBoard joinBoard, Long parentCommentId) {
         return Comment.builder()
                 .content(dto.getContent())
                 .member(member)
                 .joinBoard(joinBoard)
+                .parentCommentId(parentCommentId)
                 .build();
     }
 

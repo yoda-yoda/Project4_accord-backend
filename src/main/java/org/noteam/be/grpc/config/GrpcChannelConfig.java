@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GrpcChannelConfig {
 
-    @Bean
-    public ManagedChannel keyRotationChannel() {
-        return NettyChannelBuilder.forAddress("localhost", 50051)
-                .usePlaintext()
-                .build();
-    }
+//    @Bean
+//    public ManagedChannel keyRotationChannel() {
+//        return NettyChannelBuilder.forAddress("localhost", 50051)
+//                .usePlaintext()
+//                .build();
+//    }
 }

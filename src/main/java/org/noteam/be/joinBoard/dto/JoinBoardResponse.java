@@ -43,7 +43,7 @@ public class JoinBoardResponse {
     @NotNull
     private LocalDate endDate;
 
-    @NotNull
+    @NotNull //
     private int peopleNumber;
 
     @NotNull

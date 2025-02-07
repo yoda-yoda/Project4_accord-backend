@@ -1,4 +1,3 @@
-
 package org.noteam.be.grpc.client;
 
 import io.grpc.ManagedChannel;
@@ -33,3 +32,4 @@ public class KeyRotationNotifyClient {
         log.info("GO SERVER 응답: " + response.getMessage());
     }
 }
+

@@ -5,7 +5,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
-import org.noteam.be.grpc.client.KeyRotationNotifyClient;
+//import org.noteam.be.grpc.client.KeyRotationNotifyClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,8 +30,8 @@ public class RsaKeyManager {
     @Getter
     private volatile KeyHolder currentKey;
 
-    @Autowired
-    private KeyRotationNotifyClient keyRotationNotifyClient;
+//    @Autowired
+//    private KeyRotationNotifyClient keyRotationNotifyClient;
 
     @PostConstruct
     public void init() {
@@ -82,7 +82,7 @@ public class RsaKeyManager {
 
             String pem = convertPublicKeyToPEM(this.currentKey.getPublicKey());
 
-            keyRotationNotifyClient.notifyKeyRolled(oldKid, newKid, pem);
+//            keyRotationNotifyClient.notifyKeyRolled(oldKid, newKid, pem);
         }
     }
 

@@ -14,10 +14,16 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
- 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+
+    // 부모 댓글 ID (대댓글을 위한 필드변수)
+    // 부모 댓글이 없는 경우도 있으므로 null 허용
+    @Column(nullable = true)
+    private Long parentCommentId;
 
     @Column(nullable = false)
     private String content;
@@ -77,10 +83,12 @@ public class Comment {
 
 
     @Builder
-    public Comment(String content, JoinBoard joinBoard, Member member) {
+    public Comment(String content, JoinBoard joinBoard, Member member, Long parentCommentId) {
         this.content = content;
         this.joinBoard = joinBoard;
         this.member = member;
+        this.parentCommentId = parentCommentId;
+
     }
 
 

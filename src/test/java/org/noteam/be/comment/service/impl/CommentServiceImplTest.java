@@ -30,7 +30,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// ddl auto - create 로 테스트 중
+
 @SpringBootTest
 @Slf4j
 class CommentServiceImplTest {
@@ -212,10 +212,10 @@ class CommentServiceImplTest {
 
 
         // when
-        CommentResponse res1 = commentService.createCommentByDto(dto1, mem1, joinBoardResponse1.getId());
-        CommentResponse res2 = commentService.createCommentByDto(dto2, mem1, joinBoardResponse2.getId());
-        CommentResponse res3 = commentService.createCommentByDto(dto3, mem2, joinBoardResponse1.getId());
-        CommentResponse res4 = commentService.createCommentByDto(dto4, mem2, joinBoardResponse2.getId());
+        CommentResponse res1 = commentService.createCommentByDto(dto1, mem1, joinBoardResponse1.getId(),null);
+        CommentResponse res2 = commentService.createCommentByDto(dto2, mem1, joinBoardResponse2.getId(),null);
+        CommentResponse res3 = commentService.createCommentByDto(dto3, mem2, joinBoardResponse1.getId(),null);
+        CommentResponse res4 = commentService.createCommentByDto(dto4, mem2, joinBoardResponse2.getId(),null);
 
         commentResponseList.add(res1);
         commentResponseList.add(res2);
@@ -265,7 +265,7 @@ class CommentServiceImplTest {
 
 
         // when
-        CommentResponse res = commentService.createCommentByDto(dto, mem1, joinBoardResponse.getId());
+        CommentResponse res = commentService.createCommentByDto(dto, mem1, joinBoardResponse.getId(),null);
 
         // then
         assertThat(res.getMemberId()).isEqualTo(mem1.getMemberId());
@@ -299,9 +299,9 @@ class CommentServiceImplTest {
 
 
         // when
-        CommentResponse res1 = commentService.createCommentByDto(dto1, mem1, joinBoardResponse.getId());
-        CommentResponse res2 = commentService.createCommentByDto(dto2, mem1, joinBoardResponse.getId());
-        CommentResponse res3 = commentService.createCommentByDto(dto3, mem1, joinBoardResponse.getId());
+        CommentResponse res1 = commentService.createCommentByDto(dto1, mem1, joinBoardResponse.getId(),null);
+        CommentResponse res2 = commentService.createCommentByDto(dto2, mem1, joinBoardResponse.getId(),null);
+        CommentResponse res3 = commentService.createCommentByDto(dto3, mem1, joinBoardResponse.getId(),null);
 
         // then
         assertThat(res1.getMemberId()).isEqualTo(mem1.getMemberId());
@@ -346,10 +346,10 @@ class CommentServiceImplTest {
 
 
         // when
-        CommentResponse res1 = commentService.createCommentByDto(dto1, mem1, joinBoardResponse1.getId());
-        CommentResponse res2 = commentService.createCommentByDto(dto2, mem1, joinBoardResponse2.getId());
-        CommentResponse res3 = commentService.createCommentByDto(dto3, mem2, joinBoardResponse1.getId());
-        CommentResponse res4 = commentService.createCommentByDto(dto4, mem2, joinBoardResponse2.getId());
+        CommentResponse res1 = commentService.createCommentByDto(dto1, mem1, joinBoardResponse1.getId(),null);
+        CommentResponse res2 = commentService.createCommentByDto(dto2, mem1, joinBoardResponse2.getId(),null);
+        CommentResponse res3 = commentService.createCommentByDto(dto3, mem2, joinBoardResponse1.getId(),null);
+        CommentResponse res4 = commentService.createCommentByDto(dto4, mem2, joinBoardResponse2.getId(),null);
 
         // then
         assertThat(res1.getMemberId()).isEqualTo(mem1.getMemberId());

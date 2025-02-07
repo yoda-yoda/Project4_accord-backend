@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "조인보드", description = "조인보드 게시판 API")
 @RestController
-@RequestMapping("/api/join-board")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class JoinBoardController {
 
@@ -30,8 +30,8 @@ public class JoinBoardController {
     private final JoinBoardService joinBoardService;
 
 
+    @PostMapping("/members/join-board")
     @Operation(summary = "게시글 작성", description = "JoinBoard 게시판에서 게시글 작성")
-    @PostMapping
     public ResponseEntity<ResponseData<JoinBoardResponse>> createJoinBoard(@RequestBody JoinBoardRegisterRequest dto){
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
@@ -48,7 +48,7 @@ public class JoinBoardController {
     }
 
 
-    @GetMapping
+    @GetMapping("/join-board")
     public ResponseEntity<ResponseData<Page<JoinBoardCardResponse>>> getPagedList(
             @RequestParam(value = "page", defaultValue = "0") int page)
     {
@@ -57,8 +57,9 @@ public class JoinBoardController {
         return ResponseData.toResponseEntity(ResponseCode.GET_JOIN_BOARD_SUCCESS, pagedList);
     }
 
+
+    @GetMapping("/join-board/sort-by-title")
     @Operation(summary = "게시글 검색", description = "JoinBoard 게시판에서 제목으로 게시글 검색")
-    @GetMapping("/sort-by-title")
     public ResponseEntity<ResponseData<Page<JoinBoardCardResponse>>> getPagedListSortByTitle(
             @RequestParam(value = "page", defaultValue = "0") int page)
     {
@@ -68,9 +69,8 @@ public class JoinBoardController {
     }
 
 
-
+    @GetMapping("/join-board/{joinBoardId}")
     @Operation(summary = "게시글 상세 페이지", description = "게시판 상세 페이지 정보 조회")
-    @GetMapping("/{joinBoardId}")
     public ResponseEntity<ResponseData<JoinBoardResponse>> getJoinBoard(@PathVariable Long joinBoardId){
 
         JoinBoardResponse res = joinBoardService.getJoinBoardById(joinBoardId);
@@ -78,9 +78,8 @@ public class JoinBoardController {
         return ResponseData.toResponseEntity(ResponseCode.GET_JOIN_BOARD_SUCCESS, res);
     }
 
-
+    @PutMapping("/members/join-board/{joinBoardId}")
     @Operation(summary = "게시글 수정", description = "JoinBoard 게시판 작성된 게시글 수정")
-    @PutMapping("/{joinBoardId}")
     public ResponseEntity<ResponseData<JoinBoardResponse>> updateJoinBoard(@PathVariable Long joinBoardId, @RequestBody JoinBoardUpdateRequest dto) {
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
@@ -105,8 +104,9 @@ public class JoinBoardController {
 
     }
 
+
+    @DeleteMapping("/members/join-board/{joinBoardId}")
     @Operation(summary = "게시글 삭제", description = "JoinBoard 게시판 작성된 게시글 삭제")
-    @DeleteMapping("/{joinBoardId}")
     public ResponseEntity<ResponseData> deleteJoinBoard(@PathVariable Long joinBoardId) {
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
