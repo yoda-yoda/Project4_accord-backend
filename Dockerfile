@@ -19,7 +19,7 @@ WORKDIR /app
 COPY . .
 
 # 빌드 실행
-RUN gradle bootJar --no-daemon -x test
+RUN chmod +x gradlew && ./gradlew bootJar --no-daemon -x test --stacktrace
 
 # Stage 2: Runtime stage using JDK 21
 FROM openjdk:21-jdk-slim
