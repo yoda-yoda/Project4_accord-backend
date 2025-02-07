@@ -26,15 +26,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 4. Docker 이미지 빌드 및 푸시
-      - name: Build and push Docker image
+      # 5. Spring Backend Docker 이미지 빌드 및 푸시
+      - name: Build and push Spring Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+          platforms: linux/amd64,linux/arm64
+          tags: cassidy65/accord-spring:latest
 
+      # 6. EC2에 배포
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -42,10 +44,19 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 중복 실행 방지를 위해 기존 컨테이너 종료 및 삭제 (컨테이너 이름: my-app)
-            docker stop my-app || true
-            docker rm my-app || true
-            # 최신 이미지 풀
-            docker pull ${{ secrets.DOCKERHUB_REPOSITORY }}:latest
-            # 새 컨테이너 실행 (예: 호스트의 8080 포트를 컨테이너의 8080 포트로 매핑)
-            docker run -d --name my-app -p 8080:8080 ${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+            # 환경 변수 및 설정 파일 준비
+            mkdir -p /home/ubuntu/config
+            echo "${{ secrets.APPLICATION_YML }}" | sed 's/\\n/\n/g' > /home/ubuntu/config/application.yml
+            chmod 600 /home/ubuntu/config/application.yml
+
+            # 기존 컨테이너 중지 및 삭제
+            cd /home/ubuntu
+            sudo docker compose down || true
+
+            # 최신 이미지 가져오기
+            sudo docker pull cassidy65/accord-gateway:latest
+            sudo docker pull cassidy65/accord-spring:latest
+            sudo docker pull cassidy65/go-server:latest
+
+            # Docker Compose 실행
+            sudo docker compose up -d
