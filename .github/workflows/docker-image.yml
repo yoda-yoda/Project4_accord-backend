@@ -58,5 +58,4 @@ jobs:
             sudo docker pull cassidy65/accord-spring:latest
             sudo docker pull cassidy65/go-server:latest
 
-            # Docker Compose 실행
             sudo docker compose up -d
