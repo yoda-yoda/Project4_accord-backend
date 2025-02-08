@@ -79,6 +79,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(false); // HTTPS 에서만 전송
+        cookie.setAttribute("SameSite", "None");
         response.addCookie(cookie);
     }
 
