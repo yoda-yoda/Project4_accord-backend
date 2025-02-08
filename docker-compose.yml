@@ -117,7 +117,7 @@ services:
     container_name: prometheus
     restart: always
     ports:
-      - "9091:9091"
+      - "9091:9090"
     volumes:
       - /home/ubuntu/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
@@ -129,7 +129,7 @@ services:
     container_name: grafana
     restart: always
     ports:
-      - "3001:3001"
+      - "3001:3000"
     volumes:
       - grafana-data:/var/lib/grafana
     networks:
