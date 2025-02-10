@@ -101,6 +101,7 @@
 <br>
 # 도메인 및 API 명세
 https://accord.my/
+<br>
 ## 팀관리 (위임 및 권한 관련 API)
 
 | Method | Endpoint                                        | Description                   |
