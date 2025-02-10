@@ -102,6 +102,13 @@
 # 도메인 및 API 명세
 https://accord.my/
 <br>
+<details>
+<summary>
+  API 명세서 Swagger ver.
+</summary>
+  ![accordswagger.png](./docs/accordswagger.png)
+</details>
+
 ## 팀관리 (위임 및 권한 관련 API)
 
 | Method | Endpoint                                        | Description                   |
