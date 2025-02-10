@@ -4,15 +4,14 @@
 ### 개발자들을 위한 온라인 협업툴
 
 # 목차
-1. 1
-2. 2
-3. 3
-4. 4
-5. 5
-6. 6
-7. 7
-8. 8
-9. 9
+1. 팀원 소개 및 역할
+2. 사용 기술 스택
+3. 도메인
+4. 프로젝트 개발 일정
+5. 아키텍쳐
+6. 플로우차트/피그마
+7. ERD
+8. 구성화면, 시연영상
 
 # 팀원 소개 및 역할
 <table>
@@ -60,7 +59,7 @@
 <td style="text-align: center;">팀원 <br> Backend/Frontend</td>
 <td style="text-align: center;">
 <b><br><br>#설계</b><br>- Figma 설계<br>- ERD 설계<br><br>
-<b>#Backend</b><br>- Spring Security를 이용한 폼 로그인 개발<br>- 사용자별 권한 기능 개발<br>- SMTP를 이용한 비밀번호 재설정 기능 개발<br>- 사용자 정보 수정 및 탈퇴 기능 개발<br><br>
+<b>#Backend</b><br>- Spring Security를 이용한 로그인 개발<br>- 사용자별 권한 기능 개발<br>- SMTP를 이용한 비밀번호 재설정 기능 개발<br>- 사용자 정보 수정 및 탈퇴 기능 개발<br><br>
 <b>#Frontend</b><br>- 게시판 레이아웃 및 디자인 개발<br> <br> 
 </td>
 <td style="text-align: center;"><a href="mailto:jane.smith@email.com">ensoary@gmail.com</a></td>
@@ -79,3 +78,5 @@
 </table>
 <br>
 <br>
+
+# 사용 기술 스택
