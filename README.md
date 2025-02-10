@@ -106,7 +106,9 @@ https://accord.my/
 <summary>
   API 명세서 Swagger ver.
 </summary>
+  
   ![accordswagger.png](./docs/accordswagger.png)
+  
 </details>
 
 ## 팀관리 (위임 및 권한 관련 API)
@@ -247,3 +249,4 @@ https://accord.my/
 
 # ERD
 ![erd.png](./docs/erd.png)
+![mongodb.png](./docs/mongodb.png)
