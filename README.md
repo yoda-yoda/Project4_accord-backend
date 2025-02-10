@@ -1,5 +1,5 @@
 # ACCORD
-![accord-removebg.png](attachment:fc27ba58-a04e-4be9-a87d-eea32faf799d:accord-removebg.png)
+![accord-removebg.png](./docs/accord-removebg.png)
 
 ### 개발자들을 위한 온라인 협업툴
 
@@ -9,9 +9,8 @@
 3. 도메인 및 API 명세
 4. 프로젝트 개발 일정
 5. 아키텍쳐
-6. 플로우차트/피그마
+6. 플로우차트
 7. ERD
-8. 구성화면, 시연영상
 
 # 팀원 소개 및 역할
 <table>
@@ -223,3 +222,21 @@ https://accord.my/
 | **GET**    | `/api/kanbanboard/{teamId}`       | 칸반보드 조회                     |
 | **DELETE** | `/api/kanbanboardcard/delete`     | 카드 삭제                         |
 | **DELETE** | `/api/kanbanboard/delete`         | 칸반보드 삭제                     |
+
+---
+
+<br>
+
+# 개발일정
+
+<br>
+
+# 아키텍쳐
+![architecture.png](./docs/architecture.png)
+
+
+# 플로우차트
+![flow.png](./docs/flow.png)
+
+# ERD
+![erd.png](./docs/erd.png)
